@@ -32,12 +32,15 @@ category_items = ph_db.Table('category_items',
 class Albums(ph_db.Model):
     __tablename__="albums"
     album_id = ph_db.Column(ph_db.Integer, primary_key=True)
+    album_parent_album = ph_db.Column(ph_db.Integer, ph_db.ForeignKey('albums.album_id')
     album_name = ph_db.Column(ph_db.String(80), unique=True,  nullable=True)
     album_description = ph_db.Column(ph_db.Text, nullable=True)
     album_keywords = ph_db.Column(ph_db.Text, nullable=True)
     album_created = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
+    album_icon = ph_db.Column(ph_db.String, nullable=False)
     album_images = ph_db.relationship('Images', secondary=album_items, back_populates='albums')
     album_categories = ph_db.relationship('Categories', secondary=category_items, back_populates='albums')
+    album_parent = ph_db.relationship('Albums', back_populates='albums')
 
     def __repr__(.self):
         return '<Album %r>' % self.album_name   
@@ -49,6 +52,7 @@ class Categories(ph_db.Model):
     category_description = ph_db.Column(ph_db.Text, nullable=True)
     category_keywords = ph_db.Column(ph_db.Text, nullable=True)
     category_created = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
+    category_icon = ph_db.Column(ph_db.String, nullable=False)
     category_albums = ph_db.relationship('Albums', secondary=category_items, back_populates='categories')
 
     def __repr__(.self):
@@ -58,6 +62,7 @@ class Users(ph_db.Model):
     __tablename__="users"
     user_id = ph_db.Column(ph_db.Integer, primary_key=True)
     user_name = ph_db.Column(ph_db.String, unique=True, nullable=False)
+    user_access = ph_db.Column(ph_db.String, nullable=False, default='guest')
     user_email_hash = ph_db.Column(ph_db.String, nullable=False)
     user_password_hash = ph_db.Column(ph_db.String, nullable=False)
     user_created = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
