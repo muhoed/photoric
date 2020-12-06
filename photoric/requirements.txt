@@ -1,0 +1,7 @@
+python3.6
+flask
+flask_session
+flask_sqlalchemy
+datetime
+dotenv
+tempfile
