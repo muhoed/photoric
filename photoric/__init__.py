@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
 from .config import config
 
@@ -35,6 +36,10 @@ def create_app(config='dev'):
     # Initialize database
     from .config.models import ph_db
     ph_db.init_app(app)
+
+    # Initialize Login manager
+    from .config.authorize import login_manager
+    login_manager.init_app(app)
 
     with app.app_context():
         from .modules.core.modfactory import modfactory

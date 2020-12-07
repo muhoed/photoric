@@ -1,5 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 ph_db = SQLAlchemy()
 
@@ -16,9 +19,10 @@ class Images(ph_db.Model):
     image_name = ph_db.Column(ph_db.String(80), unique=True, nullable=True)
     image_description = ph_db.Column(ph_db.Text, nullable=True)
     image_keywords = ph_db.Column(ph_db.Text, nullable=True)
-    image_created = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
-    image_uploaded = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
+    image_created_on = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
+    image_uploaded_on = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
     image_location = ph_db.Column(ph_db.String, nullable=True)
+    image_access = ph_db.Column(ph_db.String(10), nullable=False, default='auth')
     image_albums = ph_db.relationship('Albums', secondary=album_items, back_populates='images')
 
     def __repr__(.self):
@@ -36,8 +40,9 @@ class Albums(ph_db.Model):
     album_name = ph_db.Column(ph_db.String(80), unique=True,  nullable=True)
     album_description = ph_db.Column(ph_db.Text, nullable=True)
     album_keywords = ph_db.Column(ph_db.Text, nullable=True)
-    album_created = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
+    album_created_on = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
     album_icon = ph_db.Column(ph_db.String, nullable=False)
+    album_access = ph_db.Column(ph_db.String(10), nullable=False, default='auth')                                      
     album_images = ph_db.relationship('Images', secondary=album_items, back_populates='albums')
     album_categories = ph_db.relationship('Categories', secondary=category_items, back_populates='albums')
     album_parent = ph_db.relationship('Albums', back_populates='albums')
@@ -51,22 +56,32 @@ class Categories(ph_db.Model):
     category_name = ph_db.Column(ph_db.String(80), unique=True, nullable=True)
     category_description = ph_db.Column(ph_db.Text, nullable=True)
     category_keywords = ph_db.Column(ph_db.Text, nullable=True)
-    category_created = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
+    category_created_on = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
+    category_access = ph_db.Column(ph_db.String(10), nullable=False, default='auth')                                      
     category_icon = ph_db.Column(ph_db.String, nullable=False)
     category_albums = ph_db.relationship('Albums', secondary=category_items, back_populates='categories')
 
     def __repr__(.self):
         return '<Category %r>' % self.category_name
 
-class Users(ph_db.Model):
+class Users(UserMixin, ph_db.Model):
     __tablename__="users"
     user_id = ph_db.Column(ph_db.Integer, primary_key=True)
     user_name = ph_db.Column(ph_db.String, unique=True, nullable=False)
     user_access = ph_db.Column(ph_db.String, nullable=False, default='guest')
-    user_email_hash = ph_db.Column(ph_db.String, nullable=False)
+    user_email = ph_db.Column(ph_db.String, nullable=False)
     user_password_hash = ph_db.Column(ph_db.String, nullable=False)
-    user_created = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
+    user_created_on = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
+    user_lasl_login = ph_db.Column(ph_db.DateTime, nullable=True)                                      
 
+    def hash_email(.self, password):
+        """create hashed password"""
+        self.user_password_hash = generate_password_hash(password, method='sha256')
+
+    def check_password(.self, password):
+        """check hashed password"""
+        return check_password_hash(self.password, password)
+    
     def __repr__(.self):
         return '<User %>' % self.user_name
 
