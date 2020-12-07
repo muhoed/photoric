@@ -21,8 +21,12 @@ class Config:
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
 
-    #Database
+    # Database
     SQLALCHEMY_TRACK_MODIFICATION = False
+
+    # Recaptcha config for forms
+    RECAPTCHA_PUBLIC_KEY = 'to be added'
+    RECAPTCHA_PRIVATE_KEY = 'to be added'
 
 
 class ProdConfig(Config):
