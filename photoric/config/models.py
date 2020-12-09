@@ -1,96 +1,128 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_login import UserMixin
+from flask_authorize import RestrictionMixin, AllowancesMixin
+from flask_authorize import PermissionMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-ph_db = SQLAlchemy()
+db = SQLAlchemy()
 
 # map tables to classes
-album_items = ph_db.Table('album_items',
-    ph.db.Column('album_id', ph_db.Integer, db.ForeignKey('albums.album_id'), primary_key=True)
-    ph_db.Column('image_id', ph_db.Integer, db.ForeignKey('images.image_id'), primary_key=True)
+users_groups = db.Table('users_groups',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('group_id', db.Integer, db.ForeignKey('groups.id'))
+)
+
+users_roles = db.Table('users_roles',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('role_id', db.Integer, db.ForeignKey('roles.id'))
+)
+
+items = db.Table('items',
+    db.Column('id', db.Integer, db.ForeignKey('albums.id'))
+    db.Column('id', db.Integer, db.ForeignKey('images.id'))
 )    
 
-class Images(ph_db.Model):
-    __tablename__="images"
-    image_id = ph_db.Column(ph_db.Integer, primary_key=True)
-    image_filename = ph_db.Column(ph_db.String, unique=True, nullable=False)
-    image_name = ph_db.Column(ph_db.String(80), unique=True, nullable=True)
-    image_description = ph_db.Column(ph_db.Text, nullable=True)
-    image_keywords = ph_db.Column(ph_db.Text, nullable=True)
-    image_created_on = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
-    image_uploaded_on = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
-    image_location = ph_db.Column(ph_db.String, nullable=True)
-    image_access = ph_db.Column(ph_db.String(10), nullable=False, default='auth')
-    image_albums = ph_db.relationship('Albums', secondary=album_items, back_populates='images')
+# declare models    
 
+# base class for gallery items
+class GalleryItem(db.Model):
+    __tablename__='gallery_item'
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(50))
+    name = db.Column(db.String(100), unique=True, nullable=True)
+    description = db.Column(db.String(500), nullable=True)
+    keywords = db.Column(db.String(255), nullable=True)
+    created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
+
+    __mapper_args__ = {
+        'polymorphic_identity':'gallery_item',
+        'polymorphic_on':type
+    }
+    
+
+class Images(GalleryItem):
+    __tablename__="images"
+    id = db.Column(db.Integer, db.ForeignKey('gallery_item.id'), primary_key=True)
+    filename = db.Column(db.String, unique=True, nullable=False)
+    uploaded_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    location = db.Column(db.String, nullable=True)
+    albums = db.relationship('Albums', secondary=items, back_populates='images')
+
+    __mapper_args__ = {
+        'polymorphic_identity:'images',
+    }
+    
     def __repr__(.self):
         return '<Image %r>' % self.filename
 
-category_items = ph_db.Table('category_items',
-    ph.db.Column('album_id', ph_db.Integer, db.ForeignKey('albums.album_id'), primary_key=True)
-    ph_db.Column('category_id', ph_db.Integer, db.ForeignKey('categories.category_id'), primary_key=True)
-) 
-
-class Albums(ph_db.Model):
+class Albums(db.Model):
     __tablename__="albums"
-    album_id = ph_db.Column(ph_db.Integer, primary_key=True)
-    album_parent_album = ph_db.Column(ph_db.Integer, ph_db.ForeignKey('albums.album_id')
-    album_name = ph_db.Column(ph_db.String(80), unique=True,  nullable=True)
-    album_description = ph_db.Column(ph_db.Text, nullable=True)
-    album_keywords = ph_db.Column(ph_db.Text, nullable=True)
-    album_created_on = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
-    album_icon = ph_db.Column(ph_db.String, nullable=False)
-    album_access = ph_db.Column(ph_db.String(10), nullable=False, default='auth')                                      
-    album_images = ph_db.relationship('Images', secondary=album_items, back_populates='albums')
-    album_categories = ph_db.relationship('Categories', secondary=category_items, back_populates='albums')
-    album_parent = ph_db.relationship('Albums', back_populates='albums')
+    id = db.Column(db.Integer, primary_key=True)
+    parent_album = db.Column(db.Integer, db.ForeignKey('albums.id')
+    name = db.Column(db.String(80), unique=True,  nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    keywords = db.Column(db.Text, nullable=True)
+    created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    icon = db.Column(db.String, nullable=False)                                      
+    images = db.relationship('Images', secondary=items, back_populates='albums')
+    categories = db.relationship('Categories', secondary=items, back_populates='albums')
+    parent = db.relationship('Albums', back_populates='albums')
 
     def __repr__(.self):
-        return '<Album %r>' % self.album_name   
+        return '<Album %r>' % self.name   
 
-class Categories(ph_db.Model):
+class Categories(db.Model):
     __tablename__="categories"
-    category_id = ph_db.Column(ph_db.Integer, primary_key=True)
-    category_name = ph_db.Column(ph_db.String(80), unique=True, nullable=True)
-    category_description = ph_db.Column(ph_db.Text, nullable=True)
-    category_keywords = ph_db.Column(ph_db.Text, nullable=True)
-    category_created_on = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
-    category_access = ph_db.Column(ph_db.String(10), nullable=False, default='auth')                                      
-    category_icon = ph_db.Column(ph_db.String, nullable=False)
-    category_albums = ph_db.relationship('Albums', secondary=category_items, back_populates='categories')
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    keywords = db.Column(db.Text, nullable=True)
+    created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)                                      
+    icon = db.Column(db.String, nullable=False)
+    albums = db.relationship('Albums', secondary=items, back_populates='categories')
 
     def __repr__(.self):
-        return '<Category %r>' % self.category_name
+        return '<Category %r>' % self.name
 
-class Users(UserMixin, ph_db.Model):
+class Users(UserMixin, db.Model):
     __tablename__="users"
-    user_id = ph_db.Column(ph_db.Integer, primary_key=True)
-    user_name = ph_db.Column(ph_db.String, unique=True, nullable=False)
-    user_access = ph_db.Column(ph_db.String, nullable=False, default='guest')
-    user_email = ph_db.Column(ph_db.String, nullable=False)
-    user_password_hash = ph_db.Column(ph_db.String, nullable=False)
-    user_created_on = ph_db.Column(ph_db.DateTime, nullable=False, default=datetime.now)
-    user_lasl_login = ph_db.Column(ph_db.DateTime, nullable=True)                                      
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True, nullable=False)
+    access = db.Column(db.String, nullable=False, default='guest')
+    email = db.Column(db.String, nullable=False)
+    password_hash = db.Column(db.String, nullable=False)
+    created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    lasl_login = db.Column(db.DateTime, nullable=True)                                      
 
     def hash_email(.self, password):
         """create hashed password"""
-        self.user_password_hash = generate_password_hash(password, method='sha256')
+        self.password_hash = generate_password_hash(password, method='sha256')
 
     def check_password(.self, password):
         """check hashed password"""
         return check_password_hash(self.password, password)
     
     def __repr__(.self):
-        return '<User %>' % self.user_name
+        return '<User %>' % self.name
 
-class Configs(ph_db.Model):
+class Groups(db.Model, RestrictionsMixin):
+    __tablename__='groups'                             
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+
+class Roles(db.Model, RestrictionsMixin):
+    __tablename__='roles'                             
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)                             
+
+class Configs(db.Model):
     __tablename__="configs"
-    config_id = ph_db.Column(ph_db.Integer, primary_key=True)
-    config_user_id = ph_db.Column(ph_db.Integer, ForeignKey('users.user_id'), nullable=False)
-    config_theme = ph_db.Column(ph_db.String, nullable=False, default='light')
-    config_view_mode = ph_db.Column(ph_db.String, nullable=False, default='grid')
+    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
+    theme = db.Column(db.String, nullable=False, default='light')
+    view_mode = db.Column(db.String, nullable=False, default='grid')
 
-    user = ph_db.relationship('Users', back_populates='configs')
+    user = db.relationship('Users', back_populates='configs')
     
