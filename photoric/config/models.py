@@ -29,6 +29,7 @@ items = db.Table('items',
 # base class for gallery items
 class GalleryItem(db.Model):
     __tablename__='gallery_item'
+    
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(50))
     name = db.Column(db.String(100), unique=True, nullable=True)
@@ -44,6 +45,11 @@ class GalleryItem(db.Model):
 
 class Images(GalleryItem):
     __tablename__="images"
+    __permissions__ = dict(
+        owner=['read', 'update', 'delete', 'revoke'],
+        group=['read', 'update'],
+        other=['read']
+    )
     id = db.Column(db.Integer, db.ForeignKey('gallery_item.id'), primary_key=True)
     filename = db.Column(db.String, unique=True, nullable=False)
     uploaded_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
@@ -59,29 +65,39 @@ class Images(GalleryItem):
 
 class Albums(db.Model):
     __tablename__="albums"
+    __permissions__ = dict(
+        owner=['read', 'update', 'delete', 'revoke'],
+        group=['read', 'update'],
+        other=['read']
+    )
     id = db.Column(db.Integer, primary_key=True)
     parent_album = db.Column(db.Integer, db.ForeignKey('albums.id')
-    name = db.Column(db.String(80), unique=True,  nullable=True)
-    description = db.Column(db.Text, nullable=True)
-    keywords = db.Column(db.Text, nullable=True)
-    created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
     icon = db.Column(db.String, nullable=False)                                      
     images = db.relationship('Images', secondary=items, back_populates='albums')
     categories = db.relationship('Categories', secondary=items, back_populates='albums')
     parent = db.relationship('Albums', back_populates='albums')
+    
+    __mapper_args__ = {
+        'polymorphic_identity:'albums',
+    }
 
     def __repr__(.self):
         return '<Album %r>' % self.name   
 
 class Categories(db.Model):
     __tablename__="categories"
+    __permissions__ = dict(
+        owner=['read', 'update', 'delete', 'revoke'],
+        group=['read', 'update'],
+        other=['read']
+    )
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True, nullable=True)
-    description = db.Column(db.Text, nullable=True)
-    keywords = db.Column(db.Text, nullable=True)
-    created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)                                      
     icon = db.Column(db.String, nullable=False)
     albums = db.relationship('Albums', secondary=items, back_populates='categories')
+    
+    __mapper_args__ = {
+        'polymorphic_identity:'categories',
+    }
 
     def __repr__(.self):
         return '<Category %r>' % self.name
