@@ -10,24 +10,38 @@ db = SQLAlchemy()
 
 # map tables to classes
 users_groups = db.Table('users_groups',
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
-    db.Column('group_id', db.Integer, db.ForeignKey('groups.id'))
+    db.Column('user_id',
+              db.Integer,
+              db.ForeignKey('users.id')),
+    db.Column('group_id',
+              db.Integer,
+              db.ForeignKey('groups.id'))
 )
+
 
 users_roles = db.Table('users_roles',
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
-    db.Column('role_id', db.Integer, db.ForeignKey('roles.id'))
+    db.Column('user_id',
+              db.Integer,
+              db.ForeignKey('users.id')),
+    db.Column('role_id',
+              db.Integer,
+              db.ForeignKey('roles.id'))
 )
 
-items = db.Table('items',
-    db.Column('id', db.Integer, db.ForeignKey('albums.id'))
-    db.Column('id', db.Integer, db.ForeignKey('images.id'))
+
+albums_images = db.Table('albums_images',
+    db.Column('id',
+              db.Integer,
+              db.ForeignKey('albums.id'))
+    db.Column('id',
+              db.Integer,
+              db.ForeignKey('images.id'))
 )    
 
 # declare models    
 
 # base class for gallery items
-class GalleryItem(db.Model):
+class GalleryItems(db.Model):
     __tablename__='gallery_item'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -36,6 +50,7 @@ class GalleryItem(db.Model):
     description = db.Column(db.String(500), nullable=True)
     keywords = db.Column(db.String(255), nullable=True)
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    publicated = db.Column(db.Boolean(), nullable=False, default=False)
 
     __mapper_args__ = {
         'polymorphic_identity':'gallery_item',
@@ -43,7 +58,7 @@ class GalleryItem(db.Model):
     }
     
 
-class Images(GalleryItem):
+class Images(GalleryItems):
     __tablename__="images"
     __permissions__ = dict(
         owner=['read', 'update', 'delete', 'revoke'],
@@ -54,7 +69,10 @@ class Images(GalleryItem):
     filename = db.Column(db.String, unique=True, nullable=False)
     uploaded_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
     location = db.Column(db.String, nullable=True)
-    albums = db.relationship('Albums', secondary=items, back_populates='images')
+    parent = db.relationship(
+        'Albums',
+        secondary=albums_images,
+        back_populates='children_images')
 
     __mapper_args__ = {
         'polymorphic_identity:'images',
@@ -62,8 +80,9 @@ class Images(GalleryItem):
     
     def __repr__(.self):
         return '<Image %r>' % self.filename
+    
 
-class Albums(db.Model):
+class Albums(GalleryItems):
     __tablename__="albums"
     __permissions__ = dict(
         owner=['read', 'update', 'delete', 'revoke'],
@@ -71,36 +90,22 @@ class Albums(db.Model):
         other=['read']
     )
     id = db.Column(db.Integer, primary_key=True)
-    parent_album = db.Column(db.Integer, db.ForeignKey('albums.id')
+    parent_id = db.Column(db.Integer, db.ForeignKey('albums.id')
     icon = db.Column(db.String, nullable=False)                                      
-    images = db.relationship('Images', secondary=items, back_populates='albums')
-    categories = db.relationship('Categories', secondary=items, back_populates='albums')
-    parent = db.relationship('Albums', back_populates='albums')
+    children_images = db.relationship(
+        'Images',
+        secondary=albums_images,
+        back_populates='parent')
+    children_albums = db.relationship(
+        'Albums', backref=backref('parent', remote_side=[id])
     
     __mapper_args__ = {
         'polymorphic_identity:'albums',
     }
 
     def __repr__(.self):
-        return '<Album %r>' % self.name   
-
-class Categories(db.Model):
-    __tablename__="categories"
-    __permissions__ = dict(
-        owner=['read', 'update', 'delete', 'revoke'],
-        group=['read', 'update'],
-        other=['read']
-    )
-    id = db.Column(db.Integer, primary_key=True)
-    icon = db.Column(db.String, nullable=False)
-    albums = db.relationship('Albums', secondary=items, back_populates='categories')
-    
-    __mapper_args__ = {
-        'polymorphic_identity:'categories',
-    }
-
-    def __repr__(.self):
-        return '<Category %r>' % self.name
+        return '<Album %r>' % self.name
+        
 
 class Users(UserMixin, db.Model):
     __tablename__="users"
@@ -122,16 +127,19 @@ class Users(UserMixin, db.Model):
     
     def __repr__(.self):
         return '<User %>' % self.name
+        
 
 class Groups(db.Model, RestrictionsMixin):
     __tablename__='groups'                             
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
+        
 
 class Roles(db.Model, RestrictionsMixin):
     __tablename__='roles'                             
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False, unique=True)                             
+    name = db.Column(db.String(100), nullable=False, unique=True)
+        
 
 class Configs(db.Model):
     __tablename__="configs"

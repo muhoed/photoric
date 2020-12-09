@@ -34,25 +34,25 @@ def create_app(config='dev'):
     Session(app)
 
     # Initialize database
-    from .config.models import ph_db
-    ph_db.init_app(app)
+    from .config.models import db
+    db.init_app(app)
 
     # Initialize Login manager
     from .config.authorize import login_manager
     login_manager.init_app(app)
 
     with app.app_context():
-        from .modules.core.modfactory import modfactory
-        ***
+        # from .modules.core.modfactory import modfactory
+        from .modules.core.itemviews import item_views
 
         # initialize custom filter
         #app.jinja_env.filters["usd"] = helpers.usd
 
         # register blueprints
-        app.register_blueprint(modfactory.modfactory)
-        ***
-
+        # app.register_blueprint(modfactory.modfactory)
+        app.register_blueprint(
+        
         # create database
-        ph_db.create_all()
+        db.create_all()
 
         return app

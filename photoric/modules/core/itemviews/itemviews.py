@@ -1,11 +1,11 @@
 from flask import Blueprint, session, render_template, request, url_for, flash
 
-from ..helpers.database.queres import get_user, get_categories, get_albums, get_images
+from ..helpers.database.db import get_gallery_items
 
-iv = Blueprint('itemviews', __name__, url_prefix='/')
+item_views = Blueprint('item_views', __name__, url_prefix='/')
 
-@iv.route("/", methods=['GET', 'POST'])
-@iv.route("/index", methods=['GET', 'POST'])
+@item_views.route("/", methods=['GET', 'POST'])
+@item_views.route("/index", methods=['GET', 'POST'])
 def index():
     """Show main page"""
 
@@ -17,16 +17,10 @@ def index():
 
     # page was loaded without action
     else:
-        user_access = 'public'
-        # user is logged in
-        if user_id:
-            user_access = get_user(user_id, user_access)
 
         # get view items and load page
-        categories = get_categories(user_access)
-        albums = get_albums(user_access, "top")
-        images = get_images(user_access, "top")
-        return render_template('index.html', categories = categories, albums = albums, images = images)
+        gallery_items = get_gallery_items(parent = 'no_parent')
+        return render_template('index.html', gallery_items = gallery_items)
 
     
             
