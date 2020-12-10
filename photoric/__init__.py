@@ -38,7 +38,7 @@ def create_app(config='dev'):
     db.init_app(app)
 
     # Initialize Login manager
-    from .config.authorize import login_manager
+    from .config.models import login_manager
     login_manager.init_app(app)
 
     with app.app_context():

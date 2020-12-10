@@ -1,12 +1,13 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from flask_login import UserMixin
-from flask_authorize import RestrictionMixin, AllowancesMixin
-from flask_authorize import PermissionMixin
+from flask_login import UserMixin, LoginManager
+from flask_authorize import RestrictionsMixin, AllowancesMixin
+from flask_authorize import PermissionsMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
 db = SQLAlchemy()
+login_manager = LoginManager()
 
 # map tables to classes
 users_groups = db.Table('users_groups',
@@ -41,16 +42,16 @@ albums_images = db.Table('albums_images',
 # declare models    
 
 # base class for gallery items
-class GalleryItems(db.Model):
+class GalleryItems(db.Model, PermissionsMixin):
     __tablename__='gallery_item'
-    
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(50))
     name = db.Column(db.String(100), unique=True, nullable=True)
     description = db.Column(db.String(500), nullable=True)
     keywords = db.Column(db.String(255), nullable=True)
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    publicated = db.Column(db.Boolean(), nullable=False, default=False)
+    published = db.Column(db.Boolean(), nullable=False, default=False)
+    published_on = db.Column(db.DateTime, nullable=True)
 
     __mapper_args__ = {
         'polymorphic_identity':'gallery_item',
@@ -60,11 +61,6 @@ class GalleryItems(db.Model):
 
 class Images(GalleryItems):
     __tablename__="images"
-    __permissions__ = dict(
-        owner=['read', 'update', 'delete', 'revoke'],
-        group=['read', 'update'],
-        other=['read']
-    )
     id = db.Column(db.Integer, db.ForeignKey('gallery_item.id'), primary_key=True)
     filename = db.Column(db.String, unique=True, nullable=False)
     uploaded_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
@@ -84,11 +80,6 @@ class Images(GalleryItems):
 
 class Albums(GalleryItems):
     __tablename__="albums"
-    __permissions__ = dict(
-        owner=['read', 'update', 'delete', 'revoke'],
-        group=['read', 'update'],
-        other=['read']
-    )
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('albums.id')
     icon = db.Column(db.String, nullable=False)                                      
@@ -110,14 +101,16 @@ class Albums(GalleryItems):
 class Users(UserMixin, db.Model):
     __tablename__="users"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, unique=True, nullable=False)
-    access = db.Column(db.String, nullable=False, default='guest')
+    name = db.Column(db.String, nullable=False, unique=True)
     email = db.Column(db.String, nullable=False)
     password_hash = db.Column(db.String, nullable=False)
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    lasl_login = db.Column(db.DateTime, nullable=True)                                      
+    lasl_login = db.Column(db.DateTime, nullable=True)
 
-    def hash_email(.self, password):
+    roles = db.relationship('Roles', secondary=users_roles)
+    groups = db.relationship('Groups', secondary=users_groups)
+
+    def hash_password(.self, password):
         """create hashed password"""
         self.password_hash = generate_password_hash(password, method='sha256')
 
@@ -139,6 +132,22 @@ class Roles(db.Model, RestrictionsMixin):
     __tablename__='roles'                             
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
+
+
+class MainMenu(db.Model, PermissionsMixin):
+    __tablename__='main_menu'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    icon_url = db.Column(db.String(255), nullable=True)
+    target_url = db.Column(db.String(255), nullable=False)
+
+class ActionMenu(db.Model, PermissionsMixin):
+    __tablename__='action_menu'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    icon_url = db.Column(db.String(255), nullable=True)
+    target_url = db.Column(db.String(255), nullable=False)
+    
         
 
 class Configs(db.Model):

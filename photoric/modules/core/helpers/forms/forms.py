@@ -47,14 +47,16 @@ class SignupForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     """User Sign-In Form."""
-    email = EmailField(
-        'Email',
-        validators=[InputRequired(message='Please enter email address'),
-                    Email(message='Please enter valid email address')]
+    name = StringField(
+        'Username',
+        validators=[InputRequired(message='Please enter username')]
     )
     password = PasswordField(
         'Password',
         validators=[InputRequired(message='Please enter password')]
+    )
+    remember_me = CheckboxField(
+        'Remember Me'
     )
     recaptcha = RecaptchaField()
     submit = SubmitField('Sign In')

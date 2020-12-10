@@ -23,6 +23,7 @@ class Config:
 
     # Database
     SQLALCHEMY_TRACK_MODIFICATION = False
+    SQLALCHEMY_ECHO = False
 
     # Recaptcha config for forms
     RECAPTCHA_PUBLIC_KEY = 'to be added'

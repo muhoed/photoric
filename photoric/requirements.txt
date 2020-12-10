@@ -9,3 +9,4 @@ datetime
 dotenv
 tempfile
 werkzeug.security
+email-validator
