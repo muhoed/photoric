@@ -133,7 +133,7 @@ class Roles(db.Model, RestrictionsMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
 
-
+"""
 class MainMenu(db.Model, PermissionsMixin):
     __tablename__='main_menu'
     id = db.Column(db.Integer, primary_key=True)
@@ -147,7 +147,7 @@ class ActionMenu(db.Model, PermissionsMixin):
     name = db.Column(db.String(100), unique=True, nullable=False)
     icon_url = db.Column(db.String(255), nullable=True)
     target_url = db.Column(db.String(255), nullable=False)
-    
+"""    
         
 
 class Configs(db.Model):

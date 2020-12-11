@@ -19,54 +19,54 @@
 
         <link href="{{ url_for('static', filename='base_styles.css') }}" rel="stylesheet">
 
-        <title>{% block title %}{% endblock %}</title>
+        <title>{{ SITE_NAME }} - {% block title %}{% endblock %}</title>
 
     </head>
 
     <body>
 
-        {% block topbar %}{% endblock %}        
+        <div class = container-fluid">        
+            {% block topmenu %}{% endblock %}
+            {% block mainmenu %}{% endblock %}
+            {% block actionmenu %}{% endblock %}
+        </div>
 
-        {% block navigation %}{% endblock %}
-
-        {% block actions %}{% endblock %}
-
-        {% if get_flashed_messages() %}
+        <div class="container-fluid">        
             <header>
-                <div class="alert alert-primary border text-center" role="alert">
-                    {{ get_flashed_messages() | join(" ") }}
-                </div>
-            </header>
-        {% endif %}
-
-        {% block sidebar %}{% endblock %}
-
-        <main class="container-fluid">
-            <div class="row">
-                {% if include_ad %}
-                    <div class="col-sm-3">
-                        {% block sidebar %}{% endblock %}
-                    </div>
-                    <div class="col-sm-7">
-                        {% block main %}{% endblock %}
-                    </div>
-                    <div class="col-sm-2">
-                        {% block ad %}{% endblock %}
-                    </div>
-                {% else %}
-                    <div class="col-sm-3">
-                        {% block sidebar %}{% endblock %}
-                    </div>
-                    <div class="col-sm-9">
-                        {% block main %}{% endblock %}
-                    </div>
+                {% if get_flashed_messages() %}
+                        <div class="alert alert-primary border text-center" role="alert">
+                            {{ get_flashed_messages() | join(" ") }}
+                        </div>
+                    </header>
                 {% endif %}
-            </div>
-        </main>
+        
+                {% block header %}{% endblock %}
+            </header>
 
-        <footer class="small text-center text-muted">
-            {% block footer %}{% endblock %}
-        </footer>
+            <main class="container">
+                <div class="row">
+                    {% if include_ad %}
+                           
+                        {% block sidebar %}{% endblock %}
+                        
+                        {% block main %}{% endblock %}
+                        
+                        {% block ad %}{% endblock %}
+                        
+                    {% else %}
+                        {% block sidebar %}{% endblock %}
+                        
+                        {% block main %}{% endblock %}
+                        
+                    {% endif %}
+                </div>
+            </main>
+
+            <footer class="small text-center text-muted">
+                {% block footer %}{% endblock %}
+                <div>Photoric @ Dmitry Argunov, 2020</div>
+            </footer>
+        </div>
 
         {% block modals %}{% endblock %}
 

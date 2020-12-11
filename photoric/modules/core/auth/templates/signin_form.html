@@ -1,25 +1,28 @@
-<!-- Sign-In form as BS4 Modal -->
-<div class="modal" id="signinForm">
-  <div class="modal-dialog">
-    <div class="modal-content">
+<!-- Sign-In form -->
 
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">Sign In</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
+{% extends 'base_layout.html' %}
+    
+    {% block topmenu %}
+        {% include 'topmenu.html' %}
+    {% endlblock %}
+    {% block mainmenu %}
+        {% include 'mainmenu.html' %}
+    {% endblock %}
 
-      <!-- Modal body -->
-      <div class="modal-body">
+    {% block header %}
+        <h1>{% block title %}{{ title }}{% endblock %}
+    {% endblock %}            
+        
+    {% block main %}  
         <form action="url_for('auth.signin')" method="POST">
             {{ form.csrf_token }}
             
             <div class="form-group email">
-                {{ form.email.label }}
-                {{ form.email(class_="form-control", placeholder='youremail@example.com') }}
-                {% if form.email.errors %}
+                {{ form.name.label }}
+                {{ form.name(class_="form-control", placeholder='your username') }}
+                {% if form.name.errors %}
                     <ul class="errors">
-                        {% for error in form.email.errors %}
+                        {% for error in form.name.errors %}
                             <li>{{ error }}</li>
                         {% endfor %}
                     </ul>
@@ -38,10 +41,12 @@
                 {% endif %}
             </div>
             
-            
+            <div class="form-group form-check">
+                {{ form.remember_me.label }}
+                {{ form.remember_me }}
+            </div>
 
            <div class="form-group recaptcha">
-                {{ form.recaptcha.label }}
                 {{ form.recaptcha }}
             </div>
 
@@ -50,14 +55,4 @@
                 {{ form.submit }}
             </div>
         </form>
-
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-      </div>
-
-    </div>
-  </div>
-</div>
+    {% endblock %}

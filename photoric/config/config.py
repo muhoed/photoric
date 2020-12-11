@@ -29,6 +29,9 @@ class Config:
     RECAPTCHA_PUBLIC_KEY = 'to be added'
     RECAPTCHA_PRIVATE_KEY = 'to be added'
 
+    # Views specific variables
+    SITE_NAME = 'Photoric'
+
 
 class ProdConfig(Config):
     """Production specific config."""
