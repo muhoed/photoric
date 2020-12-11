@@ -103,16 +103,16 @@ class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
     email = db.Column(db.String, nullable=False)
-    password_hash = db.Column(db.String, nullable=False)
+    password = db.Column(db.String, nullable=False)
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
     lasl_login = db.Column(db.DateTime, nullable=True)
 
     roles = db.relationship('Roles', secondary=users_roles)
     groups = db.relationship('Groups', secondary=users_groups)
 
-    def hash_password(.self, password):
+    def set_password(.self, password):
         """create hashed password"""
-        self.password_hash = generate_password_hash(password, method='sha256')
+        self.password = generate_password_hash(password, method='sha256')
 
     def check_password(.self, password):
         """check hashed password"""

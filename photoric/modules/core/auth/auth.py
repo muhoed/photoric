@@ -3,8 +3,8 @@ from flask import Blueprint, request, render_template, redirect
 from flask_login import current_user, login_user, logout_user, user_loader
 
 from photoric import login_manager
-from ..helpers.forms.forms import LoginForm, SignupForm
-from ...config.models import Users
+from photoric.modules.core.helpers.forms.forms import LoginForm, SignupForm
+from photoric.config.models import Users
 
 
 # Blueprint initialization
@@ -24,15 +24,15 @@ def signin():
     POST requests validate form & log user in
     """
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('itemviews.index'))
     form = LoginForm()
     if form.validate_on_submit():
         user = Users.query.filter_by(name=form.name.data).first()
-        if user is None or not user.check_password_hash(form.password.data):
+        if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
-            return redirect(url_for('login'))
+            return redirect(url_for('auth.signin'))
         login_user(user, remember=form.remember_me.data)
-        return redirect(url_for('index'))
+        return redirect(url_for('itemviews.index'))
     return render_template('signin_form.html', title='Sign In', form=form)
 
 
@@ -56,7 +56,8 @@ def signup():
             db.session.add(user)
             db.session.commit()  # Create new user
             login_user(user)  # Log in as newly created user
-            return redirect(url_for('index'))
+            flash('Congratulation! You were successfully registered!')
+            return redirect(url_for('itemviews.index'))
         flash('A user already exists with that name.')
 
     return render_template(
@@ -68,7 +69,7 @@ def signup():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('itemviews.index'))
 
     
 @login_manager.user_loader

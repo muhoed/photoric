@@ -3,7 +3,7 @@ import os
 from flask import Flask
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+
 
 from .config import config
 
@@ -50,7 +50,7 @@ def create_app(config='dev'):
 
         # register blueprints
         # app.register_blueprint(modfactory.modfactory)
-        app.register_blueprint(
+        app.register_blueprint(item_views.itemviews)
         
         # create database
         db.create_all()
