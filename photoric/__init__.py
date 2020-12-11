@@ -44,6 +44,8 @@ def create_app(config='dev'):
     with app.app_context():
         # from .modules.core.modfactory import modfactory
         from .modules.core.itemviews import item_views
+        from .modules.core.auth import auth
+        from .modules.core.menu import menu
 
         # initialize custom filter
         #app.jinja_env.filters["usd"] = helpers.usd
@@ -51,6 +53,8 @@ def create_app(config='dev'):
         # register blueprints
         # app.register_blueprint(modfactory.modfactory)
         app.register_blueprint(item_views.itemviews)
+        app.register_blueprint(auth.auth)
+        app.register_blueprint(menu.menu)
         
         # create database
         db.create_all()
