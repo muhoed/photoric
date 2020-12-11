@@ -42,7 +42,9 @@ class SignupForm(FlaskForm):
                     EqualTo('password', message='Password confirmation does not match password')
         ]
     )
-    recaptcha = RecaptchaField()
+    recaptcha = RecaptchaField('Confirm you are a human', validators=[InputRequired(message='Please confirm you are a human'), Recaptcha(message='Check was not passed')
+    ]
+ )
     submit = SubmitField('Sign Up')
 
 class LoginForm(FlaskForm):
@@ -55,8 +57,10 @@ class LoginForm(FlaskForm):
         'Password',
         validators=[InputRequired(message='Please enter password')]
     )
-    remember_me = CheckboxField(
+    remember_me = BooleanField(
         'Remember Me'
     )
-    recaptcha = RecaptchaField()
+    recaptcha = RecaptchaField('Confirm you are a human', validators=[InputRequired(message='Please confirm you are a human'), Recaptcha(message='Check was not passed')
+    ]
+ )
     submit = SubmitField('Sign In')
