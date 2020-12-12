@@ -1,5 +1,5 @@
 """Routes for user authentication"""
-from flask import Blueprint, request, render_template, redirect
+from flask import Blueprint, request, render_template, redirect, abort
 from flask_login import current_user, login_user, logout_user
 
 from photoric.config.models import login_manager
@@ -33,7 +33,11 @@ def signin():
             flash('Invalid username or password')
             return redirect(url_for('auth.signin'))
         login_user(user, remember=form.remember_me.data)
-        return redirect(url_for('itemviews.index'))
+        next = request.args.get('next')
+        if not is_safe_url(next):
+        	return abort(400
+        	)
+        return redirect(next or url_for('itemviews.index'))
     return render_template('signin.html', title='Sign In', login_form=login_form)
 
 
