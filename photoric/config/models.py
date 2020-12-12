@@ -10,7 +10,7 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 
 # map tables to classes
-users_groups = db.Table('users_groups',
+UserGroup = db.Table('user_group',
     db.Column('user_id',
               db.Integer,
               db.ForeignKey('users.id')),
@@ -20,7 +20,7 @@ users_groups = db.Table('users_groups',
 )
 
 
-users_roles = db.Table('users_roles',
+UserRole = db.Table('user_role',
     db.Column('user_id',
               db.Integer,
               db.ForeignKey('users.id')),
@@ -30,7 +30,7 @@ users_roles = db.Table('users_roles',
 )
 
 
-albums_images = db.Table('albums_images',
+AlbumImage = db.Table('album_image',
     db.Column('album_id',
               db.Integer,
               db.ForeignKey('albums.id')),
@@ -42,8 +42,8 @@ albums_images = db.Table('albums_images',
 # declare models    
 
 # base class for gallery items
-class GalleryItems(db.Model, PermissionsMixin):
-    __tablename__='gallery_item'
+class GalleryItem(db.Model, PermissionsMixin):
+    __tablename__='gallery_items'
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(50))
     name = db.Column(db.String(100), unique=True, nullable=True)
@@ -59,46 +59,46 @@ class GalleryItems(db.Model, PermissionsMixin):
     }
     
 
-class Images(GalleryItems):
+class Image(GalleryItem):
     __tablename__="images"
-    id = db.Column(db.Integer, db.ForeignKey('gallery_item.id'), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('gallery_items.id'), primary_key=True)
     filename = db.Column(db.String, unique=True, nullable=False)
     uploaded_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
     location = db.Column(db.String, nullable=True)
     parent = db.relationship(
-        'Albums',
-        secondary=albums_images,
-        back_populates='children_images')
+        'Album',
+        secondary=AlbumImage,
+        back_populates='children_image')
 
     __mapper_args__ = {
-        'polymorphic_identity':'images'
+        'polymorphic_identity':'image'
     }
     
     def __repr__(self):
         return '<Image %r>' % self.filename
     
 
-class Albums(GalleryItems):
+class Album(GalleryItem):
     __tablename__="albums"
-    id = db.Column(db.Integer, db.ForeignKey('gallery_item.id'), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('gallery_items.id'), primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
     icon = db.Column(db.String, nullable=False)                                      
-    children_images = db.relationship(
-        'Images',
-        secondary=albums_images,
+    children_image = db.relationship(
+        'Image',
+        secondary=AlbumImage,
         back_populates='parent')
-    children_albums = db.relationship(
-        'Albums', backref=db.backref('parent', remote_side=[id]))
+    children_album = db.relationship(
+        'Album', backref=db.backref('parent', remote_side=[id]))
     
     __mapper_args__ = {
-        'polymorphic_identity':'albums'
+        'polymorphic_identity':'album'
     }
 
     def __repr__(self):
         return '<Album %r>' % self.name
         
 
-class Users(UserMixin, db.Model):
+class User(UserMixin, db.Model):
     __tablename__="users"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
@@ -107,8 +107,8 @@ class Users(UserMixin, db.Model):
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
     lasl_login = db.Column(db.DateTime, nullable=True)
 
-    roles = db.relationship('Roles', secondary=users_roles)
-    groups = db.relationship('Groups', secondary=users_groups)
+    roles = db.relationship('Role', secondary=UserRole)
+    groups = db.relationship('Group', secondary=UserGroup)
 
     def set_password(self, password):
         """create hashed password"""
@@ -122,7 +122,7 @@ class Users(UserMixin, db.Model):
         return '<User %>' % self.name
         
 
-class Groups(db.Model, RestrictionsMixin):
+class Group(db.Model, RestrictionsMixin):
     __tablename__='groups'                             
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
@@ -150,12 +150,12 @@ class ActionMenu(db.Model, PermissionsMixin):
 """    
         
 
-class Configs(db.Model):
+class Config(db.Model):
     __tablename__="configs"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     theme = db.Column(db.String, nullable=False, default='light')
     view_mode = db.Column(db.String, nullable=False, default='grid')
 
-    user = db.relationship('Users', back_populates='configs')
+    user = db.relationship('User', back_populates='configs')
     
