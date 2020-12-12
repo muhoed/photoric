@@ -43,7 +43,12 @@ AlbumImage = db.Table('album_image',
 
 # base class for gallery items
 class GalleryItem(db.Model, PermissionsMixin):
-    __tablename__='gallery_items'
+    __tablename__ = 'gallery_items'
+    __permissions__ = dict(
+        owner=['read', 'update', 'delete', 'revoke'],
+        group=['read', 'update'],
+        other=['read']
+    )
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(50))
     name = db.Column(db.String(100), unique=True, nullable=True)
@@ -60,7 +65,7 @@ class GalleryItem(db.Model, PermissionsMixin):
     
 
 class Image(GalleryItem):
-    __tablename__="images"
+    __tablename__ = "images"
     id = db.Column(db.Integer, db.ForeignKey('gallery_items.id'), primary_key=True)
     filename = db.Column(db.String, unique=True, nullable=False)
     uploaded_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
@@ -79,7 +84,7 @@ class Image(GalleryItem):
     
 
 class Album(GalleryItem):
-    __tablename__="albums"
+    __tablename__ = "albums"
     id = db.Column(db.Integer, db.ForeignKey('gallery_items.id'), primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
     icon = db.Column(db.String, nullable=False)                                      
@@ -99,7 +104,7 @@ class Album(GalleryItem):
         
 
 class User(UserMixin, db.Model):
-    __tablename__="users"
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
     email = db.Column(db.String, nullable=False)
@@ -123,12 +128,12 @@ class User(UserMixin, db.Model):
         
 
 class Group(db.Model, RestrictionsMixin):
-    __tablename__='groups'                             
+    __tablename__ = 'groups'                             
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
         
 
-class Roles(db.Model, RestrictionsMixin):
+class Roles(db.Model, AllowancesMixin):
     __tablename__='roles'                             
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
@@ -151,7 +156,7 @@ class ActionMenu(db.Model, PermissionsMixin):
         
 
 class Config(db.Model):
-    __tablename__="configs"
+    __tablename__ = "configs"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     theme = db.Column(db.String, nullable=False, default='light')

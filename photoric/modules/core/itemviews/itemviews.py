@@ -2,10 +2,10 @@ from flask import Blueprint, session, render_template, request, url_for, flash
 
 from ..helpers.database.db import get_gallery_items
 
-item_views = Blueprint('item_views', __name__, url_prefix='/')
+item_views = Blueprint('itemviews', __name__, url_prefix='/')
 
-@item_views.route("/", methods=['GET', 'POST'])
-@item_views.route("/index", methods=['GET', 'POST'])
+@itemviews.route("/", methods=['GET', 'POST'])
+@itemviews.route("/index", methods=['GET', 'POST'])
 def index():
     """Show main page"""
 
@@ -19,8 +19,7 @@ def index():
     else:
 
         # get view items and load page
-        gallery_items = get_gallery_items(parent = 'no')
-        return render_template('main_itemview.html', gallery_items = gallery_items)
+        return render_template('index.html', gallery_items = gallery_items)
 
     
             

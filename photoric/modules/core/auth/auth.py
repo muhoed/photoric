@@ -1,6 +1,7 @@
 """Routes for user authentication"""
 from flask import Blueprint, request, render_template, redirect, abort
 from flask_login import current_user, login_user, logout_user
+from urllib.parse import urlparse, urljoin
 
 from photoric.config.models import login_manager
 from photoric.modules.core.helpers.forms.forms import LoginForm, SignupForm
@@ -90,3 +91,10 @@ def unauthorized():
     """Redirect unauthorized users to Login page."""
     flash('You must be logged in to view that page.')
     return redirect(url_for('auth.signin'))
+
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and \
+           ref_url.netloc == test_url.netloc

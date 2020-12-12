@@ -25,6 +25,10 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATION = False
     SQLALCHEMY_ECHO = False
 
+    # Flask-Login
+    USE_SESSION_FOR_NEXT = True
+    REMEMBER_COOKIE_DURATION = 10
+
     # Recaptcha config for forms
     RECAPTCHA_PUBLIC_KEY = 'to be added'
     RECAPTCHA_PRIVATE_KEY = 'to be added'

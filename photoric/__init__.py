@@ -40,7 +40,7 @@ def create_app(conf='dev'):
     # Initialize Login manager
     from .config.models import login_manager
     login_manager.init_app(app)
-
+    
     with app.app_context():
         # from .modules.core.modfactory import modfactory
         from .modules.core.itemviews import itemviews
@@ -54,6 +54,7 @@ def create_app(conf='dev'):
         # app.register_blueprint(modfactory.modfactory)
         app.register_blueprint(itemviews.item_views)
         app.register_blueprint(auth.auth)
+        login_manager.login_view = "auth.signin"
         app.register_blueprint(menu.menu)
         
         # create database
