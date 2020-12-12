@@ -23,9 +23,10 @@ def signin():
     GET requests serve sign-in page
     POST requests validate form & log user in
     """
+    
     if current_user.is_authenticated:
         return redirect(url_for('itemviews.index'))
-    form = LoginForm()
+    login_form = LoginForm()
     if form.validate_on_submit():
         user = Users.query.filter_by(name=form.name.data).first()
         if user is None or not user.check_password(form.password.data):
@@ -33,7 +34,7 @@ def signin():
             return redirect(url_for('auth.signin'))
         login_user(user, remember=form.remember_me.data)
         return redirect(url_for('itemviews.index'))
-    return render_template('signin_form.html', title='Sign In', form=form)
+    return render_template('signin.html', title='Sign In', login_form=login_form)
 
 
 @auth.route('/signup', method=['GET', 'POST'])

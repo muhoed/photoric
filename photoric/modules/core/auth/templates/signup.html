@@ -1,4 +1,4 @@
-<!-- Sign-In page -->
+<!-- Sign-Un page -->
 
 {% extends 'base_layout.html' %}
     
@@ -14,11 +14,11 @@
     {% endblock %}            
         
     {% block main %}  
-        {% include "/modules/core/helpers/forms/templates/signin_form.html" %}
+        {% include "/modules/core/helpers/forms/templates/signup_form.html" %}
 
        <div>
-         <span>Do not have an account?</span>
-         <a href="{{ url_for('auth.signup') }}">Sign up.</a>        
+         <span>Already have an account?</span>
+         <a href="{{ url_for('auth.signin') }}">Sign ip.</a>        
        </div>
 
     {% endblock %}

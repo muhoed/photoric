@@ -64,3 +64,11 @@ class LoginForm(FlaskForm):
     ]
  )
     submit = SubmitField('Sign In')
+
+class SimpleSearch(FlaskForm):
+    """Search form for top-menu"""
+    text = StringField(
+        'Search',
+        validators=[]
+    )
+    submit = SubmitField('Search')
