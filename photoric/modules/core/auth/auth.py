@@ -4,7 +4,7 @@ from flask_login import current_user, login_user, logout_user
 
 from photoric.config.models import login_manager
 from photoric.modules.core.helpers.forms.forms import LoginForm, SignupForm
-from photoric.config.models import Users
+from photoric.config.models import User
 
 
 # Blueprint initialization
@@ -28,7 +28,7 @@ def signin():
         return redirect(url_for('itemviews.index'))
     login_form = LoginForm()
     if form.validate_on_submit():
-        user = Users.query.filter_by(name=form.name.data).first()
+        user = User.query.filter_by(name=form.name.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('auth.signin'))
@@ -47,9 +47,9 @@ def signup():
     """
     form = SignupForm()
     if form.validate_on_submit():
-        existing_user = Users.query.filter_by(name=form.name.data).first()
+        existing_user = User.query.filter_by(name=form.name.data).first()
         if existing_user is None:
-            user = Users(
+            user = User(
                 name=form.name.data,
                 email=form.email.data,
             )
@@ -77,7 +77,7 @@ def logout():
 def load_user(user_id):
     """Check if user is logged-in on every page load."""
     if user_id is not None:
-        return Users.query.get(int(user_id))
+        return User.query.get(int(user_id))
     return None
 
 
