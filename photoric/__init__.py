@@ -7,14 +7,14 @@ from flask_sqlalchemy import SQLAlchemy
 
 from .config import config
 
-def create_app(config='dev'):
+def create_app(conf='dev'):
     # Initialize core application and load configuration
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__, instance_relative_config=False)
     
-    if config is 'dev':
-        app.config.from_object('config.DevConfig')
+    if conf is 'dev':
+        app.config.from_object(config.DevConfig)
     else:
-        app.config.from_object('config.ProdConfig')
+        app.config.from_object(config.ProdConfig)
 
     # ensure the instance folder exists
     try:
@@ -43,7 +43,7 @@ def create_app(config='dev'):
 
     with app.app_context():
         # from .modules.core.modfactory import modfactory
-        from .modules.core.itemviews import item_views
+        from .modules.core.itemviews import itemviews
         from .modules.core.auth import auth
         from .modules.core.menu import menu
 
@@ -52,7 +52,7 @@ def create_app(config='dev'):
 
         # register blueprints
         # app.register_blueprint(modfactory.modfactory)
-        app.register_blueprint(item_views.itemviews)
+        app.register_blueprint(itemviews.item_views)
         app.register_blueprint(auth.auth)
         app.register_blueprint(menu.menu)
         

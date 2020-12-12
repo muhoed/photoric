@@ -19,8 +19,8 @@ def index():
     else:
 
         # get view items and load page
-        gallery_items = get_gallery_items(parent = 'no_parent')
-        return render_template('index.html', gallery_items = gallery_items)
+        gallery_items = get_gallery_items(parent = 'no')
+        return render_template('main_itemview.html', gallery_items = gallery_items)
 
     
             

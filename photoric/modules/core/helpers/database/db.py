@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 
-from photoric.config.models import db, GalleryItems, Images, Albums, Categories
+from photoric.config.models import db, GalleryItems, Images, Albums
 
 
 # get gallery items

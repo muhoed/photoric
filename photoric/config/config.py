@@ -50,4 +50,4 @@ class DevConfig(Config):
     DEBUG = True
     TESTING = True
     DB_SERVER = 'localhost'
-    DATABASE_URI = os.path.join(app.instance_path, 'photoric.db')
+    DATABASE_URI = 'sqlite:///' + path.join(basedir, 'photoric.db')

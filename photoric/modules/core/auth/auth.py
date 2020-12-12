@@ -1,8 +1,8 @@
 """Routes for user authentication"""
 from flask import Blueprint, request, render_template, redirect
-from flask_login import current_user, login_user, logout_user, user_loader
+from flask_login import current_user, login_user, logout_user
 
-from photoric import login_manager
+from photoric.config.models import login_manager
 from photoric.modules.core.helpers.forms.forms import LoginForm, SignupForm
 from photoric.config.models import Users
 
@@ -37,7 +37,7 @@ def signin():
     return render_template('signin.html', title='Sign In', login_form=login_form)
 
 
-@auth.route('/signup', method=['GET', 'POST'])
+@auth.route('/signup', methods=['GET', 'POST'])
 def signup():
     """
     User Sign-Up
@@ -67,7 +67,7 @@ def signup():
         form=form
     )
 
-@app.route('/logout')
+@auth.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('itemviews.index'))

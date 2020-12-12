@@ -1,10 +1,12 @@
-from flask_wtf import FlaskForm
-from wtforms import StringField, EmailField, PasswordField, SubmitField, RecaptchaField
+from flask_wtf import FlaskForm, RecaptchaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms.fields.html5 import EmailField
 from wtforms.validators import (
     InputRequired,
     Email,
     EqualTo,
-    Length
+    Length,
+    Regexp
 )
 
 
@@ -43,8 +45,7 @@ class SignupForm(FlaskForm):
         ]
     )
     recaptcha = RecaptchaField()
-    ]
- )
+
     submit = SubmitField('Sign Up')
 
 class LoginForm(FlaskForm):
@@ -61,8 +62,7 @@ class LoginForm(FlaskForm):
         'Remember Me'
     )
     recaptcha = RecaptchaField()
-    ]
- )
+    
     submit = SubmitField('Sign In')
 
 class SimpleSearch(FlaskForm):

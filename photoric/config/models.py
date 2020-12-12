@@ -31,10 +31,10 @@ users_roles = db.Table('users_roles',
 
 
 albums_images = db.Table('albums_images',
-    db.Column('id',
+    db.Column('album_id',
               db.Integer,
-              db.ForeignKey('albums.id'))
-    db.Column('id',
+              db.ForeignKey('albums.id')),
+    db.Column('image_id',
               db.Integer,
               db.ForeignKey('images.id'))
 )    
@@ -71,30 +71,30 @@ class Images(GalleryItems):
         back_populates='children_images')
 
     __mapper_args__ = {
-        'polymorphic_identity:'images',
+        'polymorphic_identity':'images'
     }
     
-    def __repr__(.self):
+    def __repr__(self):
         return '<Image %r>' % self.filename
     
 
 class Albums(GalleryItems):
     __tablename__="albums"
-    id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('albums.id')
+    id = db.Column(db.Integer, db.ForeignKey('gallery_item.id'), primary_key=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
     icon = db.Column(db.String, nullable=False)                                      
     children_images = db.relationship(
         'Images',
         secondary=albums_images,
         back_populates='parent')
     children_albums = db.relationship(
-        'Albums', backref=backref('parent', remote_side=[id])
+        'Albums', backref=db.backref('parent', remote_side=[id]))
     
     __mapper_args__ = {
-        'polymorphic_identity:'albums',
+        'polymorphic_identity':'albums'
     }
 
-    def __repr__(.self):
+    def __repr__(self):
         return '<Album %r>' % self.name
         
 
@@ -110,15 +110,15 @@ class Users(UserMixin, db.Model):
     roles = db.relationship('Roles', secondary=users_roles)
     groups = db.relationship('Groups', secondary=users_groups)
 
-    def set_password(.self, password):
+    def set_password(self, password):
         """create hashed password"""
         self.password = generate_password_hash(password, method='sha256')
 
-    def check_password(.self, password):
+    def check_password(self, password):
         """check hashed password"""
         return check_password_hash(self.password, password)
     
-    def __repr__(.self):
+    def __repr__(self):
         return '<User %>' % self.name
         
 
@@ -153,7 +153,7 @@ class ActionMenu(db.Model, PermissionsMixin):
 class Configs(db.Model):
     __tablename__="configs"
     id = db.Column(db.Integer, primary_key=True)
-    id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     theme = db.Column(db.String, nullable=False, default='light')
     view_mode = db.Column(db.String, nullable=False, default='grid')
 
