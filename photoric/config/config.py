@@ -43,8 +43,7 @@ class ProdConfig(Config):
     FLASK_ENV = 'production'
     DEBUG = False
     TESTING = False
-    DB_SERVER = 'localhost'
-    DATABASE_URI = environ.get('PROD_DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = environ.get('PROD_DATABASE_URI')
 
 
 class DevConfig(Config):
@@ -53,5 +52,4 @@ class DevConfig(Config):
     FLASK_ENV = 'development'
     DEBUG = True
     TESTING = True
-    DB_SERVER = 'localhost'
-    DATABASE_URI = 'sqlite:///' + path.join(basedir, 'photoric.db')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + path.join(app.instance_path,  'photoric.db')#basedir, 'photoric.db')

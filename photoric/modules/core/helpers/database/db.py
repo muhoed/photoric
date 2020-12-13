@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import with_polymorphic
 
 from photoric.config.models import db, GalleryItem, Image, Album
 
@@ -16,11 +17,16 @@ def get_gallery_items(parent = 'all', item = 'all'):
 
     if isinstance(int(parent), int):
         """ return all items of requested type for specific parent item """
-        return requested.filter_by(parent.id == int(parent)).all()
+        return requested.filter_by(parent_id == int(parent)).all()
     elif parent =='all':
         """ return all items of requested type """
         return requested.all()
     else:
         """ return all top-level (without parent item) items of requested type """
-        return requested.filter_by(parent is NULL).all()
+        return requested.filter_by(parent_id is NULL).all()
         
+# get menu
+def get_menu(menu):
+
+    # query respective database table
+    return Menu.query.filter(type == menu).all()

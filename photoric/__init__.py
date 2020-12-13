@@ -9,7 +9,7 @@ from .config import config
 
 def create_app(conf='dev'):
     # Initialize core application and load configuration
-    app = Flask(__name__, instance_relative_config=False)
+    app = Flask(__name__, instance_relative_config=True)
     
     if conf is 'dev':
         app.config.from_object(config.DevConfig)
@@ -54,8 +54,10 @@ def create_app(conf='dev'):
         # app.register_blueprint(modfactory.modfactory)
         app.register_blueprint(itemviews.item_views)
         app.register_blueprint(auth.auth)
-        login_manager.login_view = "auth.signin"
         app.register_blueprint(menu.menu)
+
+        # extensions settings
+        login_manager.login_view = "auth.signin"
         
         # create database
         db.create_all()

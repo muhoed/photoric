@@ -54,29 +54,32 @@ class GalleryItem(db.Model, PermissionsMixin):
     name = db.Column(db.String(100), unique=True, nullable=True)
     description = db.Column(db.String(500), nullable=True)
     keywords = db.Column(db.String(255), nullable=True)
-    created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
     is_published = db.Column(db.Boolean(), nullable=False, default=False)
     published_on = db.Column(db.DateTime, nullable=True)
 
     __mapper_args__ = {
         'polymorphic_identity':'gallery_item',
         'polymorphic_on':type
+        'with_polymorphic': '*'
     }
     
 
 class Image(GalleryItem):
     __tablename__ = "images"
     id = db.Column(db.Integer, db.ForeignKey('gallery_items.id'), primary_key=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
     filename = db.Column(db.String, unique=True, nullable=False)
     uploaded_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    shooted_on = db.Column(db.DateTime, nullable=True)
     location = db.Column(db.String, nullable=True)
     parent = db.relationship(
         'Album',
         secondary=AlbumImage,
-        back_populates='children_image')
+        back_populates='children_images')
 
     __mapper_args__ = {
         'polymorphic_identity':'image'
+        'polymorphic_load': 'inline'
     }
     
     def __repr__(self):
@@ -87,16 +90,18 @@ class Album(GalleryItem):
     __tablename__ = "albums"
     id = db.Column(db.Integer, db.ForeignKey('gallery_items.id'), primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
-    icon = db.Column(db.String, nullable=False)                                      
-    children_image = db.relationship(
+    icon_id = db.Column(db.Integer, nullable=False)
+    created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    children_images = db.relationship(
         'Image',
         secondary=AlbumImage,
-        back_populates='parent')
-    children_album = db.relationship(
-        'Album', backref=db.backref('parent', remote_side=[id]))
+        back_populates='parents')
+    children_albums = db.relationship(
+        'Album', backref=db.backref('parents', remote_side=[id]))
     
     __mapper_args__ = {
         'polymorphic_identity':'album'
+        'polymorphic_load': 'inline'
     }
 
     def __repr__(self):
@@ -139,9 +144,9 @@ class Roles(db.Model, AllowancesMixin):
     name = db.Column(db.String(100), nullable=False, unique=True)
     
 class Menu(db.Model):
-	__tablename__='menu'
-	id = db.Column(db.Integer, primary_key=True),
-	type = db.Column(db.String(50)),
+    __tablename__='menu'
+    id = db.Column(db.Integer, primary_key=True),
+    type = db.Column(db.String(50)),
     name = db.Column(db.String(100), unique=True, nullable=False)
     icon_url = db.Column(db.String(255), nullable=True)
     target = db.Column(db.String(255), nullable=False)
