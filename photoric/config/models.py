@@ -55,7 +55,7 @@ class GalleryItem(db.Model, PermissionsMixin):
     description = db.Column(db.String(500), nullable=True)
     keywords = db.Column(db.String(255), nullable=True)
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    published = db.Column(db.Boolean(), nullable=False, default=False)
+    is_published = db.Column(db.Boolean(), nullable=False, default=False)
     published_on = db.Column(db.DateTime, nullable=True)
 
     __mapper_args__ = {
@@ -137,22 +137,34 @@ class Roles(db.Model, AllowancesMixin):
     __tablename__='roles'                             
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
+    
+class Menu(db.Model):
+	__tablename__='menu'
+	id = db.Column(db.Integer, primary_key=True),
+	type = db.Column(db.String(50)),
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    icon_url = db.Column(db.String(255), nullable=True)
+    target = db.Column(db.String(255), nullable=False)
+    
+    __mapper_args__ = {
+        'polymorphic_identity':'menu',
+        'polymorphic_on':type
+    }
 
-"""
-class MainMenu(db.Model, PermissionsMixin):
+class MainMenu(Menu):
     __tablename__='main_menu'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)
-    icon_url = db.Column(db.String(255), nullable=True)
-    target_url = db.Column(db.String(255), nullable=False)
+    id = db.Column(db.Integer, db.ForeignKey('menu.id'), primary_key=True)
+    
+    __mapper_args__ = {
+        'polymorphic_identity':'main'
+    }
 
-class ActionMenu(db.Model, PermissionsMixin):
+class ActionMenu(Menu):
     __tablename__='action_menu'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)
-    icon_url = db.Column(db.String(255), nullable=True)
-    target_url = db.Column(db.String(255), nullable=False)
-"""    
+    
+    __mapper_args__ = {
+        'polymorphic_identity':'action'
+    }
         
 
 class Config(db.Model):
