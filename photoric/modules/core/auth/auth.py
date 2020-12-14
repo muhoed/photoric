@@ -5,6 +5,7 @@ from urllib.parse import urlparse, urljoin
 
 from photoric.config.models import login_manager
 from photoric.modules.core.helpers.forms.forms import LoginForm, SignupForm
+from photoric.modules.core.helpers.database.db import get_user
 from photoric.config.models import User
 
 
@@ -29,7 +30,7 @@ def signin():
         return redirect(url_for('itemviews.index'))
     login_form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(name=form.name.data).first()
+        user = get_user(name=form.name.data)
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('auth.signin'))
@@ -52,7 +53,7 @@ def signup():
     """
     form = SignupForm()
     if form.validate_on_submit():
-        existing_user = User.query.filter_by(name=form.name.data).first()
+        existing_user = get_user(name=form.name.data)
         if existing_user is None:
             user = User(
                 name=form.name.data,

@@ -1,15 +1,21 @@
 from flask import Blueprint, session, render_template, request, url_for, flash
+from flask_login import current_user
 
-from ..helpers.database.db import get_gallery_items
+from photoric.config.models import User
+from photoric.modules.core.helpers.database.db import get_gallery_items
 
-item_views = Blueprint('itemviews', __name__, url_prefix='/')
+itemviews = Blueprint('itemviews', __name__, url_prefix='/')
+
+@itemviews.before_first_request():
+def initial_setup():
+    # create admin user if not exist
+    if get_user('admin') is None:
+        
 
 @itemviews.route("/", methods=['GET', 'POST'])
 @itemviews.route("/index", methods=['GET', 'POST'])
 def index():
     """Show main page"""
-
-    user_id = session.get("user_id")
 
     # page was loaded after some actions performed
     if request.method == "POST":
