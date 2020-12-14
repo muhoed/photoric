@@ -32,7 +32,7 @@ def get_menu(menu):
     return Menu.query.filter_by(type = menu).all()
 
 # get user by name or list all reqistered users
-def get_user(name = 'all'):
+def get_user_by_name(name = 'all'):
     if name != 'all':
         requested_user = User.query.filter_by(name=name).first()
     else:

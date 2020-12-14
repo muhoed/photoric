@@ -112,13 +112,18 @@ class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
-    email = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, )
     password = db.Column(db.String, nullable=False)
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    lasl_login = db.Column(db.DateTime, nullable=True)
+    activated = db.Column(db.Boolean, nullable=False, default=True)
+    last_login = db.Column(db.DateTime, nullable=True)
 
     roles = db.relationship('Role', secondary=UserRole)
     groups = db.relationship('Group', secondary=UserGroup)
+
+    def is_active(self):
+    # return True if the user is active (was not banned)
+        return self.activated
 
     def set_password(self, password):
         """create hashed password"""
@@ -138,22 +143,28 @@ class Group(db.Model, RestrictionsMixin):
     name = db.Column(db.String(100), nullable=False, unique=True)
         
 
-class Roles(db.Model, AllowancesMixin):
-    __tablename__='roles'                             
+class Role(db.Model, AllowancesMixin):
+    __tablename__='roles'
+    __allowances__ = {}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     
-class Menu(db.Model):
+class Menu(db.Model, PermissionsMixin):
     __tablename__='menu'
+    __permissions__ = dict(
+        owner=['read', 'update', 'delete', 'revoke'],
+        group=['read', 'update'],
+        other=['read']
     id = db.Column(db.Integer, primary_key=True),
     type = db.Column(db.String(50)),
     name = db.Column(db.String(100), unique=True, nullable=False)
     icon_url = db.Column(db.String(255), nullable=True)
-    target = db.Column(db.String(255), nullable=False)
+    link_url = db.Column(db.String(255), nullable=False)
     
     __mapper_args__ = {
         'polymorphic_identity':'menu',
         'polymorphic_on':type
+        'with_polymorphic': '*'
     }
 
 class MainMenu(Menu):
@@ -162,18 +173,25 @@ class MainMenu(Menu):
     
     __mapper_args__ = {
         'polymorphic_identity':'main'
+        'polymorphic_load': 'inline'
     }
 
 class ActionMenu(Menu):
     __tablename__='action_menu'
+    id = db.Column(db.Integer, db.ForeignKey('menu.id'), primary_key=True)
     
     __mapper_args__ = {
         'polymorphic_identity':'action'
+        'polymorphic_load': 'inline'
     }
         
 
-class Config(db.Model):
+class Config(db.Model, PermissionsMixin):
     __tablename__ = "configs"
+    __permissions__ = dict(
+        owner=['read', 'update', 'delete', 'revoke'],
+        group=['read', 'update'],
+        other=['read']
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     theme = db.Column(db.String, nullable=False, default='light')

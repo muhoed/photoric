@@ -2,10 +2,11 @@
 from flask import Blueprint, request, render_template, redirect, abort
 from flask_login import current_user, login_user, logout_user
 from urllib.parse import urlparse, urljoin
+from datetime import datetime
 
 from photoric.config.models import login_manager
 from photoric.modules.core.helpers.forms.forms import LoginForm, SignupForm
-from photoric.modules.core.helpers.database.db import get_user
+from photoric.modules.core.helpers.database.db import get_user_by_name
 from photoric.config.models import User
 
 
@@ -30,15 +31,15 @@ def signin():
         return redirect(url_for('itemviews.index'))
     login_form = LoginForm()
     if form.validate_on_submit():
-        user = get_user(name=form.name.data)
+        user = get_user_by_name(name=form.name.data)
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('auth.signin'))
         login_user(user, remember=form.remember_me.data)
+        current_user.last_login = datetime.now
         next = request.args.get('next')
         if not is_safe_url(next):
-        	return abort(400
-        	)
+        	return abort(400)
         return redirect(next or url_for('itemviews.index'))
     return render_template('signin.html', title='Sign In', login_form=login_form)
 

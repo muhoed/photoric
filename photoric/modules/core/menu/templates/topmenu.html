@@ -29,8 +29,7 @@
                 {% if current_user.is_authenticated %}               
                     <a class="dropdown-item" href="{{ url_for('admin.profile') }}">Profile</a>
                     <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Sign Out</a>
-                {% endif %}
-                {% if not current_user.is_authenticated %}
+                {% else %}
                     <a class="dropdown-item" href="{{ url_for('auth.signup') }}">Sign Up</a>
                     <a class="dropdown-item" href="{{ url_for('auth.signin') }}">Sign In</a>
                 {% endif %}
