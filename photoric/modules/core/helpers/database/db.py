@@ -24,12 +24,13 @@ def get_gallery_items(parent = 'all', item = 'all'):
     else:
         """ return all top-level (without parent item) items of requested type """
         return requested.filter_by(parent_id is NULL).all()
+
         
 # get menu
 def get_menu(menu):
-
     # query respective database table
     return Menu.query.filter_by(type = menu).all()
+
 
 # get user by name or list all reqistered users
 def get_user_by_name(name = 'all'):

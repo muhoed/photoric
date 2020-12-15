@@ -16,7 +16,11 @@
       
       {% if current_user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('menu.contact') }}">Contact</a>
+            <a class="nav-link" alt="Contact" href="{{ url_for('files.upload') }}">
+                    <svg class="bi text-success" width="32" height="32" fill="currentColor">
+                        <use xlink:href="bootstrap-icons.svg#mailbox"/>
+                    </svg>
+                </a>
           </li>
 
           {% if authorize.in_group('admins') %}

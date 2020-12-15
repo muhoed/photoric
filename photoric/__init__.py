@@ -47,9 +47,6 @@ def create_app(conf='dev'):
         from .modules.core.auth import auth
         from .modules.core.menu import menu
 
-        # initialize custom filter
-        #app.jinja_env.filters["usd"] = helpers.usd
-
         # register blueprints
         # app.register_blueprint(modfactory.modfactory)
         app.register_blueprint(itemviews.item_views)
@@ -58,6 +55,12 @@ def create_app(conf='dev'):
 
         # extensions settings
         login_manager.login_view = "auth.signin"
+
+        # initialize custom filter and context processors
+        @app.context_processor
+        def get_menu(menu):
+            # get respective menu from database
+            return Menu.query.filter_by(type = menu).all()
         
         # create database
         db.create_all()

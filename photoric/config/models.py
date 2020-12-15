@@ -44,6 +44,7 @@ AlbumImage = db.Table('album_image',
 # base class for gallery items
 class GalleryItem(db.Model, PermissionsMixin):
     __tablename__ = 'gallery_items'
+
     __permissions__ = dict(
         owner=['read', 'update', 'delete', 'revoke'],
         group=['read', 'update'],
@@ -55,17 +56,26 @@ class GalleryItem(db.Model, PermissionsMixin):
     description = db.Column(db.String(500), nullable=True)
     keywords = db.Column(db.String(255), nullable=True)
     is_published = db.Column(db.Boolean(), nullable=False, default=False)
-    published_on = db.Column(db.DateTime, nullable=True)
+    published_on = db.Column(db.DateTime, nullable=True, index=True)
 
     __mapper_args__ = {
         'polymorphic_identity':'gallery_item',
         'polymorphic_on':type
         'with_polymorphic': '*'
     }
+
+    def make_public(self):
+        # mark galleru item as published, i.e. accessible for both registered and anonymous users
+        is_published = True
+
+    def make_nonpublic(self):
+        # mark galleru item as not published, i.e. accessible for both registered and anonymous users
+        is_published = False
     
 
 class Image(GalleryItem):
     __tablename__ = "images"
+
     id = db.Column(db.Integer, db.ForeignKey('gallery_items.id'), primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
     filename = db.Column(db.String, unique=True, nullable=False)
@@ -81,13 +91,14 @@ class Image(GalleryItem):
         'polymorphic_identity':'image'
         'polymorphic_load': 'inline'
     }
-    
+
     def __repr__(self):
         return '<Image %r>' % self.filename
     
 
 class Album(GalleryItem):
     __tablename__ = "albums"
+
     id = db.Column(db.Integer, db.ForeignKey('gallery_items.id'), primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
     icon_id = db.Column(db.Integer, nullable=False)
@@ -110,12 +121,13 @@ class Album(GalleryItem):
 
 class User(UserMixin, db.Model):
     __tablename__ = "users"
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
     email = db.Column(db.String, )
     password = db.Column(db.String, nullable=False)
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    activated = db.Column(db.Boolean, nullable=False, default=True)
+    active = db.Column(db.Boolean, nullable=False, default=True)
     last_login = db.Column(db.DateTime, nullable=True)
 
     roles = db.relationship('Role', secondary=UserRole)
@@ -123,7 +135,7 @@ class User(UserMixin, db.Model):
 
     def is_active(self):
     # return True if the user is active (was not banned)
-        return self.activated
+        return self.active
 
     def set_password(self, password):
         """create hashed password"""
@@ -139,59 +151,46 @@ class User(UserMixin, db.Model):
 
 class Group(db.Model, RestrictionsMixin):
     __tablename__ = 'groups'                             
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
         
 
 class Role(db.Model, AllowancesMixin):
     __tablename__='roles'
+
     __allowances__ = {}
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     
-class Menu(db.Model, PermissionsMixin):
-    __tablename__='menu'
+
+class NavItem(db.Model, PermissionsMixin):
+    __tablename__='nav_items'
+
     __permissions__ = dict(
         owner=['read', 'update', 'delete', 'revoke'],
         group=['read', 'update'],
         other=['read']
-    id = db.Column(db.Integer, primary_key=True),
-    type = db.Column(db.String(50)),
+    )
+    id = db.Column(db.Integer, primary_key=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
     name = db.Column(db.String(100), unique=True, nullable=False)
-    icon_url = db.Column(db.String(255), nullable=True)
-    link_url = db.Column(db.String(255), nullable=False)
-    
-    __mapper_args__ = {
-        'polymorphic_identity':'menu',
-        'polymorphic_on':type
-        'with_polymorphic': '*'
-    }
+    icon = db.Column(db.String(255), nullable=True)
+    target = db.Column(db.String(255), nullable=False)
+    style = db.Column(db.String(100), nullable=False, default='normal')
 
-class MainMenu(Menu):
-    __tablename__='main_menu'
-    id = db.Column(db.Integer, db.ForeignKey('menu.id'), primary_key=True)
-    
-    __mapper_args__ = {
-        'polymorphic_identity':'main'
-        'polymorphic_load': 'inline'
-    }
-
-class ActionMenu(Menu):
-    __tablename__='action_menu'
-    id = db.Column(db.Integer, db.ForeignKey('menu.id'), primary_key=True)
-    
-    __mapper_args__ = {
-        'polymorphic_identity':'action'
-        'polymorphic_load': 'inline'
-    }
+    children = db.relationship('NavItem')
         
 
 class Config(db.Model, PermissionsMixin):
     __tablename__ = "configs"
+
     __permissions__ = dict(
         owner=['read', 'update', 'delete', 'revoke'],
         group=['read', 'update'],
         other=['read']
+    )
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     theme = db.Column(db.String, nullable=False, default='light')
