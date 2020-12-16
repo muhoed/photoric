@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 from .config import config
+from .modules.core.helpers.form.forms import SimpleSearch
 
 def create_app(conf='dev'):
     # Initialize core application and load configuration
@@ -42,12 +43,12 @@ def create_app(conf='dev'):
     login_manager.init_app(app)
     
     with app.app_context():
+        # register blueprints with views
         # from .modules.core.modfactory import modfactory
         from .modules.core.itemviews import itemviews
         from .modules.core.auth import auth
         from .modules.core.menu import menu
 
-        # register blueprints
         # app.register_blueprint(modfactory.modfactory)
         app.register_blueprint(itemviews.item_views)
         app.register_blueprint(auth.auth)
@@ -56,11 +57,14 @@ def create_app(conf='dev'):
         # extensions settings
         login_manager.login_view = "auth.signin"
 
-        # initialize custom filter and context processors
-        @app.context_processor
-        def get_menu(menu):
-            # get respective menu from database
-            return Menu.query.filter_by(type = menu).all()
+        # initialize processors
+        # global functions for jinja templates
+        from .modules.core.helpers.processors.context_processors import processors
+        app.context_processor(processors)
+
+        # before and after request processors
+        from .modules.core.helpers.processors.before_after import before_after
+        app.register_blueprint(before_after.before_after)
         
         # create database
         db.create_all()

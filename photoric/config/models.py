@@ -165,23 +165,43 @@ class Role(db.Model, AllowancesMixin):
     name = db.Column(db.String(100), nullable=False, unique=True)
     
 
-class NavItem(db.Model, PermissionsMixin):
-    __tablename__='nav_items'
+class Navbar(db.Model):
+    __tablename__='navbars'
 
-    __permissions__ = dict(
-        owner=['read', 'update', 'delete', 'revoke'],
-        group=['read', 'update'],
-        other=['read']
-    )
     id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    items = db.relationship('NavbarItem', back_populates='navbar') 
+    
+
+class NavbarItem(db.Model):
+    __tablename__='navbar_items'
+
+    id = db.Column(db.Integer, primary_key=True)
+    navbar_id = db.Column(db.Integer, db.ForeignKey('navbars.id'))
     name = db.Column(db.String(100), unique=True, nullable=False)
+    item_type = db.Column(db.String(100), nullable=False)
+    item_source = db.Column(db.String(255), nullable=True)
+    item_target = db.Column(db.String(255), nullable=True)
+    navbar = db.relationship('Navbar', back_populates='items')
+    auth_req = db.Column(db.Boolean, nullable=False, default=False)
+    role_req = db.Column(db.String(100), nullable=True)
+    
+
+class Menu(db.Model):
+    __tablename__='menus'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    parent_menu = db.Column(db.Integer, db.ForeignKey('menus.id'))
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    desc = db.Column(db.String(255), nullable=False)
     icon = db.Column(db.String(255), nullable=True)
     target = db.Column(db.String(255), nullable=False)
     style = db.Column(db.String(100), nullable=False, default='normal')
+    auth_req = db.Column(db.Boolean, nullable=False, default=False)
+    role_req = db.Column(db.String(100), nullable=True)
 
-    children = db.relationship('NavItem')
-        
+    parent = db.relationship('Menu', remote_side=[id])
+    
 
 class Config(db.Model, PermissionsMixin):
     __tablename__ = "configs"
