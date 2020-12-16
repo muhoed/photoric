@@ -1,0 +1,9 @@
+{% macro navlink(title, icon, target, option = 'normal') -%}
+    <li class="nav-item">
+        <a class="nav-link" alt="" href="{{ url_for(target) }}" title="{{ title }}">
+            <svg class="bi text-success" width="32" height="32" fill="currentColor">
+                <use xlink:href="{{ url_for('static', filename='icons.svg#icon-' + icon"/>
+            </svg>
+         </a>
+     </li>
+{%- endmacro %}
