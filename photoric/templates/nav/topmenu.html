@@ -1,8 +1,8 @@
 <nav class="navbar navbar-expand-sm bg-light navbar-dark">
-  <!-- Brand -->
-  <a class="navbar-brand" href="{{ url_for('itemviews.index') }}">
-    Ph<span><img src="{{ url_for('static', '/favicon/favicon.ico') }}" alt="oto"></span>ric
-  </a>
+    
+    {% for navbar_item in navbar.items %}
+        {% set item_template =         
+        {% include  
   
   {% include "/modules/core/helpers/forms/templates/simple_search_form.html" %}
 

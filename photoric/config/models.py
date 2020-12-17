@@ -170,6 +170,7 @@ class Navbar(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
+
     items = db.relationship('NavbarItem', back_populates='navbar') 
     
 
@@ -180,12 +181,18 @@ class NavbarItem(db.Model):
     navbar_id = db.Column(db.Integer, db.ForeignKey('navbars.id'))
     name = db.Column(db.String(100), unique=True, nullable=False)
     item_type = db.Column(db.String(100), nullable=False)
-    item_source = db.Column(db.String(255), nullable=True)
     item_target = db.Column(db.String(255), nullable=True)
-    navbar = db.relationship('Navbar', back_populates='items')
+    icon_type = db.Column(db.String(50), nullable=True)
+    icon_source = db.Column(db.String(255), nullable=True)
     auth_req = db.Column(db.Boolean, nullable=False, default=False)
     role_req = db.Column(db.String(100), nullable=True)
+
+    item_source = column_property('/' + item_type + '/' + name)
     
+    navbar = db.relationship('Navbar', back_populates='items')
+
+    # set item_source path from item name and type
+    def set_item_source(
 
 class Menu(db.Model):
     __tablename__='menus'

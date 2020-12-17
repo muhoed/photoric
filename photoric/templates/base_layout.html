@@ -24,13 +24,17 @@
     </head>
 
     <body>
-
+        <!-- include navbars stored in database -->
         <div class = container-fluid">        
-            {% block topmenu %}{% endblock %}
-            {% block actionmenu %}{% endblock %}
-            {% block mainmenu %}{% endblock %}
+            {% set navbars = get_navbars %}            
+            {% if navbars is not None %}            
+                {% for navbar in navbars %}
+                    {% set navbar_name = url_for('templates', '/nav/' + navbar.name + '.html' %}
+                    {% include navbar_name %}
+                {% endfor %}
+            {% endif %}
         </div>
-
+        <!-- show flash messages if any -->
         <div class="container-fluid">        
             <header>
                 {% if get_flashed_messages() %}
@@ -42,7 +46,7 @@
         
                 {% block header %}{% endblock %}
             </header>
-
+            <!-- main content -->
             <main class="container">
                 <div class="row">
                     {% if include_ad %}
@@ -67,7 +71,7 @@
                 <div>Photoric @ Dmitry Argunov, 2020</div>
             </footer>
         </div>
-
+        <!-- insert modals/lightboxes if any here -->
         {% block modals %}{% endblock %}
 
         <script type=text/javascript>
