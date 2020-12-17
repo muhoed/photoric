@@ -183,31 +183,43 @@ class NavbarItem(db.Model):
     item_type = db.Column(db.String(100), nullable=False)
     item_target = db.Column(db.String(255), nullable=True)
     icon_type = db.Column(db.String(50), nullable=True)
-    icon_source = db.Column(db.String(255), nullable=True)
+    icon_src = db.Column(db.String(255), nullable=True)
+    visible = db.Column(db.Boolean, nullable=False, default=True)
     auth_req = db.Column(db.Boolean, nullable=False, default=False)
     role_req = db.Column(db.String(100), nullable=True)
 
-    item_source = column_property('/' + item_type + '/' + name)
+    item_src = column_property('/' + item_type + '/' + name + '.html')
     
     navbar = db.relationship('Navbar', back_populates='items')
 
-    # set item_source path from item name and type
-    def set_item_source(
 
 class Menu(db.Model):
     __tablename__='menus'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    style = db.Column(db.String(50), default='horizontal')
+
+    items = db.relationship('MenuItem', back_populates='menu') 
+
+class MenuItem(db.Model):
+    __tablename__='menu_items'
     
     id = db.Column(db.Integer, primary_key=True)
-    parent_menu = db.Column(db.Integer, db.ForeignKey('menus.id'))
+    menu_id = db.Column(db.Integer, db.FereignKey('menus.id'))
+    parent_id = b.Column(db.Integer, db.FereignKey('menu_items.id'))
+    item_type = db.Column(db.String(20), nullable=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     desc = db.Column(db.String(255), nullable=False)
-    icon = db.Column(db.String(255), nullable=True)
-    target = db.Column(db.String(255), nullable=False)
-    style = db.Column(db.String(100), nullable=False, default='normal')
+    item_target = db.Column(db.String(255), nullable=False)
+    icon_type = db.Column(db.String(50), nullable=True)
+    icon_src = db.Column(db.String(255), nullable=True)
+    visible = db.Column(db.Boolean, nullable=False, default=True)
     auth_req = db.Column(db.Boolean, nullable=False, default=False)
     role_req = db.Column(db.String(100), nullable=True)
 
-    parent = db.relationship('Menu', remote_side=[id])
+    menu = db.relationship('Menu', back_populates='items')
+    children = db.relationship('MenuItem')
     
 
 class Config(db.Model, PermissionsMixin):

@@ -1,0 +1,24 @@
+{% macro navlink(id) -%}
+    {% set item = get_menu_item_by_id(id) %}    
+    {% if check_menu_item(id) %}
+            <li class="nav-item">
+                <a class="nav-link" alt="" href="{{ url_for(item.target) }}" title="{{ item.desc }}">
+
+                    {% if item.icon is NULL %}
+                        {{ capitalize(item.name) }}
+                    {% else %}
+                        {% if item.icon_type == 'svg' %}
+                            {% set path = '/images/icons.svg#icon-' %}
+                        {% else %}
+                            {% set path = '/images/' + item.icon_type + '/' %}
+                        <svg class="bi text-success" width="32" height="32" fill="currentColor">
+                            <use xlink:href="{{ url_for('nav.static', filename = path + item.icon_src) }}"/>
+                        </svg>
+                    {% endif %}
+         
+                 </a>
+             </li>
+    {% endif %}
+{%- endmacro %}
+
+{% macro dropdown(name, desc, icon='', target, 

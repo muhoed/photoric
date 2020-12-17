@@ -12,10 +12,10 @@
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- favicon generated with https://favicon.io/favicon-generator/ -->        
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='/favicon/apple-touch-icon.png') }}">
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='/favicon/favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='/favicon/favicon-16x16.png') }}">
-        <link rel="manifest" href="{{ url_for('static', filename='/favicon/site.webmanifest') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('nav.static', filename='/images/favicon/apple-touch-icon.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('nav.static', filename='/images/favicon/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('nav.static', filename='/images/favicon/favicon-16x16.png') }}">
+        <link rel="manifest" href="{{ url_for('nav.static', filename='/images/favicon/site.webmanifest') }}">
 
         <link href="{{ url_for('static', filename='base_styles.css') }}" rel="stylesheet">
 
@@ -25,15 +25,12 @@
 
     <body>
         <!-- include navbars stored in database -->
-        <div class = container-fluid">        
-            {% set navbars = get_navbars %}            
-            {% if navbars is not None %}            
-                {% for navbar in navbars %}
-                    {% set navbar_name = url_for('templates', '/nav/' + navbar.name + '.html' %}
-                    {% include navbar_name %}
-                {% endfor %}
-            {% endif %}
+        <div class = container-fluid">                   
+            {% for navbar_id, navbar_template in list_navbar_templates %}
+                {% include navbar_template %}
+            {% endfor %}
         </div>
+        
         <!-- show flash messages if any -->
         <div class="container-fluid">        
             <header>

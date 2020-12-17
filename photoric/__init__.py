@@ -47,25 +47,23 @@ def create_app(conf='dev'):
         # from .modules.core.modfactory import modfactory
         from .modules.core.itemviews import itemviews
         from .modules.core.auth import auth
-        from .modules.core.menu import menu
+        from .modules.core.nav import nav
+        from .modules.core.search import search
 
         # app.register_blueprint(modfactory.modfactory)
-        app.register_blueprint(itemviews.item_views)
+        app.register_blueprint(itemviews.itemviews)
         app.register_blueprint(auth.auth)
-        app.register_blueprint(menu.menu)
+        app.register_blueprint(nav.nav)
+        app.register_blueprint(search.search)
 
         # extensions settings
         login_manager.login_view = "auth.signin"
 
         # initialize processors
         # global functions for jinja templates
-        from .modules.core.helpers.processors.context_processors import processors
-        app.context_processor(processors)
+        #from .modules.core.helpers.processors.context_processors import processors
+        #app.context_processor(processors)
 
-        # before and after request processors
-        from .modules.core.helpers.processors.before_after import before_after
-        app.register_blueprint(before_after.before_after)
-        
         # create database
         db.create_all()
 

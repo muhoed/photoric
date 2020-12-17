@@ -37,31 +37,7 @@ def initial_setup():
         admin = User(name='admin', password=set_password('admin'))
         admin.roles = [role]
         admin.groups = [group]
-
-    """ create base navigation elements """
-    if get_navbars() is None:
-        # create top navbar
-        topnavbar = Navbar(
-            name = 'topmenu'
-        )
-        # create top navbar items
-        topnavbar.items = [
-            NavbarItem(
-                name = 'site_logo',
-                item_type = 'logo',
-                item_target = '/',
-                icon_type = 'favicon',
-                icon_source = 'favicon.ico'
-                auth_req = False
-            ),
-            NavbarItem(
-                name = 'search',
-                item_type = 'logo',
-                item_source = 
-                item_target = '/',
-                auth_req = False,
-                role_req
         
         # insert new user, its role and group to to database
-        db.session.add(role, group, admin, )
+        db.session.add(role, group, admin)
         db.session.commit()

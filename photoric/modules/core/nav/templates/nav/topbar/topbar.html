@@ -1,10 +1,8 @@
-<nav class="navbar navbar-expand-sm bg-light navbar-dark">
-  <!-- Brand -->
-  <a class="navbar-brand" href="{{ url_for('itemviews.index') }}">
-    Ph<span><img src="{{ url_for('static', '/favicon/favicon.ico') }}" alt="oto"></span>ric
-  </a>
-  
-  {% include "/modules/core/helpers/forms/templates/simple_search_form.html" %}
+<nav class="navbar navbar-expand-sm bg-light navbar-dark" id="topbar" name="topbar">
+    
+    {% for navbar_item_id, navbar_item_template in list_navbar_item_templates(navbar_id) %}
+        {% include navbar_item_template %}
+    {% endfor %} 
 
   <!-- Links -->
   <ul class="navbar-nav">
@@ -17,8 +15,6 @@
     </li> 
   
       <!-- Dropdown -->
-      <!--<div class="clearfix">
-        <div class="float-right">  -->
             <li class="nav-item justify-content-end dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="profiledrop" data-toggle="dropdown">
                 <svg class="bi text-success" width="32" height="32" fill="currentColor">
@@ -35,7 +31,5 @@
                 {% endif %}
               </div>
             </li>
-        <!--</div>
-      </div>-->
     </ul>
 </nav>

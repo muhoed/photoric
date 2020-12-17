@@ -1,0 +1,14 @@
+<!-- Simple search form -->
+{% set item = get_navbar_item_by_id(navbar_item_id) %}
+{% if check_navbar_item(navbar_item_id) %}
+    <form class="form-inline" action="url_for(item.item_target)" method="POST">
+     
+        {{ search_form.csrf_token }}
+        {{ search_form.text(class_="form-control mr-sm-2", placeholder=item.name) }}
+                    
+        <div class="btn btn-success">
+            {{ search_form.submit }}
+        </div>
+    </form>
+{% endif %}
+ 
