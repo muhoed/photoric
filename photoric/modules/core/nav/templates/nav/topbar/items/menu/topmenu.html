@@ -1,0 +1,5 @@
+<!-- call menu renderer for a particular menu -->
+{% from {{ url_for('nav.templates', filename = '_nav_macros.html' }} import render_menu with context)
+
+{% set bs_alignment_class = 'justify-content-end' %}
+{% render_menu(navbar_item_id, bs_alignment_class) %}

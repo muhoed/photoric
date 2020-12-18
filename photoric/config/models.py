@@ -170,6 +170,7 @@ class Navbar(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
+    style = db.Column(db.String(50), default='horizontal')
 
     items = db.relationship('NavbarItem', back_populates='navbar') 
     
@@ -198,7 +199,6 @@ class Menu(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
-    style = db.Column(db.String(50), default='horizontal')
 
     items = db.relationship('MenuItem', back_populates='menu') 
 
@@ -208,7 +208,7 @@ class MenuItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     menu_id = db.Column(db.Integer, db.FereignKey('menus.id'))
     parent_id = b.Column(db.Integer, db.FereignKey('menu_items.id'))
-    item_type = db.Column(db.String(20), nullable=True)
+    item_type = db.Column(db.String(20), default='plain')
     name = db.Column(db.String(100), nullable=False, unique=True)
     desc = db.Column(db.String(255), nullable=False)
     item_target = db.Column(db.String(255), nullable=False)

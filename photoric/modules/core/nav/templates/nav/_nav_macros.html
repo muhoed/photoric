@@ -1,24 +1,69 @@
-{% macro navlink(id) -%}
-    {% set item = get_menu_item_by_id(id) %}    
-    {% if check_menu_item(id) %}
-            <li class="nav-item">
-                <a class="nav-link" alt="" href="{{ url_for(item.target) }}" title="{{ item.desc }}">
+{% macro render_menu(navbar_item_id) -%}
+  <ul class="navbar-nav">
+      {% set navbar_item = get_navbar_item_by_id(navbar_item_id) %}
+      {% if check_navbar_item(navbar_item_id) %}
 
-                    {% if item.icon is NULL %}
-                        {{ capitalize(item.name) }}
-                    {% else %}
-                        {% if item.icon_type == 'svg' %}
-                            {% set path = '/images/icons.svg#icon-' %}
-                        {% else %}
-                            {% set path = '/images/' + item.icon_type + '/' %}
-                        <svg class="bi text-success" width="32" height="32" fill="currentColor">
-                            <use xlink:href="{{ url_for('nav.static', filename = path + item.icon_src) }}"/>
-                        </svg>
-                    {% endif %}
-         
-                 </a>
-             </li>
-    {% endif %}
+        <!-- get Menu object -->    
+        {% set menu = get_menu_by_name(navbar_item.name) %}
+
+        <!-- insert menu items -->
+        {% for menu_item in menu.items %}
+            {% if check_menu_item(menu_item.id) %}
+                {% if menu_item.item_type == 'dropdown' %}
+                    {{ navlink_dropdown(menu_item) }}
+                {% elif menu_item.item_type == 'plain'%}
+                    {{ navlink(menu_item) }}
+                {% endif %}
+            {% endif %}
+        {% endfor %}    
+
+      {% endif %}
+  </ul>
+{% endmacro %}
+
+{% macro navlink(item) -%}    
+    <li class="nav-item">
+        <a class="nav-link" alt="" href="{{ url_for(item.item_target) }}" title="{{ item.desc }}">
+
+            {% if item.icon is NULL %}
+                {{ capitalize(item.name) }}
+            {% else %}
+                {% if item.icon_type == 'svg' %}
+                    {% set path = "{{ url_for('nav.static', filename = '/images/icons.svg#icon-' }}" %}
+                {% else %}
+                    {% set path = "{{ url_for('nav.static', filename = '/images/' + item.icon_type + '/' }}" %}
+                {% endif %}
+                    <svg class="bi text-success" width="32" height="32" fill="currentColor">
+                        <use xlink:href="{{ url_for('nav.static', filename = path + item.icon_src) }}"/>
+                    </svg>
+             {% endif %}
+      
+        </a>
+    </li>
 {%- endmacro %}
 
-{% macro dropdown(name, desc, icon='', target, 
+{% macro navlink_dropdown(item) -%}
+    <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="{{ url_for('item.item_target') }}" id="{{ item.name }}"  data-toggle="dropdown">
+                {% if item.icon is NULL %}
+                    {{ capitalize(item.name) }}
+                {% else %}
+                    {% if item.icon_type == 'svg' %}
+                        {% set path = "{{ url_for('nav.static', filename = '/images/icons.svg#icon-' }}" %}
+                    {% else %}
+                        {% set path = "{{ url_for('nav.static', filename = '/images/' + item.icon_type + '/' }}" %}
+                    {% endif %}
+                    <svg class="bi text-success" width="32" height="32" fill="currentColor">
+                        <use xlink:href="{{ url_for('nav.static', filename = path + item.icon_src) }}"/>
+                    </svg>
+                {% endif %}
+              </a>
+              <div class="dropdown-menu">
+                {% for dropdown_item in item.items %}
+                    {% if check_menu_item(dropdown_item.id) %}
+                        <a class="dropdown-item" href="{{ url_for('dropdown_item.item_target') }}">{{ captalize(dropdown_item.name) }}</a>
+                    {% endif %}
+                {% endfor %}
+              </div>
+            </li>
+{% endmacro %} 

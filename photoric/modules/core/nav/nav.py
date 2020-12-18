@@ -52,6 +52,7 @@ def nav_initial_setup():
                 icon_src = ''
             ),
             MenuItem(
+                item_type = 'dropdown-head'
                 name = ,
                 desc = ,
                 item_target = ,
@@ -86,14 +87,14 @@ def check_navbar_item(id):
                 (item.role_req is NULL or item.role_req in current_user.roles)
 
 @nav.app_context_processor()
-def get_menu_item_by_id(id):
+def get_menu_by_name(name):
     """ get rMenuItem object """
-    return MenuItem.query.filter_by(id = id).first()
+    return Menu.query.filter_by(name = name).first()
 
 @nav.app_context_processor()
 def check_menu_item(id):
     """ check viibility and permissions of menu item """
-    item = get_menu_item_by_id(id)
+    item = MenuItem.query.filter_by(id = id).first()
     return item.visible and \
                 (not item.auth_req or current_user.is_authenticated) and \
                 (item.role_req is NULL or item.role_req in current_user.roles)
@@ -108,7 +109,7 @@ def list_navbar_templates():
             navbar_template = url_for(
                 'nav.templates', filename = '/' + navbar.name + '/' + navbar.name + '.html'
             )
-            templates.append([navbar.id, navbar_template])
+            templates.append([navbar.id, navbar.style, navbar_template])
     return templates
 
 @nav.app_context_processor()
