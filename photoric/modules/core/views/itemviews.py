@@ -2,10 +2,10 @@ from flask import Blueprint, session, render_template, request, url_for, flash
 from flask_login import current_user
 
 
-itemviews = Blueprint('itemviews', __name__, url_prefix='/')            
+views = Blueprint('views', __name__, url_prefix='/')            
 
-@itemviews.route("/", methods=['GET', 'POST'])
-@itemviews.route("/index", methods=['GET', 'POST'])
+@views.route("/", methods=['GET', 'POST'])
+@views.route("/index", methods=['GET', 'POST'])
 def index():
     """Show main page"""
 

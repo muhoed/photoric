@@ -64,11 +64,11 @@ class GalleryItem(db.Model, PermissionsMixin):
         'with_polymorphic': '*'
     }
 
-    def make_public(self):
+    def publish(self):
         # mark galleru item as published, i.e. accessible for both registered and anonymous users
         is_published = True
 
-    def make_nonpublic(self):
+    def unpublish(self):
         # mark galleru item as not published, i.e. accessible for both registered and anonymous users
         is_published = False
     
@@ -170,7 +170,8 @@ class Navbar(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
-    style = db.Column(db.String(50), default='horizontal')
+    html_class = db.Column(db.String(255), nullable=False, default='')
+    html_style = db.Column(db.String(255), nullable=False, default='')
 
     items = db.relationship('NavbarItem', back_populates='navbar') 
     
@@ -186,6 +187,7 @@ class NavbarItem(db.Model):
     icon_type = db.Column(db.String(50), nullable=True)
     icon_src = db.Column(db.String(255), nullable=True)
     visible = db.Column(db.Boolean, nullable=False, default=True)
+    anonym_only = db.Column(db.Boolean, nullable=False, default=False)
     auth_req = db.Column(db.Boolean, nullable=False, default=False)
     role_req = db.Column(db.String(100), nullable=True)
 
@@ -199,6 +201,8 @@ class Menu(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
+    html_class = db.Column(db.String(255), nullable=False, default='')
+    html_style = db.Column(db.String(255), nullable=False, default='')
 
     items = db.relationship('MenuItem', back_populates='menu') 
 
@@ -211,10 +215,11 @@ class MenuItem(db.Model):
     item_type = db.Column(db.String(20), default='plain')
     name = db.Column(db.String(100), nullable=False, unique=True)
     desc = db.Column(db.String(255), nullable=False)
-    item_target = db.Column(db.String(255), nullable=False)
+    item_target = db.Column(db.String(255), nullable=True)
     icon_type = db.Column(db.String(50), nullable=True)
     icon_src = db.Column(db.String(255), nullable=True)
     visible = db.Column(db.Boolean, nullable=False, default=True)
+    anonym_only = db.Column(db.Boolean, nullable=False, default=False)
     auth_req = db.Column(db.Boolean, nullable=False, default=False)
     role_req = db.Column(db.String(100), nullable=True)
 

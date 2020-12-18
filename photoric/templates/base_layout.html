@@ -25,16 +25,8 @@
 
     <body>
         <!-- include navbars stored in database -->
-        <div class = container-fluid">                   
-            {% for navbar_id, navbar.style, navbar_template in list_navbar_templates %}
-                {% if navbar.style == 'horizontal' %}
-                    {% set bs_navbar_style_class = 'navbar-expand-sm bg-light navbar-dark' %}
-                {% else %}
-                    {% set bs_navbar_style_class = 'bg-light navbar-dark' %}
-                {% endif %}
-                {% include navbar_template %}
-            {% endfor %}
-        </div>
+        {% from url_for('nav.templates', filename = '_nav_macros.html') import render_navbar with context %}
+        {% render_navbar() %}
         
         <!-- show flash messages if any -->
         <div class="container-fluid">        

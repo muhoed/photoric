@@ -1,24 +1,35 @@
-{% macro render_menu(navbar_item_id) -%}
-  <ul class="navbar-nav">
-      {% set navbar_item = get_navbar_item_by_id(navbar_item_id) %}
-      {% if check_navbar_item(navbar_item_id) %}
-
-        <!-- get Menu object -->    
-        {% set menu = get_menu_by_name(navbar_item.name) %}
-
-        <!-- insert menu items -->
-        {% for menu_item in menu.items %}
-            {% if check_menu_item(menu_item.id) %}
-                {% if menu_item.item_type == 'dropdown' %}
-                    {{ navlink_dropdown(menu_item) }}
-                {% elif menu_item.item_type == 'plain'%}
-                    {{ navlink(menu_item) }}
-                {% endif %}
+{% macro render_navbar(name = '') -%}
+    <div class = container-fluid">                   
+        {% for navbar in list_navbars %}
+            {% if name == '' or name == navbar.name %}            
+                <nav class="navbar {{ navbar.html_class }}" style="{{ navbar.html_style | safe }}" id="{{ navbar.name }}" name="{{ navbar.name }}">
+                    {% for navbar_item, navbar_item_template in list_navbar_item_templates(navbar.id) %}
+                        {% if check_navbar_item(navbar_item.id) %}
+                            {% include navbar_item_template %}
+                        {% endif %}
+                    {% endfor %} 
+                </nav>
             {% endif %}
-        {% endfor %}    
+        {% endfor %}
+    </div>
 
-      {% endif %}
-  </ul>
+{% macro render_menu(navbar_item_id) -%}
+<!-- get Menu object -->    
+  {% set menu = get_menu_by_name(navbar_item.name) %}
+        <div class="{{ menu.html_class }}" style="{{ menu.html_style }}" id="{{ '#' + capitalize(menu.name) }}">
+          <ul class="navbar-nav">
+             <!-- insert menu items -->
+                {% for menu_item in menu.items %}
+                    {% if check_menu_item(menu_item.id) %}
+                        {% if menu_item.item_type == 'dropdown' %}
+                            {{ navlink_dropdown(menu_item) }}
+                        {% elif menu_item.item_type == 'plain'%}
+                            {{ navlink(menu_item) }}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}       
+          </ul>
+        </div>
 {% endmacro %}
 
 {% macro navlink(item) -%}    
@@ -34,7 +45,7 @@
                     {% set path = "{{ url_for('nav.static', filename = '/images/' + item.icon_type + '/' }}" %}
                 {% endif %}
                     <svg class="bi text-success" width="32" height="32" fill="currentColor">
-                        <use xlink:href="{{ url_for('nav.static', filename = path + item.icon_src) }}"/>
+                        <use id="{{ item.name }}" name="{{ item.name }}" xlink:href="{{ url_for('nav.static', filename = path + item.icon_src) }}"/>
                     </svg>
              {% endif %}
       
@@ -44,7 +55,7 @@
 
 {% macro navlink_dropdown(item) -%}
     <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="{{ url_for('item.item_target') }}" id="{{ item.name }}"  data-toggle="dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="{{ item.name + '-dropdown' }}"  data-toggle="dropdown">
                 {% if item.icon is NULL %}
                     {{ capitalize(item.name) }}
                 {% else %}
@@ -54,7 +65,7 @@
                         {% set path = "{{ url_for('nav.static', filename = '/images/' + item.icon_type + '/' }}" %}
                     {% endif %}
                     <svg class="bi text-success" width="32" height="32" fill="currentColor">
-                        <use xlink:href="{{ url_for('nav.static', filename = path + item.icon_src) }}"/>
+                        <use id="{{ item.name }}" name="{{ item.name }}" xlink:href="{{ url_for('nav.static', filename = path + item.icon_src) }}"/>
                     </svg>
                 {% endif %}
               </a>

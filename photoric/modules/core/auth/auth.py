@@ -28,7 +28,7 @@ def signin():
     """
     
     if current_user.is_authenticated:
-        return redirect(url_for('itemviews.index'))
+        return redirect(url_for('views.index'))
     login_form = LoginForm()
     if form.validate_on_submit():
         user = get_user_by_name(name=form.name.data)
@@ -40,7 +40,7 @@ def signin():
         next = request.args.get('next')
         if not is_safe_url(next):
         	return abort(400)
-        return redirect(next or url_for('itemviews.index'))
+        return redirect(next or url_for('views.index'))
     return render_template('signin.html', title='Sign In', login_form=login_form)
 
 
@@ -65,7 +65,7 @@ def signup():
             db.session.commit()  # Create new user
             login_user(user)  # Log in as newly created user
             flash('Congratulation! You were successfully registered!')
-            return redirect(url_for('itemviews.index'))
+            return redirect(url_for('views.index'))
         flash('A user already exists with that name.')
 
     return render_template(
@@ -77,7 +77,7 @@ def signup():
 @auth.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('itemviews.index'))
+    return redirect(url_for('views.index'))
 
     
 @login_manager.user_loader

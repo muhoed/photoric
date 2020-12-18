@@ -17,7 +17,8 @@ def nav_initial_setup():
     if get_navbars() is None:
         # create top navbar
         topnavbar = Navbar(
-            name = 'topbar'
+            name = 'topbar',
+            html_class = 'navbar navbar-expand-sm bg-light navbar-light'
         )
         # create top navbar items
         topnavbar.items = [
@@ -41,6 +42,7 @@ def nav_initial_setup():
         # create top menu
         topmenu = Menu(
             name = 'topmenu'
+            html_class = 'justify-content-end',
         )
         # create topmenu items
         topmenu.items = [
@@ -48,21 +50,108 @@ def nav_initial_setup():
                 name = 'home',
                 desc = 'Go to home page',
                 item_target = 'index',
-                icon_type = '',
-                icon_src = ''
+                icon_type = 'svg',
+                icon_src = 'house-door'
             ),
             MenuItem(
-                item_type = 'dropdown-head'
-                name = ,
-                desc = ,
-                item_target = ,
-                icon_type = ,
-                icon_src =
+                item_type = 'dropdown'
+                name = 'account',
+                desc = 'Account management',
+                icon_type = 'svg',
+                icon_src = 'person-square'
             )
         ]
 
+        account.children = [
+            MenuItem(
+                name = 'profile',
+                desc = 'Look/edit your profile',
+                item_target = 'userconfig.profile',
+                auth_req = True
+            ),     
+            MenuItem(
+                name = 'sign up',
+                desc = 'Sign Up to get access to all functions',
+                item_target = 'auth.signup',
+                anonym_only = True
+            ),
+            MenuItem(
+                name = 'sign in',
+                desc = 'Sign in to your account',
+                item_target = 'auth.signin',
+                anonym_only = True
+            ),
+            MenuItem(
+                name = 'sign out',
+                desc = 'Sign out from your account',
+                item_target = 'auth.logout',
+                auth_req = True
+            )
+        ]
 
-    db.session.add(topnavbar, topmenu)
+        # create main navbar
+        mainnavbar = Navbar(
+            name = 'mainbar',
+            html_class = 'navbar navbar-expand-sm bg-light navbar-light'
+        )
+        # create main navbar items
+        mainnavbar.items = [
+            NavbarItem(
+                name = 'collapse_toggle_button',
+                item_type = 'button',
+            ),
+            NavbarItem(
+                name = 'mainmenu',
+                item_type = 'menu',
+            )
+        ]
+        # create main menu
+        mainmenu = Menu(
+            name = 'mainmenu',
+            html_class='collapse navbar-collapse justify-content-end'
+        )
+        # create topmenu items
+        mainmenu.items = [
+            MenuItem(
+                name = 'about',
+                desc = 'Read about me and this web-site',
+                item_target = 'views.about'
+            ),
+            MenuItem(
+                name = 'galleries',
+                desc = 'Look through photo galleries',
+                item_target = 'views.galleries'
+            ),
+            MenuItem(
+                name = 'upload',
+                desc = 'Upload images',
+                item_target = 'files.upload',
+                icon_type = 'svg',
+                icon_src = 'upload',
+                auth_reg = True,
+                role_reg = 'contributor'
+            ),
+            MenuItem(
+                name = 'settings',
+                desc = 'Configure site behavior',
+                item_target = 'admin.settings',
+                icon_type = 'svg',
+                icon_src = 'gear',
+                auth_reg = True,
+                role_reg = 'admin'
+            ),
+            MenuItem(
+                name = 'contact',
+                desc = 'Contact form',
+                item_target = 'views.contact',
+                icon_type = 'svg',
+                icon_src = 'envelope',
+                auth_reg = True
+            )
+        ]
+        
+
+    db.session.add(topnavbar, topmenu, mainnavbar, mainmenu)
     db.session.commit()
                 
                 
@@ -83,8 +172,22 @@ def check_navbar_item(id):
     """ check viibility and permissions of navbar item """
     item = get_navbar_item_by_id(id)
     return item.visible and \
+           (not item.anonym_only or not current_user.is_authenticated) and \
                 (not item.auth_req or current_user.is_authenticated) and \
                 (item.role_req is NULL or item.role_req in current_user.roles)
+
+@nav.app_context_processor()
+def list_navbar_item_templates(id):
+    """ return a list of navbar items templates """
+    navbar = Navbar.query.filter_by(id = id).first()
+    templates = []
+    if navbar is not None:
+        for item in navbar.items:
+            item_template = url_for(
+                'nav.templates', filename = '/' + navbar.name + '/' + item.item_src
+            )
+            templates.append({item, item_template})
+    return templates
 
 @nav.app_context_processor()
 def get_menu_by_name(name):
@@ -95,35 +198,11 @@ def get_menu_by_name(name):
 def check_menu_item(id):
     """ check viibility and permissions of menu item """
     item = MenuItem.query.filter_by(id = id).first()
-    return item.visible and \
-                (not item.auth_req or current_user.is_authenticated) and \
-                (item.role_req is NULL or item.role_req in current_user.roles)
+    return (item.visible and \
+           (not item.anonym_only or not current_user.is_authenticated) and \
+            (not item.auth_req or current_user.is_authenticated) and \
+            (item.role_req is NULL or item.role_req in current_user.roles))
 
-@nav.app_context_processor()
-def list_navbar_templates():
-    """ return a list of navbars templates """
-    navbars = list_navbars()
-    templates = []
-    if navbars is not None:
-        for navbar in navbars:
-            navbar_template = url_for(
-                'nav.templates', filename = '/' + navbar.name + '/' + navbar.name + '.html'
-            )
-            templates.append([navbar.id, navbar.style, navbar_template])
-    return templates
-
-@nav.app_context_processor()
-def list_navbar_item_templates(id):
-    """ return a list of navbar items templates """
-    navbar = Navbar.query.filter_by(id = id).first()
-    templates = []
-    if navbar is not None:
-        for item in navbar.items:
-            item_template = url_for(
-                'nav.templates', filename = '/' + navbar.name + '/items' + item.src
-            )
-            templates.append([item.id, item_template])
-    return templates
 
 @menu.route("/about")
 def about():

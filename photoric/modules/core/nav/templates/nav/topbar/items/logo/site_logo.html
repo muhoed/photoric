@@ -1,6 +1,0 @@
-<!-- Brand -->
-{% set item = get_navbar_item_by_id(navbar_item_id) %}      
-{% if check_navbar_item(navbar_item_id) %}
-    <a class="navbar-brand" href="{{ url_for(item.item_target) }}">
-              Ph<span><img src="{{ url_for('nav.static', '/images' + item.icon_type + '/' + item.icon_src) }}" alt="oto"></span>ric</a>
-{% endif %}

@@ -45,7 +45,7 @@ def create_app(conf='dev'):
     with app.app_context():
         # register blueprints with views
         # from .modules.core.modfactory import modfactory
-        from .modules.core.itemviews import itemviews
+        from .modules.core.views import views
         from .modules.core.auth import auth
         from .modules.core.nav import nav
         from .modules.core.search import search
