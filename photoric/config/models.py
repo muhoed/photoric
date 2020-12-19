@@ -11,32 +11,32 @@ login_manager = LoginManager()
 
 # map tables to classes
 UserGroup = db.Table('user_group',
-    db.Column('user_id',
-              db.Integer,
-              db.ForeignKey('users.id')),
-    db.Column('group_id',
-              db.Integer,
-              db.ForeignKey('groups.id'))
+                     db.Column('user_id',
+                               db.Integer,
+                               db.ForeignKey('users.id')),
+                     db.Column('group_id',
+                               db.Integer,
+                               db.ForeignKey('groups.id'))
 )
 
 
 UserRole = db.Table('user_role',
-    db.Column('user_id',
-              db.Integer,
-              db.ForeignKey('users.id')),
-    db.Column('role_id',
-              db.Integer,
-              db.ForeignKey('roles.id'))
+                    db.Column('user_id',
+                              db.Integer,
+                              db.ForeignKey('users.id')),
+                    db.Column('role_id',
+                              db.Integer,
+                              db.ForeignKey('roles.id'))
 )
 
 
 AlbumImage = db.Table('album_image',
-    db.Column('album_id',
-              db.Integer,
-              db.ForeignKey('albums.id')),
-    db.Column('image_id',
-              db.Integer,
-              db.ForeignKey('images.id'))
+                      db.Column('album_id',
+                                db.Integer,
+                                db.ForeignKey('albums.id')),
+                      db.Column('image_id',
+                                db.Integer,
+                                db.ForeignKey('images.id'))
 )    
 
 # declare models    
@@ -60,16 +60,16 @@ class GalleryItem(db.Model, PermissionsMixin):
 
     __mapper_args__ = {
         'polymorphic_identity':'gallery_item',
-        'polymorphic_on':type
+        'polymorphic_on':type,
         'with_polymorphic': '*'
     }
 
     def publish(self):
-        # mark galleru item as published, i.e. accessible for both registered and anonymous users
+        # mark gallery item as published, i.e. accessible for both registered and anonymous users
         is_published = True
 
     def unpublish(self):
-        # mark galleru item as not published, i.e. accessible for both registered and anonymous users
+        # mark gallery item as not published, i.e. accessible for both registered and anonymous users
         is_published = False
     
 
@@ -88,8 +88,8 @@ class Image(GalleryItem):
         back_populates='children_images')
 
     __mapper_args__ = {
-        'polymorphic_identity':'image'
-        'polymorphic_load': 'inline'
+        'polymorphic_identity':'image',
+        'polymorphic_load':'inline'
     }
 
     def __repr__(self):
@@ -114,7 +114,7 @@ class Album(GalleryItem):
     )
     
     __mapper_args__ = {
-        'polymorphic_identity':'album'
+        'polymorphic_identity': 'album',
         'polymorphic_load': 'inline'
     }
 
@@ -155,7 +155,7 @@ class User(UserMixin, db.Model):
 class Group(db.Model, RestrictionsMixin):
     __tablename__ = 'groups'
 
-    __restirictions__ = {}
+    __restrictions__ = {}
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
@@ -197,7 +197,7 @@ class NavbarItem(db.Model):
     group_req = db.Column(db.String(100), nullable=True)
     role_req = db.Column(db.String(100), nullable=True)
 
-    item_src = column_property('/' + item_type + '/' + name + '.html')
+    item_src = db.column_property('/' + item_type + '/' + name + '.html')
     
     navbar = db.relationship('Navbar', back_populates='items')
 
@@ -217,7 +217,7 @@ class MenuItem(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     menu_id = db.Column(db.Integer, db.FereignKey('menus.id'))
-    parent_id = b.Column(db.Integer, db.FereignKey('menu_items.id'))
+    parent_id = db.Column(db.Integer, db.FereignKey('menu_items.id'))
     item_type = db.Column(db.String(20), default='plain')
     name = db.Column(db.String(100), nullable=False, unique=True)
     desc = db.Column(db.String(255), nullable=False)

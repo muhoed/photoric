@@ -1,5 +1,6 @@
-from flask import Blueprint, session, render_template, request, url_for, flash
-from flask_login import current_user
+from flask import Blueprint, render_template, request
+
+from photoric.photoric.modules.core.helpers.database.db import get_gallery_items
 
 
 views = Blueprint('views', __name__, url_prefix='/')            

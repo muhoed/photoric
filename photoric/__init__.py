@@ -2,11 +2,10 @@ import os
 
 from flask import Flask
 from flask_session import Session
-from flask_sqlalchemy import SQLAlchemy
-
 
 from .config import config
-from .modules.core.helpers.form.forms import SimpleSearch
+from .modules.core.helpers.forms.forms import SimpleSearch
+
 
 def create_app(conf='dev'):
     # Initialize core application and load configuration
@@ -24,8 +23,8 @@ def create_app(conf='dev'):
         pass
 
     # Ensure responses aren't cached
-    #@app.after_request
-    #def add_header(response):
+    # @app.after_request
+    # def add_header(response):
     #    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     #    response.headers["Expires"] = 0
     #    response.headers["Pragma"] = "no-cache"
@@ -51,7 +50,7 @@ def create_app(conf='dev'):
         from .modules.core.search import search
 
         # app.register_blueprint(modfactory.modfactory)
-        app.register_blueprint(itemviews.itemviews)
+        app.register_blueprint(views.views)
         app.register_blueprint(auth.auth)
         app.register_blueprint(nav.nav)
         app.register_blueprint(search.search)
@@ -61,8 +60,8 @@ def create_app(conf='dev'):
 
         # initialize processors
         # global functions for jinja templates
-        #from .modules.core.helpers.processors.context_processors import processors
-        #app.context_processor(processors)
+        # from .modules.core.helpers.processors.context_processors import processors
+        # app.context_processor(processors)
 
         # create database
         db.create_all()
