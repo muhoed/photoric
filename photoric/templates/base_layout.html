@@ -26,7 +26,8 @@
     <body>
         <!-- include navbars stored in database -->
         {% from url_for('nav.templates', filename = '_nav_macros.html') import render_navbar with context %}
-        {% render_navbar() %}
+        {% render_navbar('topbar') %}
+        {% render_navbar('mainbar') %}
         
         <!-- show flash messages if any -->
         <div class="container-fluid">        

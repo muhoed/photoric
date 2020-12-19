@@ -18,7 +18,7 @@ def nav_initial_setup():
         # create top navbar
         topnavbar = Navbar(
             name = 'topbar',
-            html_class = 'navbar navbar-expand-sm bg-light navbar-light'
+            html_class = 'navbar navbar-expand-sm'
         )
         # create top navbar items
         topnavbar.items = [
@@ -110,7 +110,7 @@ def nav_initial_setup():
             name = 'mainmenu',
             html_class='collapse navbar-collapse justify-content-end'
         )
-        # create topmenu items
+        # create mainmenu items
         mainmenu.items = [
             MenuItem(
                 name = 'about',
@@ -129,7 +129,7 @@ def nav_initial_setup():
                 icon_type = 'svg',
                 icon_src = 'upload',
                 auth_reg = True,
-                role_reg = 'contributor'
+                group_reg = 'contributor'
             ),
             MenuItem(
                 name = 'settings',
@@ -138,7 +138,64 @@ def nav_initial_setup():
                 icon_type = 'svg',
                 icon_src = 'gear',
                 auth_reg = True,
-                role_reg = 'admin'
+                group_reg = 'admin'
+            ),
+            MenuItem(
+                name = 'contact',
+                desc = 'Contact form',
+                item_target = 'views.contact',
+                icon_type = 'svg',
+                icon_src = 'envelope',
+                auth_reg = True
+            )
+        ]
+        # create action navbar
+        actionnavbar = Navbar(
+            name = 'actionbar',
+            html_class = 'navbar navbar-expand-sm'
+            html_style='display:none;'
+        )
+        # create action navbar items
+        actionnavbar.items = [
+            NavbarItem(
+                name = 'actionmenu',
+                item_type = 'menu'
+            )
+        ]
+        # create action menu
+        actionmenu = Menu(
+            name = 'actionmenu',
+            html_class='justify-content-end'
+        )
+        # create actionmenu items
+        actionmenu.items = [
+            MenuItem(
+                name = 'share',
+                desc = 'Share selected albums/images',
+                item_target = 'views.about'
+            ),
+            MenuItem(
+                name = 'galleries',
+                desc = 'Look through photo galleries',
+                item_target = 'views.galleries'
+            ),
+            MenuItem(
+                name = 'upload',
+                desc = 'Upload images',
+                item_target = 'files.upload',
+                icon_type = 'svg',
+                icon_src = 'upload',
+                auth_reg = True,
+                group_reg = 'contributor'
+            ),
+            MenuItem(
+                name = 'settings',
+                desc = 'Configure site behavior',
+                item_target = 'admin.settings',
+                icon_type = 'svg',
+                icon_src = 'gear',
+                auth_reg = True,
+                group_reg = 'admin'
             ),
             MenuItem(
                 name = 'contact',
@@ -150,8 +207,7 @@ def nav_initial_setup():
             )
         ]
         
-
-    db.session.add(topnavbar, topmenu, mainnavbar, mainmenu)
+    db.session.add(topnavbar, topmenu, mainnavbar, mainmenu, actionbar)
     db.session.commit()
                 
                 
@@ -174,6 +230,7 @@ def check_navbar_item(id):
     return item.visible and \
            (not item.anonym_only or not current_user.is_authenticated) and \
                 (not item.auth_req or current_user.is_authenticated) and \
+                (item.group_req is NULL or item.group_req in current_user.groups) and \
                 (item.role_req is NULL or item.role_req in current_user.roles)
 
 @nav.app_context_processor()
@@ -201,6 +258,7 @@ def check_menu_item(id):
     return (item.visible and \
            (not item.anonym_only or not current_user.is_authenticated) and \
             (not item.auth_req or current_user.is_authenticated) and \
+            (item.group_req is NULL or item.group_req in current_user.groups) and \
             (item.role_req is NULL or item.role_req in current_user.roles))
 
 

@@ -106,9 +106,12 @@ class Album(GalleryItem):
     children_images = db.relationship(
         'Image',
         secondary=AlbumImage,
-        back_populates='parents')
+        back_populates='parents'
+    )
     children_albums = db.relationship(
-        'Album', backref=db.backref('parents', remote_side=[id]))
+        'Album',
+        backref=db.backref('parents', remote_side=[id])
+    )
     
     __mapper_args__ = {
         'polymorphic_identity':'album'
@@ -150,7 +153,9 @@ class User(UserMixin, db.Model):
         
 
 class Group(db.Model, RestrictionsMixin):
-    __tablename__ = 'groups'                             
+    __tablename__ = 'groups'
+
+    __restirictions__ = {}
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
@@ -189,6 +194,7 @@ class NavbarItem(db.Model):
     visible = db.Column(db.Boolean, nullable=False, default=True)
     anonym_only = db.Column(db.Boolean, nullable=False, default=False)
     auth_req = db.Column(db.Boolean, nullable=False, default=False)
+    group_req = db.Column(db.String(100), nullable=True)
     role_req = db.Column(db.String(100), nullable=True)
 
     item_src = column_property('/' + item_type + '/' + name + '.html')
@@ -221,6 +227,7 @@ class MenuItem(db.Model):
     visible = db.Column(db.Boolean, nullable=False, default=True)
     anonym_only = db.Column(db.Boolean, nullable=False, default=False)
     auth_req = db.Column(db.Boolean, nullable=False, default=False)
+    group_req = db.Column(db.String(100), nullable=True)
     role_req = db.Column(db.String(100), nullable=True)
 
     menu = db.relationship('Menu', back_populates='items')
