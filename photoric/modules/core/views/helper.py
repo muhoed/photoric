@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import with_polymorphic
 
-from photoric.config.models import db, GalleryItem, Image, Album, User
+from photoric.config.models import db, GalleryItem, Image, Album
 
 
 # get gallery items
@@ -24,13 +23,3 @@ def get_gallery_items(parent = 'all', item = 'all'):
     else:
         """ return all top-level (without parent item) items of requested type """
         return requested.filter_by(parent_id is NULL).all()
-
-
-# get user by name or list all reqistered users
-def get_user_by_name(name = 'all'):
-    if name != 'all':
-        requested_user = User.query.filter_by(name=name).first()
-    else:
-        requested_user = User.query.all()
-
-    return requested_user

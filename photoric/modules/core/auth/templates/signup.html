@@ -2,19 +2,12 @@
 
 {% extends 'base_layout.html' %}
     
-    {% block topmenu %}
-        {% include 'topmenu.html' %}
-    {% endlblock %}
-    {% block mainmenu %}
-        {% include 'mainmenu.html' %}
-    {% endblock %}
-
     {% block header %}
         <h1>{% block title %}{{ title }}{% endblock %}
     {% endblock %}            
         
     {% block main %}  
-        {% include "/modules/core/helpers/forms/templates/signup_form.html" %}
+        {% include "/modules/core/auth/forms/templates/signup_form.html" %}
 
        <div>
          <span>Already have an account?</span>

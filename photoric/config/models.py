@@ -7,7 +7,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 db = SQLAlchemy()
-login_manager = LoginManager()
 
 # map tables to classes
 UserGroup = db.Table('user_group',
@@ -152,19 +151,19 @@ class User(UserMixin, db.Model):
         return '<User %>' % self.name
         
 
-class Group(db.Model, RestrictionsMixin):
+class Group(db.Model, AllowancesMixin):
     __tablename__ = 'groups'
 
-    __restrictions__ = {}
+    __allowances__ = {}
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
         
 
-class Role(db.Model, AllowancesMixin):
+class Role(db.Model, RestrictionsMixin):
     __tablename__='roles'
 
-    __allowances__ = {}
+    __restrictions__ = {}
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)

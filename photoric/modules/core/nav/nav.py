@@ -165,45 +165,67 @@ def nav_initial_setup():
         # create action menu
         actionmenu = Menu(
             name='actionmenu',
-            html_class='justify-content-end'
+            html_class='justify-content-end',
         )
         # create actionmenu items
         actionmenu.items = [
             MenuItem(
                 name='share',
                 desc='Share selected albums/images',
-                item_target='views.about'
-            ),
-            MenuItem(
-                name='galleries',
-                desc='Look through photo galleries',
-                item_target='views.galleries'
-            ),
-            MenuItem(
-                name='upload',
-                desc='Upload images',
-                item_target='files.upload',
+                item_target='share.share'
                 icon_type='svg',
-                icon_src='upload',
+                icon_src='share',
+                auth_req=True
+            ),
+            MenuItem(
+                item_type='dropdown',
+                name='album',
+                desc='Manage album',
+                icon_type='svg',
+                icon_src='book',
+                group_req='contributors'
+                children=[
+                    MenuItem(
+                        name='add',
+                        desc='Add images / albums to a new or existing album',
+                        item_target='albums.insert',
+                        auth_req=True,
+                        group_req='contributors'
+                    ),
+                    MenuItem(
+                        name='remove',
+                        desc='Remove images / albums from an album',
+                        item_target='albums.remove',
+                        auth_req=True,
+                        group_req='contributors'
+                    ),
+                    MenuItem(
+                        name='set',
+                        desc='Set an image as an album icon',
+                        item_target='albums.icon',
+                        auth_req=True,
+                        group_req='contributors'
+                    )
+                ]
+            ),
+            MenuItem(
+                name='download',
+                desc='Download images / albums',
+                item_target='files.download',
+                icon_type='svg',
+                icon_src='download',
                 auth_reg=True,
-                group_reg='contributor'
+                group_reg='private'
             ),
             MenuItem(
-                name='settings',
-                desc='Configure site behavior',
-                item_target='admin.settings',
+                name='delete',
+                desc='Delete images / albums',
+                item_target='files.delete',
                 icon_type='svg',
-                icon_src='gear',
+                icon_src='trash',
                 auth_reg=True,
-                group_reg='admin'
-            ),
-            MenuItem(
-                name='contact',
-                desc='Contact form',
-                item_target='views.contact',
-                icon_type='svg',
-                icon_src='envelope',
-                auth_reg=True
+                group_req='admins',
+                role_req='admin'
             )
         ]
         
@@ -253,7 +275,7 @@ def list_navbar_item_templates(item_id):
 
 @nav.app_context_processor
 def get_menu_by_name(name):
-    """ get rMenuItem object """
+    """ get MenuItem object """
     return Menu.query.filter_by(name=name).first()
 
 
@@ -266,6 +288,9 @@ def check_menu_item(item_id):
             (not item.auth_req or current_user.is_authenticated) and
             (item.group_req is None or item.group_req in current_user.groups) and
             (item.role_req is None or item.role_req in current_user.roles))
+
+
+""" view routes """
 
 
 @nav.route("/about")

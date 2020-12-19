@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, flash
+from flask_login import current_user
 
-from photoric.photoric.modules.core.helpers.database.db import get_gallery_items
+from .helper import get_gallery_items
 
 
 views = Blueprint('views', __name__, url_prefix='/')            
@@ -20,7 +21,7 @@ def index():
         gallery_items = get_gallery_items('no', '')
 
         # if user is not admin show gallery items if any
-        return render_template('index.html', gallery_items = gallery_items)
+        return render_template('index.html', title = 'home page', gallery_items = gallery_items)
 
         # if user is admin gallery_items is not None load admin version of the page
 

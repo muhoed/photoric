@@ -70,7 +70,7 @@
                 {% endif %}
               </a>
               <div class="dropdown-menu">
-                {% for dropdown_item in item.items %}
+                {% for dropdown_item in item.children %}
                     {% if check_menu_item(dropdown_item.id) %}
                         <a class="dropdown-item" href="{{ url_for('dropdown_item.item_target') }}">{{ captalize(dropdown_item.name) }}</a>
                     {% endif %}

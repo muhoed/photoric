@@ -38,7 +38,7 @@ def create_app(conf='dev'):
     db.init_app(app)
 
     # Initialize Login manager
-    from .config.models import login_manager
+    from .modules.core.auth.auth import login_manager
     login_manager.init_app(app)
     
     with app.app_context():
@@ -54,14 +54,6 @@ def create_app(conf='dev'):
         app.register_blueprint(auth.auth)
         app.register_blueprint(nav.nav)
         app.register_blueprint(search.search)
-
-        # extensions settings
-        login_manager.login_view = "auth.signin"
-
-        # initialize processors
-        # global functions for jinja templates
-        # from .modules.core.helpers.processors.context_processors import processors
-        # app.context_processor(processors)
 
         # create database
         db.create_all()

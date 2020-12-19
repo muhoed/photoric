@@ -1,21 +1,73 @@
 """Routes for user authentication"""
 from flask import Blueprint, request, render_template, redirect, abort
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, LoginManager
 from urllib.parse import urlparse, urljoin
 from datetime import datetime
 
-from photoric.config.models import login_manager
-from photoric.modules.core.helpers.forms.forms import LoginForm, SignupForm
-from photoric.modules.core.helpers.database.db import get_user_by_name
+from .forms.forms import LoginForm, SignupForm
+from .helper import get_user_by_name
 from photoric.config.models import User
 
 
 # Blueprint initialization
 auth = Blueprint(
     'auth', __name__,
+    url_prefix='/auth',
     template_folder='templates',
     static_folder='static'
 )
+
+# setup LoginManager object
+login_manager = LoginManager()
+login_manager.login_view = "auth.signin"
+
+
+@before_after.before_app_first_request
+def initial_setup():
+    """ create admin user if not exist """
+    if get_user_by_name('admin') is None:
+        # create administrator role
+        admin_role = Role(
+            name='admin',
+            restrictions= {}
+        )
+        # create administrators group
+        admins_group = Group(
+            name='admins',
+            allowances='*'
+        )
+        # create private group
+        private_group = Group(
+            name='private',
+            allowances=dict(
+                gallery_items=['read'],
+                albums=['read'],
+                images=['read']
+            )
+        )
+        # create contributors group
+        contributors_group = Group(
+            name='contributors',
+            allowances=dict(
+                gallery_items=['read', 'create', 'update', 'revoke'],
+                albums=['read', 'create', 'update', 'revoke'],
+                images=['read', 'create', 'update', 'revoke']
+            )
+        )
+        # create user and map it to respective group annd role
+        admin_user = User(name='admin', password=set_password('admin'))
+        admin_user.roles = [admin_role]
+        admin_user.groups = [admins_group, private_group, contributors_group]
+        
+        # insert new user, its role and group to to database
+        db.session.add(
+            admin_role, \
+            admins_group, \
+            private_group, \
+            contributors_group, \
+            admin_user
+        )
+        db.session.commit()
 
 
 @auth.route('/signin', methods=['GET', 'POST'])
@@ -41,7 +93,7 @@ def signin():
         if not is_safe_url(next):
         	return abort(400)
         return redirect(next or url_for('views.index'))
-    return render_template('signin.html', title='Sign In', login_form=login_form)
+    return render_template('auth/signin.html', title='Sign In', login_form=login_form)
 
 
 @auth.route('/signup', methods=['GET', 'POST'])
@@ -69,7 +121,7 @@ def signup():
         flash('A user already exists with that name.')
 
     return render_template(
-        'signup_form.html',
+        'auth/signup.html',
         title='New user registration',
         form=form
     )
