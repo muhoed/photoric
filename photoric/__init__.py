@@ -4,7 +4,6 @@ from flask import Flask
 from flask_session import Session
 
 from .config import config
-from .modules.core.helpers.forms.forms import SimpleSearch
 
 
 def create_app(conf='dev'):

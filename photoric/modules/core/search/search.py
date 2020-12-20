@@ -16,7 +16,7 @@ search = Blueprint(
 """ initialize custom templates context processors """
 
 
-@search.app_context_processor()
+@search.app_context_processor
 def simple_search_form():
     """ inflect search form to templates """
     return dict(search_form=SimpleSearch())
@@ -24,6 +24,6 @@ def simple_search_form():
 """ view routes """
 
 
-@search.simple_search('/simple_search', methods=('GET', 'POST'))
+@search.route('/simple_search', methods=('GET', 'POST'))
 def simple_search():
     print('to be done')

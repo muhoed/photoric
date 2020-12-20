@@ -81,7 +81,7 @@ class Image(GalleryItem):
     uploaded_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
     shooted_on = db.Column(db.DateTime, nullable=True)
     location = db.Column(db.String, nullable=True)
-    parent = db.relationship(
+    parents = db.relationship(
         'Album',
         secondary=AlbumImage,
         back_populates='children_images')
@@ -107,9 +107,10 @@ class Album(GalleryItem):
         secondary=AlbumImage,
         back_populates='parents'
     )
-    children_albums = db.relationship(
+    parent = db.relationship(
         'Album',
-        backref=db.backref('parents', remote_side=[id])
+        foreign_keys=[parent_id],
+        remote_side=[id]
     )
     
     __mapper_args__ = {
@@ -134,6 +135,7 @@ class User(UserMixin, db.Model):
 
     roles = db.relationship('Role', secondary=UserRole)
     groups = db.relationship('Group', secondary=UserGroup)
+    config = db.relationship('Config', back_populates='user')
 
     def is_active(self):
     # return True if the user is active (was not banned)
@@ -215,8 +217,8 @@ class MenuItem(db.Model):
     __tablename__='menu_items'
     
     id = db.Column(db.Integer, primary_key=True)
-    menu_id = db.Column(db.Integer, db.FereignKey('menus.id'))
-    parent_id = db.Column(db.Integer, db.FereignKey('menu_items.id'))
+    menu_id = db.Column(db.Integer, db.ForeignKey('menus.id'))
+    parent_id = db.Column(db.Integer, db.ForeignKey('menu_items.id'))
     item_type = db.Column(db.String(20), default='plain')
     name = db.Column(db.String(100), nullable=False, unique=True)
     desc = db.Column(db.String(255), nullable=False)
@@ -242,9 +244,13 @@ class Config(db.Model, PermissionsMixin):
         other=['read']
     )
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     theme = db.Column(db.String, nullable=False, default='light')
     view_mode = db.Column(db.String, nullable=False, default='grid')
 
-    user = db.relationship('User', back_populates='configs')
+    user = db.relationship(
+        'User',
+        foreign_keys=[user_id],
+        back_populates='config'
+    )
     

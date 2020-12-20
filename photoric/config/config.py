@@ -3,8 +3,6 @@ from os import environ, path
 from dotenv import load_dotenv
 from tempfile import mkdtemp
 
-from flask import current_app as app
-
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
 
@@ -52,4 +50,4 @@ class DevConfig(Config):
     FLASK_ENV = 'development'
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + path.join(app.instance_path,  'photoric.db')#basedir, 'photoric.db')
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:" #'sqlite:///' + path.join(basedir,  'photoric.db')

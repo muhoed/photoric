@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, url_for
 from flask_login import current_user
 
-from photoric.photoric.config.models import db, Navbar, NavbarItem, Menu, MenuItem
+from photoric.config.models import db, Navbar, NavbarItem, Menu, MenuItem
 
 # Blueprint initialization
 nav = Blueprint(
@@ -172,7 +172,7 @@ def nav_initial_setup():
             MenuItem(
                 name='share',
                 desc='Share selected albums/images',
-                item_target='share.share'
+                item_target='share.share',
                 icon_type='svg',
                 icon_src='share',
                 auth_req=True
@@ -183,7 +183,7 @@ def nav_initial_setup():
                 desc='Manage album',
                 icon_type='svg',
                 icon_src='book',
-                group_req='contributors'
+                group_req='contributors',
                 children=[
                     MenuItem(
                         name='add',

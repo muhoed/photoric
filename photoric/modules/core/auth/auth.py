@@ -22,7 +22,7 @@ login_manager = LoginManager()
 login_manager.login_view = "auth.signin"
 
 
-@before_after.before_app_first_request
+@auth.before_app_first_request
 def initial_setup():
     """ create admin user if not exist """
     if get_user_by_name('admin') is None:
