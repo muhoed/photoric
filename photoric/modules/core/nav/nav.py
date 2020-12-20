@@ -15,7 +15,8 @@ nav = Blueprint(
 @nav.before_app_first_request
 def nav_initial_setup():
     """ create base navigation elements """
-    if list_navbars() is None:
+    navbars = Navbar.query.all()
+    if navbars is None:
         # create top navbar
         topnavbar = Navbar(
             name='topbar',
@@ -229,65 +230,65 @@ def nav_initial_setup():
             )
         ]
         
-    db.session.add(topnavbar, topmenu, mainnavbar, mainmenu, actionnavbar)
-    db.session.commit()
+        db.session.add(topnavbar, topmenu, mainnavbar, mainmenu, actionnavbar)
+        db.session.commit()
                 
 
 """ initialize custom templates context processors """
 
 
 @nav.app_context_processor
-def list_navbars():
-    """ get a list of navbars available """
-    return Navbar.query.all()
+def navbar_processors():
+    def list_navbars():
+        """ get a list of navbars available """
+        return Navbar.query.all()
 
+    """
+    @nav.app_context_processor
+    def get_navbar_item_by_id(item_id):
+        ''' get NavbarItem object '''
+        return NavbarItem.query.filter_by(id=item_id).first()
+    """
+    def check_navbar_item(item_id):
+        """ check visibility and permissions of navbar item """
+        item = NavbarItem.query.filter_by(id=item_id).first()  # get_navbar_item_by_id(item_id)
+        return (item.visible and
+                (not item.anonym_only or not current_user.is_authenticated) and
+                (not item.auth_req or current_user.is_authenticated) and
+                (item.group_req is None or item.group_req in current_user.groups) and
+                (item.role_req is None or item.role_req in current_user.roles))
 
-@nav.app_context_processor
-def get_navbar_item_by_id(item_id):
-    """ get NavbarItem object """
-    return NavbarItem.query.filter_by(id=item_id).first()
+    def list_navbar_item_templates(item_id):
+        """ return a list of navbar items templates """
+        navbar = Navbar.query.filter_by(id=item_id).first()
+        templates = []
+        if navbar is not None:
+            for item in navbar.items:
+                item_template = url_for(
+                    'nav.templates', filename='/' + navbar.name + '/' + item.item_src
+                )
+                templates.append({item, item_template})
+        return templates
 
+    def get_menu_by_name(name):
+        """ get MenuItem object """
+        return Menu.query.filter_by(name=name).first()
 
-@nav.app_context_processor
-def check_navbar_item(item_id):
-    """ check visibility and permissions of navbar item """
-    item = get_navbar_item_by_id(item_id)
-    return (item.visible and
-            (not item.anonym_only or not current_user.is_authenticated) and
-            (not item.auth_req or current_user.is_authenticated) and
-            (item.group_req is None or item.group_req in current_user.groups) and
-            (item.role_req is None or item.role_req in current_user.roles))
+    def check_menu_item(item_id):
+        """ check visibility and permissions of menu item """
+        item = MenuItem.query.filter_by(id=item_id).first()
+        return (item.visible and
+                (not item.anonym_only or not current_user.is_authenticated) and
+                (not item.auth_req or current_user.is_authenticated) and
+                (item.group_req is None or item.group_req in current_user.groups) and
+                (item.role_req is None or item.role_req in current_user.roles))
 
-
-@nav.app_context_processor
-def list_navbar_item_templates(item_id):
-    """ return a list of navbar items templates """
-    navbar = Navbar.query.filter_by(id=item_id).first()
-    templates = []
-    if navbar is not None:
-        for item in navbar.items:
-            item_template = url_for(
-                'nav.templates', filename='/' + navbar.name + '/' + item.item_src
-            )
-            templates.append({item, item_template})
-    return templates
-
-
-@nav.app_context_processor
-def get_menu_by_name(name):
-    """ get MenuItem object """
-    return Menu.query.filter_by(name=name).first()
-
-
-@nav.app_context_processor
-def check_menu_item(item_id):
-    """ check visibility and permissions of menu item """
-    item = MenuItem.query.filter_by(id=item_id).first()
-    return (item.visible and
-            (not item.anonym_only or not current_user.is_authenticated) and
-            (not item.auth_req or current_user.is_authenticated) and
-            (item.group_req is None or item.group_req in current_user.groups) and
-            (item.role_req is None or item.role_req in current_user.roles))
+    return dict(list_navbars=list_navbars,
+                check_navbar_item=check_navbar_item,
+                list_navbar_item_templates=list_navbar_item_templates,
+                get_menu_by_name=get_menu_by_name,
+                check_menu_item=check_menu_item
+                )
 
 
 """ view routes """

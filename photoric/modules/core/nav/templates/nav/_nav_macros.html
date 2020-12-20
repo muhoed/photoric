@@ -1,15 +1,17 @@
 {% macro render_navbar(name = '') -%}
-    <div class = container-fluid">                   
-        {% for navbar in list_navbars %}
-            {% if name == '' or name == navbar.name %}            
-                <nav class="navbar {{ navbar.html_class }}" style="{{ navbar.html_style | safe }}" id="{{ navbar.name }}" name="{{ navbar.name }}">
+    <div class = container-fluid">
+         {% for navbar in list_navbars %}
+            <!--
+            {% if name == '' or name == navbar.name %}
+                <nav class="navbar {{ navbar.html_class }}" style="{{ navbar.html_style | safe }}" id="{{ navbar.name }}">
                     {% for navbar_item, navbar_item_template in list_navbar_item_templates(navbar.id) %}
                         {% if check_navbar_item(navbar_item.id) %}
                             {% include navbar_item_template %}
                         {% endif %}
-                    {% endfor %} 
+                    {% endfor %}
                 </nav>
-            {% endif %}
+            {% endif %} -->
+            {{ navbar.name }}
         {% endfor %}
     </div>
 
@@ -34,7 +36,7 @@
 
 {% macro navlink(item) -%}    
     <li class="nav-item">
-        <a class="nav-link" alt="" href="{{ url_for(item.item_target) }}" title="{{ item.desc }}">
+        <a class="nav-link" href="{{ url_for(item.item_target) }}" title="{{ item.desc }}">
 
             {% if item.icon is NULL %}
                 {{ capitalize(item.name) }}
@@ -45,7 +47,7 @@
                     {% set path = "{{ url_for('nav.static', filename = '/images/' + item.icon_type + '/' }}" %}
                 {% endif %}
                     <svg class="bi text-success" width="32" height="32" fill="currentColor">
-                        <use id="{{ item.name }}" name="{{ item.name }}" xlink:href="{{ url_for('nav.static', filename = path + item.icon_src) }}"/>
+                        <use id="{{ item.name }}" xlink:href="{{ url_for('nav.static', filename = path + item.icon_src) }}"/>
                     </svg>
              {% endif %}
       
@@ -65,14 +67,14 @@
                         {% set path = "{{ url_for('nav.static', filename = '/images/' + item.icon_type + '/' }}" %}
                     {% endif %}
                     <svg class="bi text-success" width="32" height="32" fill="currentColor">
-                        <use id="{{ item.name }}" name="{{ item.name }}" xlink:href="{{ url_for('nav.static', filename = path + item.icon_src) }}"/>
+                        <use id="{{ item.name }}" xlink:href="{{ url_for('nav.static', filename = path + item.icon_src) }}"/>
                     </svg>
                 {% endif %}
               </a>
               <div class="dropdown-menu">
                 {% for dropdown_item in item.children %}
                     {% if check_menu_item(dropdown_item.id) %}
-                        <a class="dropdown-item" href="{{ url_for('dropdown_item.item_target') }}">{{ captalize(dropdown_item.name) }}</a>
+                        <a class="dropdown-item" href="{{ url_for('dropdown_item.item_target') }}">{{ capitalize(dropdown_item.name) }}</a>
                     {% endif %}
                 {% endfor %}
               </div>

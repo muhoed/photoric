@@ -1,0 +1,10 @@
+flask
+flask_authorize
+flask_login
+flask_session
+flask_sqlalchemy
+flask_wtf
+datetime
+python-dotenv
+tempfile
+email-validator

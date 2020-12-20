@@ -1,12 +1,12 @@
 """Routes for user authentication"""
-from flask import Blueprint, request, render_template, redirect, abort
+from flask import Blueprint, request, render_template, redirect, abort, url_for, flash
 from flask_login import current_user, login_user, logout_user, LoginManager
 from urllib.parse import urlparse, urljoin
 from datetime import datetime
 
 from .forms.forms import LoginForm, SignupForm
 from .helper import get_user_by_name
-from photoric.config.models import User
+from photoric.config.models import db, User, Role, Group
 
 
 # Blueprint initialization
@@ -26,47 +26,41 @@ login_manager.login_view = "auth.signin"
 def initial_setup():
     """ create admin user if not exist """
     if get_user_by_name('admin') is None:
-        # create administrator role
-        admin_role = Role(
-            name='admin',
-            restrictions= {}
-        )
-        # create administrators group
-        admins_group = Group(
-            name='admins',
-            allowances='*'
-        )
-        # create private group
-        private_group = Group(
-            name='private',
-            allowances=dict(
-                gallery_items=['read'],
-                albums=['read'],
-                images=['read']
+
+        # create user and map it to respective groups and role
+        admin_user = User(name='admin')
+        admin_user.set_password('admin')
+        admin_user.roles = [
+            Role(
+                name='admin',
+                restrictions={}
             )
-        )
-        # create contributors group
-        contributors_group = Group(
-            name='contributors',
-            allowances=dict(
-                gallery_items=['read', 'create', 'update', 'revoke'],
-                albums=['read', 'create', 'update', 'revoke'],
-                images=['read', 'create', 'update', 'revoke']
+        ]
+        admin_user.groups = [
+            Group(
+                name='admins',
+                allowances='*'
+            ),
+            Group(
+                name='private',
+                allowances=dict(
+                    gallery_items=['read'],
+                    albums=['read'],
+                    images=['read']
+                )
+            ),
+            Group(
+                name='contributors',
+                allowances=dict(
+                    gallery_items=['read', 'create', 'update', 'revoke'],
+                    albums=['read', 'create', 'update', 'revoke'],
+                    images=['read', 'create', 'update', 'revoke']
+                )
             )
-        )
-        # create user and map it to respective group annd role
-        admin_user = User(name='admin', password=set_password('admin'))
-        admin_user.roles = [admin_role]
-        admin_user.groups = [admins_group, private_group, contributors_group]
+        ]
         
         # insert new user, its role and group to to database
-        db.session.add(
-            admin_role, \
-            admins_group, \
-            private_group, \
-            contributors_group, \
-            admin_user
-        )
+        db.session.add(admin_user)
         db.session.commit()
 
 
@@ -82,17 +76,17 @@ def signin():
     if current_user.is_authenticated:
         return redirect(url_for('views.index'))
     login_form = LoginForm()
-    if form.validate_on_submit():
-        user = get_user_by_name(name=form.name.data)
-        if user is None or not user.check_password(form.password.data):
+    if login_form.validate_on_submit():
+        user = get_user_by_name(name=login_form.name.data)
+        if user is None or not user.check_password(login_form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('auth.signin'))
-        login_user(user, remember=form.remember_me.data)
+        login_user(user, remember=login_form.remember_me.data)
         current_user.last_login = datetime.now
-        next = request.args.get('next')
-        if not is_safe_url(next):
-        	return abort(400)
-        return redirect(next or url_for('views.index'))
+        return_page = request.args.get('next')
+        if not is_safe_url(return_page):
+            return abort(400)
+        return redirect(return_page or url_for('views.index'))
     return render_template('auth/signin.html', title='Sign In', login_form=login_form)
 
 
@@ -106,7 +100,7 @@ def signup():
     """
     form = SignupForm()
     if form.validate_on_submit():
-        existing_user = get_user(name=form.name.data)
+        existing_user = get_user_by_name(name=form.name.data)
         if existing_user is None:
             user = User(
                 name=form.name.data,
@@ -125,6 +119,7 @@ def signup():
         title='New user registration',
         form=form
     )
+
 
 @auth.route('/logout')
 def logout():
@@ -150,5 +145,4 @@ def unauthorized():
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and \
-           ref_url.netloc == test_url.netloc
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc

@@ -3,17 +3,15 @@ import os
 from flask import Flask
 from flask_session import Session
 
-from .config import config
-
 
 def create_app(conf='dev'):
     # Initialize core application and load configuration
     app = Flask(__name__, instance_relative_config=True)
     
-    if conf is 'dev':
-        app.config.from_object(config.DevConfig)
+    if conf == 'dev':
+        app.config.from_object('photoric.config.config.DevConfig')
     else:
-        app.config.from_object(config.ProdConfig)
+        app.config.from_object('photoric.config.config.ProdConfig')
 
     # ensure the instance folder exists
     try:

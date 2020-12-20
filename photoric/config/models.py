@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from flask_login import UserMixin, LoginManager
+from flask_login import UserMixin
 from flask_authorize import RestrictionsMixin, AllowancesMixin
 from flask_authorize import PermissionsMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -50,6 +50,7 @@ class GalleryItem(db.Model, PermissionsMixin):
         other=['read']
     )
     id = db.Column(db.Integer, primary_key=True)
+    parent_id = db.Column(db.Integer)
     type = db.Column(db.String(50))
     name = db.Column(db.String(100), unique=True, nullable=True)
     description = db.Column(db.String(500), nullable=True)
@@ -135,7 +136,6 @@ class User(UserMixin, db.Model):
 
     roles = db.relationship('Role', secondary=UserRole)
     groups = db.relationship('Group', secondary=UserGroup)
-    config = db.relationship('Config', back_populates='user')
 
     def is_active(self):
     # return True if the user is active (was not banned)
@@ -244,13 +244,6 @@ class Config(db.Model, PermissionsMixin):
         other=['read']
     )
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     theme = db.Column(db.String, nullable=False, default='light')
     view_mode = db.Column(db.String, nullable=False, default='grid')
-
-    user = db.relationship(
-        'User',
-        foreign_keys=[user_id],
-        back_populates='config'
-    )
     

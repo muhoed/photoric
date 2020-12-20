@@ -20,7 +20,7 @@ class Config:
     TEMPLATES_FOLDER = 'templates'
 
     # Database
-    SQLALCHEMY_TRACK_MODIFICATION = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
 
     # Flask-Login
@@ -37,10 +37,14 @@ class Config:
 
 class ProdConfig(Config):
     """Production specific config."""
-    SECRET_KEY = environ.get('SECRET_KEY')
+    SECRET_KEY = 'production'  # environ.get('SECRET_KEY')
+
+    if not SECRET_KEY:
+        raise ValueError("No SECRET_KEY set for Flask application")
+
     FLASK_ENV = 'production'
-    DEBUG = False
-    TESTING = False
+    FLASK_DEBUG = False
+    FLASK_TESTING = False
     SQLALCHEMY_DATABASE_URI = environ.get('PROD_DATABASE_URI')
 
 
@@ -48,6 +52,6 @@ class DevConfig(Config):
     """Development specific config."""
     SECRET_KEY = 'development'
     FLASK_ENV = 'development'
-    DEBUG = True
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:" #'sqlite:///' + path.join(basedir,  'photoric.db')
+    FLASK_DEBUG = True
+    FLASK_TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"  # 'sqlite:///' + path.join(basedir,  'photoric.db')
