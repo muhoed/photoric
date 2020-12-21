@@ -1,6 +1,7 @@
 """Routes for user authentication"""
 from flask import Blueprint, request, render_template, redirect, abort, url_for, flash
 from flask_login import current_user, login_user, logout_user, LoginManager
+from flask_authorize import Authorize
 from urllib.parse import urlparse, urljoin
 from datetime import datetime
 
@@ -21,47 +22,8 @@ auth = Blueprint(
 login_manager = LoginManager()
 login_manager.login_view = "auth.signin"
 
-
-@auth.before_app_first_request
-def initial_setup():
-    """ create admin user if not exist """
-    if get_user_by_name('admin') is None:
-
-        # create user and map it to respective groups and role
-        admin_user = User(name='admin')
-        admin_user.set_password('admin')
-        admin_user.roles = [
-            Role(
-                name='admin',
-                restrictions={}
-            )
-        ]
-        admin_user.groups = [
-            Group(
-                name='admins',
-                allowances='*'
-            ),
-            Group(
-                name='private',
-                allowances=dict(
-                    gallery_items=['read'],
-                    albums=['read'],
-                    images=['read']
-                )
-            ),
-            Group(
-                name='contributors',
-                allowances=dict(
-                    gallery_items=['read', 'create', 'update', 'revoke'],
-                    albums=['read', 'create', 'update', 'revoke'],
-                    images=['read', 'create', 'update', 'revoke']
-                )
-            )
-        ]
-        
-        # insert new user, its role and group to to database
-        db.session.add(admin_user)
-        db.session.commit()
+# setup Authorize object
+authorize = Authorize()
 
 
 @auth.route('/signin', methods=['GET', 'POST'])

@@ -3,7 +3,10 @@ from flask import Blueprint, render_template, request
 from .helper import get_gallery_items
 
 
-views = Blueprint('views', __name__, url_prefix='/views')
+views = Blueprint('views', __name__,
+                  template_folder="templates",
+                  static_folder="static",
+                  url_prefix='/')
 
 
 @views.route("/", methods=['GET', 'POST'])

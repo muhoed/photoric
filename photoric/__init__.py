@@ -3,15 +3,17 @@ import os
 from flask import Flask
 from flask_session import Session
 
+from .config import config
+
 
 def create_app(conf='dev'):
     # Initialize core application and load configuration
-    app = Flask(__name__, instance_relative_config=True)
-    
+    app = Flask(__name__, instance_relative_config=False)
+
     if conf == 'dev':
-        app.config.from_object('photoric.config.config.DevConfig')
+        app.config.from_object(config.DevConfig)
     else:
-        app.config.from_object('photoric.config.config.ProdConfig')
+        app.config.from_object(config.ProdConfig)
 
     # ensure the instance folder exists
     try:
@@ -37,6 +39,10 @@ def create_app(conf='dev'):
     # Initialize Login manager
     from .modules.core.auth.auth import login_manager
     login_manager.init_app(app)
+
+    # Initialize permission control
+    from .modules.core.auth.auth import authorize
+    authorize.init_app(app)
     
     with app.app_context():
         # register blueprints with views
@@ -54,5 +60,9 @@ def create_app(conf='dev'):
 
         # create database
         db.create_all()
+
+        # initial setup
+        from .config.initial_setup import initial_setup
+        app.before_first_request(initial_setup)
 
         return app

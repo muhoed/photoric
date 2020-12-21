@@ -27,6 +27,10 @@ class Config:
     USE_SESSION_FOR_NEXT = True
     REMEMBER_COOKIE_DURATION = 10
 
+    # Flask-Authorize
+    AUTHORIZE_DISABLE_JINJA = False
+    AUTHORIZE_ALLOW_ANONYMOUS_ACTIONS = True
+
     # Recaptcha config for forms
     RECAPTCHA_PUBLIC_KEY = 'to be added'
     RECAPTCHA_PRIVATE_KEY = 'to be added'
@@ -54,4 +58,4 @@ class DevConfig(Config):
     FLASK_ENV = 'development'
     FLASK_DEBUG = True
     FLASK_TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"  # 'sqlite:///' + path.join(basedir,  'photoric.db')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # + path.join(basedir,  'photoric.db')

@@ -1,21 +1,28 @@
-{% macro render_navbar(name = '') -%}
+{% macro render_navbar(name = '') %}
     <div class = container-fluid">
-         {% for navbar in list_navbars %}
-            <!--
+         {% set navbars = list_navbars() %}
+         {% for navbar in navbars %}
             {% if name == '' or name == navbar.name %}
                 <nav class="navbar {{ navbar.html_class }}" style="{{ navbar.html_style | safe }}" id="{{ navbar.name }}">
-                    {% for navbar_item, navbar_item_template in list_navbar_item_templates(navbar.id) %}
-                        {% if check_navbar_item(navbar_item.id) %}
-                            {% include navbar_item_template %}
-                        {% endif %}
+                    {% set templates = list_navbar_item_templates(navbar.id) %}
+                    {% for navbar_item_id, navbar_item_template in templates %}
+                    {% set navbar_item = get_navbar_item_by_id(navbar_item_id) %}
+                    <p>{{ navbar_item_id }}  </p>
+                    <p>{{ navbar_item.id }} </p>
+                    <p>{{ navbar_item.name }}  </p>
+                    <p>{{ navbar_item_template }}  </p>
+                     <!--if check_navbar_item(navbar_item_id)  
+                            include navbar_item_template 
+                         endif -->
                     {% endfor %}
                 </nav>
-            {% endif %} -->
+            {% endif %}
             {{ navbar.name }}
         {% endfor %}
     </div>
+{% endmacro %}
 
-{% macro render_menu(navbar_item_id) -%}
+{% macro render_menu(navbar_item_id) %}
 <!-- get Menu object -->    
   {% set menu = get_menu_by_name(navbar_item.name) %}
         <div class="{{ menu.html_class }}" style="{{ menu.html_style }}" id="{{ '#' + capitalize(menu.name) }}">
@@ -34,11 +41,11 @@
         </div>
 {% endmacro %}
 
-{% macro navlink(item) -%}    
+{% macro navlink(item) %}    
     <li class="nav-item">
         <a class="nav-link" href="{{ url_for(item.item_target) }}" title="{{ item.desc }}">
 
-            {% if item.icon is NULL %}
+            {% if item.icon == None %}
                 {{ capitalize(item.name) }}
             {% else %}
                 {% if item.icon_type == 'svg' %}
@@ -53,12 +60,12 @@
       
         </a>
     </li>
-{%- endmacro %}
+{% endmacro %}
 
-{% macro navlink_dropdown(item) -%}
+{% macro navlink_dropdown(item) %}
     <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="{{ item.name + '-dropdown' }}"  data-toggle="dropdown">
-                {% if item.icon is NULL %}
+                {% if item.icon == None %}
                     {{ capitalize(item.name) }}
                 {% else %}
                     {% if item.icon_type == 'svg' %}

@@ -1,6 +1,6 @@
 <!-- Home page -->
 {% extends 'base_layout.html' %}
-<!--{% from '_views_macro.html' import render_view, render_contrib_view with context %}-->
+{% from 'views/_views_macro.html' import render_view, render_contrib_view with context %}
     
     {% block header %}
         <h1>{% block title %}{{ title }}{% endblock %}</h1>
@@ -10,17 +10,17 @@
         
         <!-- Public galleries / or albums icon images carousel here / or icons of all albums and images not included in albums if admin -->
 
-        {% if gallery_items is None %}
-            {% if not authorize.in_group('admins') or not authorize.in_group('contributors') %}
+        {% if gallery_items == None %}
+            {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
                 <p>There are no images uploaded to the site yet.</p>
             {% else %}
                 {% include 'upload_form.html' %}
             {% endif %}
         {% else %}
-            {% if not authorize.in_group('admins') or not authorize.in_group('contributors') %}
-                <!--{% render_view %}-->
+            {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
+                <p>to be done</p>
             {% else %}
-                <!--{% render_contrib_view %}-->
+                <p>to be done</p>
             {% endif %}
         {% endif %}
 
