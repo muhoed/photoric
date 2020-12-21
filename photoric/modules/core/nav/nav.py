@@ -22,6 +22,10 @@ def navbar_processors():
         """ get a list of navbars available """
         return Navbar.query.all()
 
+    def list_navbar_items(navbar_id):
+        """ get a list of navbars available """
+        return NavbarItem.query.filter_by(navbar_id=navbar_id).all()
+
     def get_navbar_item_by_id(item_id):
         """ get NavbarItem object """
         return NavbarItem.query.filter_by(id=item_id).first()
@@ -59,6 +63,7 @@ def navbar_processors():
                 (item.role_req is None or item.role_req in current_user.roles))
 
     return dict(list_navbars=list_navbars,
+                list_navbar_items=list_navbar_items,
                 get_navbar_item_by_id=get_navbar_item_by_id,
                 check_navbar_item=check_navbar_item,
                 list_navbar_item_templates=list_navbar_item_templates,

@@ -1,4 +1,4 @@
 <!-- call menu renderer for a particular menu -->
-{% from url_for('nav.templates', filename = '_nav_macros.html') import render_menu with context %}
+{% from "nav/_nav_macros.html" import render_menu with context %}
 
-{% render_menu(navbar_item.id) %}
+{% render_menu(navbar_item.name) %}

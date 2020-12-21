@@ -4,28 +4,27 @@
          {% for navbar in navbars %}
             {% if name == '' or name == navbar.name %}
                 <nav class="navbar {{ navbar.html_class }}" style="{{ navbar.html_style | safe }}" id="{{ navbar.name }}">
-                    {% set templates = list_navbar_item_templates(navbar.id) %}
-                    {% for navbar_item_id, navbar_item_template in templates %}
-                    {% set navbar_item = get_navbar_item_by_id(navbar_item_id) %}
-                    <p>{{ navbar_item_id }}  </p>
-                    <p>{{ navbar_item.id }} </p>
-                    <p>{{ navbar_item.name }}  </p>
-                    <p>{{ navbar_item_template }}  </p>
-                     <!--if check_navbar_item(navbar_item_id)  
-                            include navbar_item_template 
-                         endif -->
+                    {% set navbar_items = list_navbar_items(navbar.id) %}
+                    {% for navbar_item in navbar_items %}
+                        {% if check_navbar_item(navbar_item.id) %}
+                            {% if navbar_item.item_type == 'menu' %}
+                                {{ render_menu(navbar_item.name) }}
+                            {% else %}
+                                {% set navbar_item_template = "/nav/" + navbar.name + "/" + navbar_item.item_src %}
+                                {% include navbar_item_template %}
+                            {% endif %}
+                        {% endif %}
                     {% endfor %}
                 </nav>
             {% endif %}
-            {{ navbar.name }}
         {% endfor %}
     </div>
 {% endmacro %}
 
-{% macro render_menu(navbar_item_id) %}
+{% macro render_menu(menu_name) %}
 <!-- get Menu object -->    
-  {% set menu = get_menu_by_name(navbar_item.name) %}
-        <div class="{{ menu.html_class }}" style="{{ menu.html_style }}" id="{{ '#' + capitalize(menu.name) }}">
+  {% set menu = get_menu_by_name(menu_name) %}
+        <div class="{{ menu.html_class }}" style="{{ menu.html_style }}" id="{{ '#' + menu.name.capitalize() }}">
           <ul class="navbar-nav">
              <!-- insert menu items -->
                 {% for menu_item in menu.items %}
@@ -46,7 +45,7 @@
         <a class="nav-link" href="{{ url_for(item.item_target) }}" title="{{ item.desc }}">
 
             {% if item.icon == None %}
-                {{ capitalize(item.name) }}
+                {{ item.name.capitalize() }}
             {% else %}
                 {% if item.icon_type == 'svg' %}
                     {% set path = "{{ url_for('nav.static', filename = '/images/icons.svg#icon-' }}" %}
@@ -66,7 +65,7 @@
     <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="{{ item.name + '-dropdown' }}"  data-toggle="dropdown">
                 {% if item.icon == None %}
-                    {{ capitalize(item.name) }}
+                    {{ item.name.capitalize() }}
                 {% else %}
                     {% if item.icon_type == 'svg' %}
                         {% set path = "{{ url_for('nav.static', filename = '/images/icons.svg#icon-' }}" %}
@@ -81,7 +80,7 @@
               <div class="dropdown-menu">
                 {% for dropdown_item in item.children %}
                     {% if check_menu_item(dropdown_item.id) %}
-                        <a class="dropdown-item" href="{{ url_for('dropdown_item.item_target') }}">{{ capitalize(dropdown_item.name) }}</a>
+                        <a class="dropdown-item" href="{{ url_for('dropdown_item.item_target') }}">{{ dropdown_item.name.capitalize() }}</a>
                     {% endif %}
                 {% endfor %}
               </div>
