@@ -61,7 +61,7 @@
 
 {% macro navlink_dropdown(item) %}
     <li class="nav-item dropdown mr-1">
-              <a class="nav-link" href="#" id="{{ item.name + '-dropdown' }}"  data-toggle="dropdown">
+              <a class="nav-link" href="#" id="{{ item.name + '-dropdown' }}"  data-toggle="dropdown" data-display="static">
                 {% if item.icon_type == None %}
                     {{ item.name.capitalize() }}
                 {% else %}
