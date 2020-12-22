@@ -3,11 +3,11 @@
 {% extends 'base_layout.html' %}
     
     {% block header %}
-        <div class="container mt-5"><h4>{% block title %}{{ title }}{% endblock %}</h4></div>
+        <div class="container mt-2 mb-0 pb-0"><h4>{% block title %}{{ title }}{% endblock %}</h4></div>
     {% endblock %}            
         
     {% block main %}  
-        <div class="container mt-3">
+        <div class="container mt-auto">
             {% include "/auth/signin_form.html" %}
         </div>
 

@@ -2,9 +2,12 @@ import os
 
 from flask import Flask
 from flask_session import Session
+from flask_uploads import configure_uploads, patch_request_class
 
 from .config import config
 
+
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 def create_app(conf='dev'):
     # Initialize core application and load configuration
@@ -15,9 +18,14 @@ def create_app(conf='dev'):
     else:
         app.config.from_object(config.ProdConfig)
 
-    # ensure the instance folder exists
+    # ensure the instance and storage folders exist
     try:
         os.makedirs(app.instance_path)
+    except OSError:
+        pass
+
+    try:
+        os.makedirs(os.path.join(basedir, 'storage'))
     except OSError:
         pass
 
@@ -43,6 +51,11 @@ def create_app(conf='dev'):
     # Initialize permission control
     from .modules.core.auth.auth import authorize
     authorize.init_app(app)
+
+    # Initialize upload manager
+    from .modules.core.upload.upload import photos
+    configure_uploads(app, photos)
+    patch_request_class(app)
     
     with app.app_context():
         # register blueprints with views
@@ -51,12 +64,14 @@ def create_app(conf='dev'):
         from .modules.core.auth import auth
         from .modules.core.nav import nav
         from .modules.core.search import search
+        from .modules.core.upload import upload
 
         # app.register_blueprint(modfactory.modfactory)
         app.register_blueprint(views.views)
         app.register_blueprint(auth.auth)
         app.register_blueprint(nav.nav)
         app.register_blueprint(search.search)
+        app.register_blueprint(upload.upload)
 
         # create database
         db.create_all()

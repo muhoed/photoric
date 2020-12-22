@@ -46,7 +46,7 @@ def initial_setup():
         # create top navbar
         topnavbar = Navbar(
             name='topbar',
-            html_class='navbar navbar-expand-sm d-flex pt-1 pb-1'
+            html_class='navbar navbar-expand pt-1 pb-1'
         )
         # create top navbar items
         topnavbar.items = [
@@ -74,7 +74,8 @@ def initial_setup():
         if not get_menu_by_name('topmenu'):
             # create top menu
             topmenu = Menu(
-                name='topmenu'
+                name='topmenu',
+                html_class='navbar-nav'
             )
             # create topmenu items
             topmenu.items = [
@@ -127,7 +128,7 @@ def initial_setup():
             # create main navbar
             mainnavbar = Navbar(
                 name='mainbar',
-                html_class='navbar navbar-expand-sm pt-0 pb-0 bg-light navbar-light text-success font-weight-bold border border-left-0 border-right-0 border-success',
+                html_class='navbar navbar-expand-sm pt-0 pb-0 bg-light navbar-light d-flex border border-left-0 border-right-0 border-success',
                 html_style=''            )
             # create main navbar items
             mainnavbar.items = [
@@ -148,7 +149,7 @@ def initial_setup():
                 # create main menu
                 mainmenu = Menu(
                     name='mainmenu',
-                    html_class='collapse navbar-collapse justify-content-end'
+                    html_class='collapse navbar-collapse justify-content-end font-weight-bold'
                 )
                 # create mainmenu items
                 mainmenu.items = [

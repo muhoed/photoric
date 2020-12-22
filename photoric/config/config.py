@@ -35,6 +35,10 @@ class Config:
     RECAPTCHA_PUBLIC_KEY = 'to be added'
     RECAPTCHA_PRIVATE_KEY = 'to be added'
 
+    # Flask-Uploads
+    UPLOADED_PHOTOS_DEST = path.join(basedir, 'storage')  # os.getcwd() + '/app/tmp/'
+    MAX_CONTENT_LENGHT = 256*1024*1024
+
     # Views specific variables
     SITE_NAME = 'Photoric'
 

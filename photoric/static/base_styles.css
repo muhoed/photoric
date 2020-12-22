@@ -1,3 +1,8 @@
-.dropdown-toggle::after { 
-            content: none; 
-        }
+.nav-link img {
+    width: 24px;
+    height: 24px;
+    }
+    
+#Mainmenu {
+    font-size:1.5em;
+    }

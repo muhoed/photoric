@@ -13,13 +13,13 @@ from wtforms.validators import (
 class SignupForm(FlaskForm):
     """User Sign-Up Form."""
     name = StringField(
-        'Name',
+        'Name:',
         validators=[InputRequired(message='Please enter name'),
                     Length(min=3, message='Name must be at least 3 symbols long')
         ]
     )
     email = EmailField(
-        'Email',
+        'Email:',
         validators=[InputRequired(message='Please enter email address'),
                     Email(
                         message='Please enter valid email address',
@@ -28,7 +28,7 @@ class SignupForm(FlaskForm):
         ]
     )
     password = PasswordField(
-        'Password',
+        'Password:',
         validators=[InputRequired(message='Please enter password'),
                     Regexp('(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*(&|%|#)).{8,}',
                            message='Password must contain at least one number, \
@@ -39,28 +39,28 @@ class SignupForm(FlaskForm):
         ]
     )
     password_confirm = PasswordField(
-        'Password confirmation',
+        'Confirm password:',
         validators=[InputRequired(message='Please enter your password again'),
                     EqualTo('password', message='Password confirmation does not match password')
         ]
     )
-    recaptcha = RecaptchaField()
+    # recaptcha = RecaptchaField()
 
     submit = SubmitField('Sign Up')
 
 class LoginForm(FlaskForm):
     """User Sign-In Form."""
     name = StringField(
-        'Username',
+        'Username:',
         validators=[InputRequired(message='Please enter username')]
     )
     password = PasswordField(
-        'Password',
+        'Password:',
         validators=[InputRequired(message='Please enter password')]
     )
     remember_me = BooleanField(
-        'Remember Me'
+        'Remember me'
     )
-    recaptcha = RecaptchaField()
+    # recaptcha = RecaptchaField()
     
     submit = SubmitField('Sign In')

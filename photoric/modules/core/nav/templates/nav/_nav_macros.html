@@ -1,5 +1,4 @@
 {% macro render_navbar(name = '') %}
-    <!--<div class = container-fluid">-->
          {% set navbars = list_navbars() %}
          {% for navbar in navbars %}
             {% if name == '' or name == navbar.name %}
@@ -18,7 +17,6 @@
                 </nav>
             {% endif %}
         {% endfor %}
-    <!--</div>-->
 {% endmacro %}
 
 {% macro render_menu(menu_name) %}
@@ -52,7 +50,7 @@
                 {% else %}
                     {% set path = url_for('nav.static', filename = 'images/' + item.icon_src + '.svg') %}
                 {% endif %}
-                    <img id="{{ item.name }}" src="{{ path }}">
+                    <img width="24" height="24" id="{{ item.name }}" src="{{ path }}">
              {% endif %}
       
         </a>
@@ -61,7 +59,7 @@
 
 {% macro navlink_dropdown(item) %}
     <li class="nav-item dropdown mr-1">
-              <a class="nav-link" href="#" id="{{ item.name + '-dropdown' }}"  data-toggle="dropdown" data-display="static">
+             <a class="nav-link" href="#" id="{{ item.name + '-dropdown' }}" title="{{ item.desc }}" role="button" data-toggle="dropdown">
                 {% if item.icon_type == None %}
                     {{ item.name.capitalize() }}
                 {% else %}
@@ -70,10 +68,10 @@
                     {% else %}
                         {% set path = url_for('nav.static', filename = 'images/' + item.icon_src + '.svg') %}
                     {% endif %}
-                    <img id="{{ item.name }}" src="{{ path }}">
+                    <img width="24" height="24" id="{{ item.name }}" src="{{ path }}">
                 {% endif %}
               </a>
-              <div class="dropdown-menu">
+              <div class="dropdown-menu dropdown-menu-right">
                 {% for dropdown_item in item.children %}
                     {% if check_menu_item(dropdown_item.id) %}
                         <a class="dropdown-item" href="{{ url_for(dropdown_item.item_target) }}">{{ dropdown_item.name.capitalize() }}</a>

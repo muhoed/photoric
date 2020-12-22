@@ -1,0 +1,16 @@
+<!-- Upload form -->
+<form action="{{ url_for('upload.upload') }}" method="POST">
+    {{ upload_form.csrf_token }}
+    {{ upload_form.photo }}
+        
+        {% if upload_form.photo.errors %}
+            <ul class="errors">
+                {% for error in upload_form.photo.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    
+    {{ form.submit(class_="btn btn-success") }}
+
+</form>
