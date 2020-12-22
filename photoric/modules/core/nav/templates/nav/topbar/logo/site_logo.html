@@ -1,3 +1,5 @@
 <!-- Brand -->
-<a class="navbar-brand" href="{{ url_for(navbar_item.item_target) }}">
-              Ph<span><img src="{{ url_for('nav.static', filename='/images' + navbar_item.icon_type + '/' + navbar_item.icon_src) }}" alt="oto"></span>ric</a>
+<div class="mr-auto">
+    <a class="navbar-brand text-success font-weight-bold" href="{{ url_for(navbar_item.item_target) }}">
+              <h2>Ph<span><img src="{{ url_for('nav.static', filename='/images/' + navbar_item.icon_type + '/' + navbar_item.icon_src) }}" alt="oto"></span>ric</h2></a>
+</div>

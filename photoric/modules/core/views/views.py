@@ -6,7 +6,8 @@ from .helper import get_gallery_items
 views = Blueprint('views', __name__,
                   template_folder="templates",
                   static_folder="static",
-                  url_prefix='/')
+                  url_prefix='/',
+                  static_url_path='/views/static')
 
 
 @views.route("/", methods=['GET', 'POST'])
@@ -29,3 +30,8 @@ def index():
         # if user is admin gallery_items is not None load admin version of the page
 
         # if user is admin and get view items is None load dropzone page to upload
+
+
+@views.route("/about")
+def about():
+    return render_template('about.html')

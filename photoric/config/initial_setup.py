@@ -46,7 +46,7 @@ def initial_setup():
         # create top navbar
         topnavbar = Navbar(
             name='topbar',
-            html_class='navbar navbar-expand-sm'
+            html_class='navbar navbar-expand-sm d-flex pt-1 pb-1'
         )
         # create top navbar items
         topnavbar.items = [
@@ -58,13 +58,13 @@ def initial_setup():
                 icon_src='favicon.ico'
             ),
             NavbarItem(
+                name='topmenu',
+                item_type='menu'
+            ),
+            NavbarItem(
                 name='simple_search',
                 item_type='form',
                 item_target='search.simple_search'
-            ),
-            NavbarItem(
-                name='topmenu',
-                item_type='menu'
             )
         ]
 
@@ -74,8 +74,7 @@ def initial_setup():
         if not get_menu_by_name('topmenu'):
             # create top menu
             topmenu = Menu(
-                name='topmenu',
-                html_class='justify-content-end'
+                name='topmenu'
             )
             # create topmenu items
             topmenu.items = [
@@ -128,8 +127,8 @@ def initial_setup():
             # create main navbar
             mainnavbar = Navbar(
                 name='mainbar',
-                html_class='navbar navbar-expand-sm bg-light navbar-light'
-            )
+                html_class='navbar navbar-expand-sm pt-0 pb-0 bg-light navbar-light text-success font-weight-bold border border-left-0 border-right-0 border-success',
+                html_style=''            )
             # create main navbar items
             mainnavbar.items = [
                 NavbarItem(

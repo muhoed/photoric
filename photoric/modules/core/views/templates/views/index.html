@@ -3,16 +3,16 @@
 {% from 'views/_views_macro.html' import render_view, render_contrib_view with context %}
     
     {% block header %}
-        <h1>{% block title %}{{ title }}{% endblock %}</h1>
+        {% block title %}{{ title }}{% endblock %}
     {% endblock %}            
         
     {% block main %}  
         
         <!-- Public galleries / or albums icon images carousel here / or icons of all albums and images not included in albums if admin -->
 
-        {% if gallery_items == None %}
+        {% if gallery_items == [] %}
             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
-                <p>There are no images uploaded to the site yet.</p>
+                <div class="bg-light p-2 text-center">There are no images uploaded to the site yet.</div>
             {% else %}
                 {% include 'upload_form.html' %}
             {% endif %}

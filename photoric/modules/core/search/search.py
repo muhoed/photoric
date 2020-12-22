@@ -9,7 +9,8 @@ search = Blueprint(
     'search', __name__,
     url_prefix='/search',
     template_folder='templates',
-    static_folder='static'
+    static_folder='static',
+    static_url_path='/static'
 )
 
 

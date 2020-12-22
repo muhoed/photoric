@@ -3,13 +3,15 @@
 {% extends 'base_layout.html' %}
     
     {% block header %}
-        <h1>{% block title %}{{ title }}{% endblock %}
+        <div class="container mt-5"><h4>{% block title %}{{ title }}{% endblock %}</h4></div>
     {% endblock %}            
         
     {% block main %}  
-        {% include "/modules/core/auth/forms/templates/signin_form.html" %}
+        <div class="container mt-3">
+            {% include "/auth/signin_form.html" %}
+        </div>
 
-       <div>
+       <div class="container mt-1">
          <span>Do not have an account?</span>
          <a href="{{ url_for('auth.signup') }}">Sign up.</a>        
        </div>

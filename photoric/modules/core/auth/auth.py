@@ -5,7 +5,7 @@ from flask_authorize import Authorize
 from urllib.parse import urlparse, urljoin
 from datetime import datetime
 
-from .forms.forms import LoginForm, SignupForm
+from .forms import LoginForm, SignupForm
 from .helper import get_user_by_name
 from photoric.config.models import db, User, Role, Group
 
@@ -15,7 +15,8 @@ auth = Blueprint(
     'auth', __name__,
     url_prefix='/auth',
     template_folder='templates',
-    static_folder='static'
+    static_folder='static',
+    static_url_path='/static'
 )
 
 # setup LoginManager object
@@ -49,7 +50,7 @@ def signin():
         if not is_safe_url(return_page):
             return abort(400)
         return redirect(return_page or url_for('views.index'))
-    return render_template('auth/signin.html', title='Sign In', login_form=login_form)
+    return render_template('auth/signin.html', title='Sign In', form=login_form)
 
 
 @auth.route('/signup', methods=['GET', 'POST'])

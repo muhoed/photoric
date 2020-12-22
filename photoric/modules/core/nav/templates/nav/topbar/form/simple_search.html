@@ -1,12 +1,17 @@
 <!-- Simple search form -->
-<form class="form-inline" action="url_for(navbar_item.item_target)" method="POST">
-     
+<div class="collapse" id="collapsibleSearchForm">
+    <form class="form-inline" action="{{ url_for(navbar_item.item_target) }}" method="POST">
         {{ search_form.csrf_token }}
-        {{ search_form.text(class_="form-control mr-sm-2", placeholder=navbar_item.name) }}
-                    
-        <div class="btn btn-success">
-            {{ search_form.submit }}
+        <div class="input-group">
+            {{ search_form.text(class_="form-control") }}
         </div>
-</form>
-
+        {{ search_form.submit(class_="btn btn-success") }}     
+    </form>
+</div>
+<a href="#collapsibleSearchForm" data-toggle="collapse">
+<img src="{{ url_for('search.static', filename='images/search.svg') }}">
+    {% raw %} <svg class="bi bi-search" width="16" height="16" fill="currentColor">
+        <use xlink:href="{{ url_for('search.static', filename='images/search.svg') }}"/>
+    </svg> {% endraw %}
+</a>
  
