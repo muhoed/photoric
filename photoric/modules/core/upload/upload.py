@@ -1,6 +1,7 @@
 """Routes for user authentication"""
 from flask import Blueprint
 from flask_uploads import UploadSet, IMAGES
+from flask_dropzone import Dropzone
 
 from .forms import UploadForm
 
@@ -14,8 +15,9 @@ upload = Blueprint(
     static_url_path='/static'
 )
 
-# setup upload set instance
+# setup upload set and dropzone instances
 photos = UploadSet('photos', IMAGES)
+dropzone = Dropzone()
 
 
 

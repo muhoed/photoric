@@ -52,11 +52,12 @@ def create_app(conf='dev'):
     from .modules.core.auth.auth import authorize
     authorize.init_app(app)
 
-    # Initialize upload manager
-    from .modules.core.upload.upload import photos
+    # Initialize upload managers
+    from .modules.core.upload.upload import photos, dropzone
     configure_uploads(app, photos)
-    app.cconfig('UPLOADED_PHOTOS_DEST') = os.path.join(app.instance.path, PHOTO_STORAGE)
+    app.config('UPLOADED_PHOTOS_DEST') = os.path.join(app.instance.path, PHOTO_STORAGE)
     patch_request_class(app)
+    dropzone.init_app(app)
     
     with app.app_context():
         # register blueprints with views
