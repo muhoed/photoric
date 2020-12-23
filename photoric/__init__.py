@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from flask_session import Session
 from flask_uploads import configure_uploads, patch_request_class
+from flask_wtf.csrf import CSRFProtect
 
 from .config import config
 
@@ -11,7 +12,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 def create_app(conf='dev'):
     # Initialize core application and load configuration
-    app = Flask(__name__, instance_relative_config=False)
+    app = Flask(__name__, instance_relative_config=True)
 
     if conf == 'dev':
         app.config.from_object(config.DevConfig)
@@ -25,7 +26,7 @@ def create_app(conf='dev'):
         pass
 
     try:
-        os.makedirs(app.instance.path, 'storage')
+        os.makedirs(os.path.join(app.instance_path, 'storage'))
     except OSError:
         pass
 
@@ -55,9 +56,10 @@ def create_app(conf='dev'):
     # Initialize upload managers
     from .modules.core.upload.upload import photos, dropzone
     configure_uploads(app, photos)
-    app.config('UPLOADED_PHOTOS_DEST') = os.path.join(app.instance.path, PHOTO_STORAGE)
+    app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(app.instance_path, 'storage')
     patch_request_class(app)
     dropzone.init_app(app)
+    csrf = CSRFProtect(app)
     
     with app.app_context():
         # register blueprints with views

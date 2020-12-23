@@ -9,7 +9,7 @@
                             {% if navbar_item.item_type == 'menu' %}
                                 {{ render_menu(navbar_item.name) }}
                             {% else %}
-                                {% set navbar_item_template = "/nav/" + navbar.name + "/" + navbar_item.item_src %}
+                                {% set navbar_item_template = "/nav/" + navbar.name + navbar_item.item_src %}
                                 {% include navbar_item_template %}
                             {% endif %}
                         {% endif %}
@@ -45,12 +45,8 @@
             {% if item.icon_type == None %}
                 {{ item.name.capitalize() }}
             {% else %}
-                {% if item.icon_type == 'svg' %}
-                    {% set path = url_for('nav.static', filename = 'images/' + item.icon_src + '.svg') %}
-                {% else %}
-                    {% set path = url_for('nav.static', filename = 'images/' + item.icon_src + '.svg') %}
-                {% endif %}
-                    <img width="24" height="24" id="{{ item.name }}" src="{{ path }}">
+                {% set path = url_for('nav.static', filename = 'images/' + item.icon_src + '.' + item.icon_type) %}
+                <img width="24" height="24" id="{{ item.name }}" src="{{ path }}">
              {% endif %}
       
         </a>
@@ -63,11 +59,7 @@
                 {% if item.icon_type == None %}
                     {{ item.name.capitalize() }}
                 {% else %}
-                    {% if item.icon_type == 'svg' %}
-                        {% set path = url_for('nav.static', filename = 'images/' + item.icon_src + '.svg') %}
-                    {% else %}
-                        {% set path = url_for('nav.static', filename = 'images/' + item.icon_src + '.svg') %}
-                    {% endif %}
+                    {% set path = url_for('nav.static', filename = 'images/' + item.icon_src + '.' + item.icon_type) %}
                     <img width="24" height="24" id="{{ item.name }}" src="{{ path }}">
                 {% endif %}
               </a>

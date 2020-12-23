@@ -1,0 +1,5 @@
+<!-- Upload images button -->
+<a class="nav-link" href="{{ navbar_item.item_target }}" id="{{ navbar_item.name.capitalize() }}" title="Upload images">
+    {% set path = url_for('nav.static', filename = 'images/' + navbar_item.icon_src + '.' + navbar_item.icon_type) %}
+    <img width="24" height="24" id="{{ navbar_item.name }}" src="{{ path }}">
+</a>

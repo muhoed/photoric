@@ -35,9 +35,13 @@ class Config:
     RECAPTCHA_PUBLIC_KEY = 'to be added'
     RECAPTCHA_PRIVATE_KEY = 'to be added'
 
-    # Flask-Uploads
-    PHOTO_STORAGE = 'storage'  # os.getcwd() + '/app/tmp/'
-    MAX_CONTENT_LENGHT = 256*1024*1024
+    # Flask-Uploads and Flask-Dropzone
+    UPLOADS_DEFAULT_DEST = path.join('instance', environ.get('PHOTO_STORAGE'))
+    MAX_CONTENT_LENGTH = 256 * 1024 * 1024
+    DROPZONE_ALLOWED_FILE_TYPE = 'image'
+    DROPZONE_UPLOAD_MULTIPLE = True
+    DROPZONE_PARALLEL_UPLOADS = 5
+    DROPZONE_ENABLE_CSRF = True
 
     # Views specific variables
     SITE_NAME = 'Photoric'
@@ -53,7 +57,7 @@ class ProdConfig(Config):
     FLASK_ENV = 'production'
     FLASK_DEBUG = False
     FLASK_TESTING = False
-    SQLALCHEMY_DATABASE_URI = environ.get('PROD_DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = path.join('instance', environ.get('PROD_DATABASE_URI'))
 
 
 class DevConfig(Config):

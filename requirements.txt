@@ -1,10 +1,13 @@
 flask
 flask_authorize
+flask_dropzone
 flask_login
 flask_session
 flask_sqlalchemy
 flask_wtf
+flask_uploads
 datetime
 python-dotenv
 tempfile
 email-validator
+wtforms

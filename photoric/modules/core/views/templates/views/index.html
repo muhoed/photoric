@@ -2,6 +2,11 @@
 {% extends 'base_layout.html' %}
 {% from 'views/_views_macro.html' import render_view, render_contrib_view with context %}
     
+    {% block head %}
+        {{ super() }}
+        {{ dropzone.load_css() }}
+    {% endblock %}
+
     {% block header %}
         {% block title %}{{ title }}{% endblock %}
     {% endblock %}            
@@ -14,7 +19,7 @@
             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
                 <div class="bg-light p-2 text-center">There are no images uploaded to the site yet.</div>
             {% else %}
-                {% include 'upload_form.html' %}
+                {% include 'upload/upload_form.html' %}
             {% endif %}
         {% else %}
             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
@@ -24,4 +29,9 @@
             {% endif %}
         {% endif %}
 
+    {% endblock %}
+
+    {% block scripts %}
+        {{ super() }}
+        {{ dropzone.load_js() }}
     {% endblock %}

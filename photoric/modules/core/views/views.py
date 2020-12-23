@@ -25,7 +25,7 @@ def index():
         gallery_items = get_gallery_items('no', '')
 
         # if user is not admin show gallery items if any
-        return render_template('views/index.html', title='home page', gallery_items=gallery_items)
+        return render_template('views/index.html', title='Home page', gallery_items=gallery_items)
 
         # if user is admin gallery_items is not None load admin version of the page
 

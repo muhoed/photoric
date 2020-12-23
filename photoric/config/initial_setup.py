@@ -129,16 +129,35 @@ def initial_setup():
             mainnavbar = Navbar(
                 name='mainbar',
                 html_class='navbar navbar-expand-sm pt-0 pb-0 bg-light navbar-light d-flex border border-left-0 border-right-0 border-success',
-                html_style=''            )
+            )
             # create main navbar items
             mainnavbar.items = [
                 NavbarItem(
                     name='collapse_toggle_button',
                     item_type='button',
+                    item_target='mainmenu'
                 ),
                 NavbarItem(
                     name='mainmenu',
                     item_type='menu',
+                ),
+                NavbarItem(
+                    name='upload_button',
+                    item_type='button',
+                    item_target='#',
+                    icon_type='svg',
+                    icon_src='upload',
+                    auth_req=True,
+                    group_req='contributors'
+                ),
+                NavbarItem(
+                    name='settings_button',
+                    item_type='button',
+                    item_target='#',
+                    icon_type='svg',
+                    icon_src='gear',
+                    auth_req=True,
+                    group_req='admins'
                 )
             ]
 
@@ -146,10 +165,10 @@ def initial_setup():
             db.session.commit()
 
             if not get_menu_by_name('mainmenu'):
-                # create main menu
+                # create first part of main menu
                 mainmenu = Menu(
                     name='mainmenu',
-                    html_class='collapse navbar-collapse justify-content-end font-weight-bold'
+                    html_class='collapse navbar-collapse flex-grow-1 font-weight-bold'
                 )
                 # create mainmenu items
                 mainmenu.items = [
@@ -164,29 +183,9 @@ def initial_setup():
                         item_target='views.index'
                     ),
                     MenuItem(
-                        name='upload',
-                        desc='Upload images',
-                        item_target='views.index',
-                        icon_type='svg',
-                        icon_src='upload',
-                        auth_req=True,
-                        group_req='contributor'
-                    ),
-                    MenuItem(
-                        name='settings',
-                        desc='Configure site behavior',
-                        item_target='views.index',
-                        icon_type='svg',
-                        icon_src='gear',
-                        auth_req=True,
-                        group_req='admin'
-                    ),
-                    MenuItem(
                         name='contact',
                         desc='Contact form',
                         item_target='views.index',
-                        icon_type='svg',
-                        icon_src='envelope',
                         auth_req=True
                     )
                 ]
