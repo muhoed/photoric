@@ -25,7 +25,7 @@ def create_app(conf='dev'):
         pass
 
     try:
-        os.makedirs(os.path.join(basedir, 'storage'))
+        os.makedirs(app.instance.path, 'storage')
     except OSError:
         pass
 
@@ -55,6 +55,7 @@ def create_app(conf='dev'):
     # Initialize upload manager
     from .modules.core.upload.upload import photos
     configure_uploads(app, photos)
+    app.cconfig('UPLOADED_PHOTOS_DEST') = os.path.join(app.instance.path, PHOTO_STORAGE)
     patch_request_class(app)
     
     with app.app_context():

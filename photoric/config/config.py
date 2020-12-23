@@ -36,7 +36,7 @@ class Config:
     RECAPTCHA_PRIVATE_KEY = 'to be added'
 
     # Flask-Uploads
-    UPLOADED_PHOTOS_DEST = path.join(basedir, 'storage')  # os.getcwd() + '/app/tmp/'
+    PHOTO_STORAGE = 'storage'  # os.getcwd() + '/app/tmp/'
     MAX_CONTENT_LENGHT = 256*1024*1024
 
     # Views specific variables
@@ -45,7 +45,7 @@ class Config:
 
 class ProdConfig(Config):
     """Production specific config."""
-    SECRET_KEY = 'production'  # environ.get('SECRET_KEY')
+    SECRET_KEY = environ.get('SECRET_KEY')
 
     if not SECRET_KEY:
         raise ValueError("No SECRET_KEY set for Flask application")
