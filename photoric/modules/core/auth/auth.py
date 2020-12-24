@@ -42,13 +42,14 @@ def signin():
     if login_form.validate_on_submit():
         user = get_user_by_name(name=login_form.name.data)
         if user is None or not user.check_password(login_form.password.data):
-            flash('Invalid username or password')
+            flash(u'Invalid username or password', 'danger')
             return redirect(url_for('auth.signin'))
         login_user(user, remember=login_form.remember_me.data)
         current_user.last_login = datetime.now
         return_page = request.args.get('next')
         if not is_safe_url(return_page):
-            return abort(400)
+            return redirect(url_for('views.index'))
+        flash(u'You were successfully logged in as ' + current_user.name, 'success')
         return redirect(return_page or url_for('views.index'))
     return render_template('auth/signin.html', title='Sign In', form=login_form)
 
@@ -69,13 +70,13 @@ def signup():
                 name=form.name.data,
                 email=form.email.data,
             )
-            user.hash_password(form.password.data)
+            user.set_password(form.password.data)
             db.session.add(user)
             db.session.commit()  # Create new user
             login_user(user)  # Log in as newly created user
-            flash('Congratulation! You were successfully registered!')
+            flash(u'Congratulation! You were successfully registered!', 'success')
             return redirect(url_for('views.index'))
-        flash('A user already exists with that name.')
+        flash(u'A user already exists with that name.', 'warning')
 
     return render_template(
         'auth/signup.html',
@@ -87,6 +88,7 @@ def signup():
 @auth.route('/logout')
 def logout():
     logout_user()
+    flash(u'You were logged out', 'info')
     return redirect(url_for('views.index'))
 
     
@@ -101,7 +103,7 @@ def load_user(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     """Redirect unauthorized users to Login page."""
-    flash('You must be logged in to view that page.')
+    flash(u'You must be logged in to view that page.', 'warning')
     return redirect(url_for('auth.signin'))
 
 

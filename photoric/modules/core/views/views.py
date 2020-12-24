@@ -8,7 +8,7 @@ views = Blueprint('views', __name__,
                   static_folder="static",
                   url_prefix='/',
                   static_url_path='/views/static')
-
+    
 
 @views.route("/", methods=['GET', 'POST'])
 @views.route("/index", methods=['GET', 'POST'])

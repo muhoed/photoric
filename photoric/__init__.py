@@ -61,6 +61,7 @@ def create_app(conf='dev'):
     dropzone.init_app(app)
     csrf = CSRFProtect(app)
     
+    
     with app.app_context():
         # register blueprints with views
         # from .modules.core.modfactory import modfactory
@@ -79,6 +80,11 @@ def create_app(conf='dev'):
 
         # create database
         db.create_all()
+
+        # filters and variables for jinja2 templates
+        @app.template_global()
+        def site_name():
+            return app.config['SITE_NAME']
 
         # initial setup
         from .config.initial_setup import initial_setup

@@ -19,7 +19,7 @@
 
         <link href="{{ url_for('static', filename='base_styles.css') }}" rel="stylesheet">
 
-        <title>{{ SITE_NAME }} - {% block title %}{% endblock %}</title>
+        <title>{{ site_name() + ' - ' + title }}</title>
         {% endblock %}
     </head>
 
@@ -29,20 +29,24 @@
         {% from "nav/_nav_macros.html" import render_navbar with context %}
         {{ render_navbar() }}
         
+            <header class="m-3">
+                       
         <!-- show flash messages if any -->
-        
-            <header class="p-3">
-                {% if get_flashed_messages() %}
-                        <div class="alert alert-primary border text-center" role="alert">
-                            {{ get_flashed_messages() | join(" ") }}
-                        </div>
-                    </header>
-                {% endif %}
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert {{ 'alert-' + category }} border text-center" role="alert">
+                                {{ message }}
+                            </div>
+                         {% endfor %}
+                    {% endif %}
+                 {% endwith %}
                         
-                <p>{% block header %}{% endblock %}</p>
+                <div>{% block header %}{% endblock %}</div>
             </header>
             <!-- main content -->
-            <content>
+            <content class="d-flex">
                 
                     {% block sidebar %}{% endblock %}
                         

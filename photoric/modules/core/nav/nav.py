@@ -15,7 +15,7 @@ nav = Blueprint(
 )
 
 
-""" initialize custom templates context processors """
+""" initialize custom context processors and variables to use in templates"""
 
 
 @nav.app_context_processor

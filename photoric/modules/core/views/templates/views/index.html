@@ -6,18 +6,18 @@
         {{ super() }}
         {{ dropzone.load_css() }}
     {% endblock %}
-
+    
     {% block header %}
-        {% block title %}{{ title }}{% endblock %}
-    {% endblock %}            
-        
+        <div class="text-success"><h4>{{ title }}</h4></div>          
+    {% endblock %}
+    
     {% block main %}  
         
         <!-- Public galleries / or albums icon images carousel here / or icons of all albums and images not included in albums if admin -->
 
         {% if gallery_items == [] %}
             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
-                <div class="bg-light p-2 text-center">There are no images uploaded to the site yet.</div>
+                <div class="flex-grow-1 h-100 bg-light p-2 text-center">There are no images uploaded to the site yet.</div>
             {% else %}
                 {% include 'upload/upload_form.html' %}
             {% endif %}

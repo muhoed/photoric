@@ -1,15 +1,14 @@
 <!-- Sign-Up form -->
-
-<form action="url_for('auth.signup')" method="POST">
+<form action="{{ url_for('auth.signup') }}" method="POST">
             {{ form.csrf_token }}
 
             <div class="form-group name">
                 {{ form.name.label }}
-                {{ form.name(class_="form-control", placeholder="Your nickname for this website" }}
+                {{ form.name(class_="form-control", placeholder="Your nickname for this website") }}
                 {% if form.name.errors %}
                     <ul class="errors">
                         {% for error in form.name.errors %}
-                            <li>{{ error }}</li>
+                            <li class="text-danger">{{ error }}</li>
                         {% endfor %}
                     </ul>
                 {% endif %}
@@ -21,7 +20,7 @@
                 {% if form.email.errors %}
                     <ul class="errors">
                         {% for error in form.email.errors %}
-                            <li>{{ error }}</li>
+                            <li class="text-danger">{{ error }}</li>
                         {% endfor %}
                     </ul>
                 {% endif %}
@@ -33,29 +32,29 @@
                 {% if form.password.errors %}
                     <ul class="errors">
                         {% for error in form.password.errors %}
-                            <li>{{ error }}</li>
+                            <li class="text-danger">{{ error }}</li>
                         {% endfor %}
                     </ul>
                 {% endif %}
             </div>
 
             <div class="form-group confirm">
-                {{ form.confirm.label }}
-                {{ form.confirm(class_="form-control", placeholder='confirm password') }}
-                {% if form.confirm.errors %}
+                {{ form.password_confirm.label }}
+                {{ form.password_confirm(class_="form-control", placeholder='confirm password') }}
+                {% if form.password_confirm.errors %}
                     <ul class="errors">
-                        {% for error in form.confirm.errors %}
-                            <li>{{ error }}</li>
+                        {% for error in form.password_confirm.errors %}
+                            <li class="text-danger">{{ error }}</li>
                         {% endfor %}
                     </ul>
                 {% endif %}
             </div>
-
+<!--
             <div class="form-group recaptcha">
                 {{ form.recaptcha }}
             </div>
-
-            <div class="btn btn-success">
-                {{ form.submit }}
-            </div>
+-->
+         
+                {{ form.submit(class_="btn btn-success") }}
+            
         </form>

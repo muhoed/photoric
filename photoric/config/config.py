@@ -1,14 +1,20 @@
 """Flask config."""
-from os import environ, path
+from os import environ, path, pardir
 from dotenv import load_dotenv
 from tempfile import mkdtemp
+from pathlib import Path
 
-basedir = path.abspath(path.dirname(__file__))
-load_dotenv(path.join(basedir, '.env'))
+
+current_dir = Path(__file__).resolve()
+for env_dir in current_dir.parents:
+    env_file = Path(path.join(env_dir, '.env'))
+    if env_file.exists():
+        load_dotenv(env_file)
+        break
 
 
 class Config:
-    """Base config."""
+    """Base config"""
     
     # Configure session to use filesystem (instead of signed cookies)
     SESSION_FILE_DIR = mkdtemp()
@@ -57,7 +63,7 @@ class ProdConfig(Config):
     FLASK_ENV = 'production'
     FLASK_DEBUG = False
     FLASK_TESTING = False
-    SQLALCHEMY_DATABASE_URI = path.join('instance', environ.get('PROD_DATABASE_URI'))
+    SQLALCHEMY_DATABASE_URI = path.join('instance', environ.get('PROD_DATABASE'))
 
 
 class DevConfig(Config):
