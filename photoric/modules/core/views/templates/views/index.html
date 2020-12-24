@@ -5,7 +5,7 @@
     {% block head %}
         {{ super() }}
         {{ dropzone.load_css() }}
-        {{ dropzone.style('border: 2px dashed green; margin: 10%; min-height: 400px;') }}
+        {{ dropzone.style('border: 2px dashed green; margin: 10%; width: 100%; min-height: 400px;') }}
     {% endblock %}
     
     {% block header %}
@@ -20,7 +20,12 @@
             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
                 <div class="flex-grow-1 h-100 bg-light p-2 text-center">There are no images uploaded to the site yet.</div>
             {% else %}
-                {% include 'upload/dropzone.html' %}
+                <div class="container">
+                    <div class="row flex-grow-1 p-2 justify-content-center text-center">There are no images uploaded to the site yet.</div>
+                    <div class="row">
+                        {{ dropzone.create(action=url_for('upload.uploads')) }}
+                    </div>
+                </div>
             {% endif %}
         {% else %}
             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
@@ -35,4 +40,5 @@
     {% block scripts %}
         {{ super() }}
         {{ dropzone.load_js() }}
+        {{ dropzone.config(default_message="Drop images here<br>or<br><button class='btn btn-success'>Click to Upload</button>") }}
     {% endblock %}

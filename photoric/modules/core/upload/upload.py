@@ -1,10 +1,14 @@
 """Routes for user authentication"""
-from flask import Blueprint
+import os
+
+from flask import Blueprint, request, redirect, url_for, render_template, flash
 from flask_uploads import UploadSet, IMAGES
 from flask_dropzone import Dropzone
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import SubmitField
+
+from photoric.modules.core.images.images import create_image
 
 
 # Blueprint initialization
@@ -49,5 +53,18 @@ def upload_form():
 @upload.route('/upload', methods=['GET', 'POST'])
 def uploads():
     form = UploadButton()
-    if form.validate_on_submit():
-        print('to be done')
+
+    # serve request from upload form
+    if form.validate_on_submit() or request.method == "POST":
+        if 'files[]' not in request.files:
+            flash(u'No images were uploaded', "warning")
+            return redirect(request.url)
+        files = request.files.getlist('files[]')
+        files_number = 0
+        for file in files:
+            filename = photos.save(file)
+            url = photos.url(filename)
+            create_image(filename, url)
+            files_number = +1
+        flash(u"%i images were successfully added to the site!".format(files_number), "success")
+    return render_template("views/index.html")

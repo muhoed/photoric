@@ -59,8 +59,8 @@ class GalleryItem(db.Model, PermissionsMixin):
     published_on = db.Column(db.DateTime, nullable=True, index=True)
 
     __mapper_args__ = {
-        'polymorphic_identity':'gallery_item',
-        'polymorphic_on':type,
+        'polymorphic_identity': 'gallery_item',
+        'polymorphic_on': type,
         'with_polymorphic': '*'
     }
 
@@ -80,7 +80,7 @@ class Image(GalleryItem):
     parent_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
     filename = db.Column(db.String, unique=True, nullable=False)
     uploaded_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    shooted_on = db.Column(db.DateTime, nullable=True)
+    captured_on = db.Column(db.DateTime, nullable=True)
     location = db.Column(db.String, nullable=True)
     parents = db.relationship(
         'Album',
@@ -88,8 +88,8 @@ class Image(GalleryItem):
         back_populates='children_images')
 
     __mapper_args__ = {
-        'polymorphic_identity':'image',
-        'polymorphic_load':'inline'
+        'polymorphic_identity': 'image',
+        'polymorphic_load': 'inline'
     }
 
     def __repr__(self):

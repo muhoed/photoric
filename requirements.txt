@@ -10,3 +10,4 @@ datetime
 python-dotenv
 email-validator
 wtforms
+pillow
