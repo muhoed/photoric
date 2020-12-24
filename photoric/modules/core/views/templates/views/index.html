@@ -5,6 +5,7 @@
     {% block head %}
         {{ super() }}
         {{ dropzone.load_css() }}
+        {{ dropzone.style('border: 2px dashed green; margin: 10%; min-height: 400px;') }}
     {% endblock %}
     
     {% block header %}
@@ -19,7 +20,7 @@
             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
                 <div class="flex-grow-1 h-100 bg-light p-2 text-center">There are no images uploaded to the site yet.</div>
             {% else %}
-                {% include 'upload/upload_form.html' %}
+                {% include 'upload/dropzone.html' %}
             {% endif %}
         {% else %}
             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}

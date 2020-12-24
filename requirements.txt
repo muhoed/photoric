@@ -8,6 +8,5 @@ flask_wtf
 flask_uploads
 datetime
 python-dotenv
-tempfile
 email-validator
 wtforms
