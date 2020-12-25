@@ -1,7 +1,5 @@
 """Routes for user authentication"""
-import os
-
-from flask import Blueprint, request, redirect, url_for, render_template, flash
+from flask import Blueprint, request, redirect, render_template, flash
 from flask_uploads import UploadSet, IMAGES
 from flask_dropzone import Dropzone
 from flask_wtf import FlaskForm
@@ -30,7 +28,8 @@ class UploadButton(FlaskForm):
     """Images upload form"""
     photo = FileField(
         validators=[
-            FileAllowed(photos, message='Only files of valid image formats (i.e. .jpg, .jpeg, .png, .tiff etc.) are allowed'),
+            FileAllowed(photos, message='Only files of valid image formats (i.e. .jpg, .jpeg, .png, .tiff etc.) \
+            are allowed'),
             FileRequired('File is empty')
         ]
     )
@@ -66,5 +65,7 @@ def uploads():
             url = photos.url(filename)
             create_image(filename, url)
             files_number = +1
-        flash(u"%i images were successfully added to the site!".format(files_number), "success")
+        flash(u"%i images were successfully added to the site! You can rename it and add / \
+        edit description and keywords at individual image pages or through site administration.".format(files_number),
+              "success")
     return render_template("views/index.html")

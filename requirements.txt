@@ -11,3 +11,4 @@ python-dotenv
 email-validator
 wtforms
 pillow
+iptcinfo3

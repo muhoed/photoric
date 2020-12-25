@@ -79,9 +79,10 @@ class Image(GalleryItem):
     id = db.Column(db.Integer, db.ForeignKey('gallery_items.id'), primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
     filename = db.Column(db.String, unique=True, nullable=False)
+    url = db.Column(db.String(255), nullable=False)
     uploaded_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
     captured_on = db.Column(db.DateTime, nullable=True)
-    location = db.Column(db.String, nullable=True)
+    location = db.Column(db.Text, nullable=True)
     parents = db.relationship(
         'Album',
         secondary=AlbumImage,

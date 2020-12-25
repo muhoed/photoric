@@ -5,7 +5,7 @@
     {% block head %}
         {{ super() }}
         {{ dropzone.load_css() }}
-        {{ dropzone.style('border: 2px dashed green; margin: 10%; width: 100%; min-height: 400px;') }}
+        {{ dropzone.style('border: 2px dashed green; margin: 2%; width: 100%; min-height: 400px;') }}
     {% endblock %}
     
     {% block header %}
@@ -21,7 +21,7 @@
                 <div class="flex-grow-1 h-100 bg-light p-2 text-center">There are no images uploaded to the site yet.</div>
             {% else %}
                 <div class="container">
-                    <div class="row flex-grow-1 p-2 justify-content-center text-center">There are no images uploaded to the site yet.</div>
+                    <div class="row flex-grow-1 justify-content-center text-center">There are no images uploaded to the site yet.</div>
                     <div class="row">
                         {{ dropzone.create(action=url_for('upload.uploads')) }}
                     </div>
