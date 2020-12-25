@@ -21,9 +21,7 @@ photos = UploadSet('photos', IMAGES)
 dropzone = Dropzone()
 
 
-""" upload form """
-
-
+# upload form
 class UploadButton(FlaskForm):
     """Images upload form"""
     photo = FileField(
@@ -37,9 +35,14 @@ class UploadButton(FlaskForm):
     submit = SubmitField('Add')
 
 
-""" add upload form to templates through context processor """
+# save image and return parameters required to store its information in database
+def save_image(file):
+    filename = photos.save(file)
+    url = photos.url(filename)
+    create_image(filename, url)
+    return true
 
-
+# add upload form to templates through context processor
 @upload.app_context_processor
 def upload_form():
     """ inflect upload form to templates """
@@ -49,23 +52,30 @@ def upload_form():
 """ upload logic routes """
 
 
-@upload.route('/upload', methods=['GET', 'POST'])
+@upload.route('/uploads', methods=['GET', 'POST'])
 def uploads():
     form = UploadButton()
-
+    files_number = 0
     # serve request from upload form
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         if 'files[]' not in request.files:
             flash(u'No images were uploaded', "warning")
             return redirect(request.url)
         files = request.files.getlist('files[]')
-        files_number = 0
         for file in files:
-            filename = photos.save(file)
-            url = photos.url(filename)
-            create_image(filename, url)
-            files_number = +1
-        flash(u"%i images were successfully added to the site! You can rename it and add / \
-        edit description and keywords at individual image pages or through site administration.".format(files_number),
-              "success")
-    return render_template("views/index.html")
+            if save_image(file):
+                files_namber = +1
+    # serve request from dropzone
+    elif request.method == "POST":
+        for key, file in request.files.items():
+            if key.startswith('file'):
+                if save_image(file):
+                    files_namber = +1
+    # redirect to home page in case of GET method
+    else:
+        return render_template("views/index.html", title='Home page')    
+    
+    flash(u"%i images were successfully added to the site! You can rename it and add / \
+    edit description and keywords at individual image pages or through site administration.".format(files_number),
+          "success")
+    return render_template("views/index.html", title='Home page')

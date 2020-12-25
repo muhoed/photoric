@@ -4,7 +4,6 @@
 
     <form action="{{ url_for('upload.uploads') }}" method="POST" enctype="multipart/form-data">
         {{ upload_form.csrf_token }}
-        {{ dropzone.create(url_for('upload.uploads')) }}
         {{ upload_form.photo }}
 
         {% if upload_form.photo.errors %}

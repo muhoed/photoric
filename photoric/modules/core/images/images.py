@@ -1,7 +1,8 @@
 import iptcinfo3
+import os
 
-from flask import Blueprint
-from PIL import Image
+from flask import Blueprint, current_app as app
+from PIL import Image as Picture
 from PIL.ExifTags import TAGS
 
 from photoric.config.models import db, Image
@@ -21,7 +22,7 @@ _TAGS_r = dict(((v, k) for k, v in TAGS.items()))
 
 def create_image(filename, url):
     # read current image with PIL
-    with Image.open(url) as picture:
+    with Picture.open(os.path.abspath(os.path.join(app.config['UPLOADS_DEFAULT_DEST'], 'photos', filename))) as picture:
         # extract EXIF data
         exifdata = picture.getexif()
         img_iptc = iptcinfo3.IPTCInfo(picture)
@@ -76,3 +77,5 @@ def create_image(filename, url):
     # save image to database
     db.session.add(image)
     db.session.commit()
+
+    return True
