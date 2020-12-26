@@ -2,7 +2,7 @@ import iptcinfo3
 import os
 import datetime
 
-from flask import Blueprint, send_file, abort
+from flask import Blueprint, send_from_directory, abort
 from flask_login import current_user
 from PIL import Image as Picture
 from PIL.ExifTags import TAGS
@@ -26,6 +26,12 @@ _TAGS_r = dict(((v, k) for k, v in TAGS.items()))
 # path to uploaded images on server
 upload_path = os.path.abspath(os.path.join(Config.UPLOADS_DEFAULT_DEST, 'photos'))
 
+
+@images.app_context_processor
+def image_processors():
+    def get_image(filename):
+        return send_from_directory(upload_path, filename.upper())
+    return dict(get_image=get_image)
 
 @authorize.create(Image)
 def create_image(filename, url):
@@ -76,7 +82,8 @@ def create_image(filename, url):
             img_keywords = None
 
     # get current user data
-    # user_id = current_user.id
+    user_id = current_user.id
+    group = current_user.groups
 
     # create image object
     image = Image(
@@ -87,8 +94,8 @@ def create_image(filename, url):
         keywords=img_keywords,
         captured_on=captured_date,
         location=img_location,
-        owner_id=current_user.id,
-        group=current_user.groups
+        owner_id=user_id,
+        group=group
     )
 
     try:
@@ -101,7 +108,3 @@ def create_image(filename, url):
 
     return True
 
-
-@images.route('/images/<filename>')
-def get_image(filename):
-    return send_file(os.path.join(upload_path, filename))

@@ -44,6 +44,7 @@ def save_image(file):
     flash(u'Error occurs during adding image(-es) to database', "danger")
     return redirect(request.url)
 
+
 # add upload form to templates through context processor
 @upload.app_context_processor
 def upload_form():
@@ -80,4 +81,4 @@ def uploads():
     flash(u"{} images were successfully added to the site! You can rename it and add / \
     edit description and keywords at individual image pages or through site administration.".format(files_number),
           "success")
-    return redirect("views.index")
+    return True  # redirect("views.index")

@@ -71,6 +71,7 @@ def create_app(conf='dev'):
         from .modules.core.nav import nav
         from .modules.core.search import search
         from .modules.core.upload import upload
+        from .modules.core.images import images
 
         # app.register_blueprint(modfactory.modfactory)
         app.register_blueprint(views.views)
@@ -78,6 +79,7 @@ def create_app(conf='dev'):
         app.register_blueprint(nav.nav)
         app.register_blueprint(search.search)
         app.register_blueprint(upload.upload)
+        app.register_blueprint(images.images)
 
         # create database
         db.create_all()

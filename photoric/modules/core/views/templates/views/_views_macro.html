@@ -3,20 +3,33 @@
 {% endmacro %}
 
 {% macro render_images(images) %}
-	<div class="card-columns">
-		{% for image in images ℅}
+	<div class="container card-columns">
+		{% for image in images %}
 			<div class="card" style="width:500px">
-				<img class="card-img-top" src="{{ image.url }}" alt="{{ image.name }}">
-					<div class="card-body">
-    					<h4 class="card-title">{{ image.name.capitalize() }}</h4>
-    					<p class="card-text">Published: 
-    						{% if image.is_published %}<span class="text-success">yes</span>{% else %}<span class="text-danger">no</span>{% endif%}</p>
-    					<a href="#" class="btn btn-primary">Like/Dislike</a>
-    				</div>
-					<div class="card-img-overlay">
-						{{ image.watermark }}
-						<a href="#"><img src="{{ url_for('views.static', filename='images/check.svg') }}"></a>
-					</div>
+				{% set image_url = get_image(image.filename) %}
+				<img class="card-img-top" src="{{ image_url }}" alt="{{ image.name }}">
+				<div class="card-body">
+					<h5 class="card-title">
+						{{ image.name.capitalize() }}
+						<a href="#" class="btn btn-primary float-right">Like/Dislike</a>
+					</h5>
+					<p class="card-text">
+						{% if authorize.in_group('admins') %}
+							Published:
+							{% if image.is_published %}
+								<span class="text-success">yes</span>
+							{% else %}
+								<span class="text-danger">no</span>
+							{% endif %}
+						{% endif %}
+					</p>
+				</div>
+				<div class="card-img-overlay">
+					{{ image.watermark }}
+					<span class="custom-control custom-checkbox">
+						<input type="checkbox" class="custom-control-input" id="{{ image.name + '-check'}}" name="{{ image.name + '-check'}}">
+					</span>
+				</div>
 			</div>
 		{% endfor %}
 	</div>
