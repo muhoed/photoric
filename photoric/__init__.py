@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, url_for
 from flask_session import Session
 from flask_uploads import configure_uploads, patch_request_class
 from flask_wtf.csrf import CSRFProtect
@@ -9,6 +9,7 @@ from .config import config
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+
 
 def create_app(conf='dev'):
     # Initialize core application and load configuration

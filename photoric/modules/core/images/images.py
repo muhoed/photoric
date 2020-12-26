@@ -1,11 +1,15 @@
 import iptcinfo3
 import os
+import datetime
 
-from flask import Blueprint, current_app as app
+from flask import Blueprint, send_file, abort
+# from flask_login import current_user
 from PIL import Image as Picture
 from PIL.ExifTags import TAGS
 
+from photoric.config.config import Config
 from photoric.config.models import db, Image
+from photoric.modules.core.auth.auth import authorize
 
 
 # Blueprint initialization
@@ -19,53 +23,64 @@ images = Blueprint('images', __name__,
 # reverse exif tags dictionary
 _TAGS_r = dict(((v, k) for k, v in TAGS.items()))
 
+# path to uploaded images on server
+upload_path = os.path.abspath(os.path.join(Config.UPLOADS_DEFAULT_DEST, 'photos'))
 
+
+@authorize.create(Image)
 def create_image(filename, url):
+
     # read current image with PIL
-    with Picture.open(os.path.abspath(os.path.join(app.config['UPLOADS_DEFAULT_DEST'], 'photos', filename))) as picture:
+    with Picture.open(os.path.join(upload_path, filename)) as picture:
         # extract EXIF data
         exifdata = picture.getexif()
-        img_iptc = iptcinfo3.IPTCInfo(picture)
 
     # get exif data to fill image data in db
     try:
         # get shooting date EXIF data
-        captured_date = exifdata.get(_TAGS_r['DataTimeOriginal'])
+        captured_date = exifdata.get(_TAGS_r['DateTimeOriginal'])
 
-    except AttributeError:
+    except:
         captured_date = None
 
     if captured_date is not None:
         # decode bytes
         if isinstance(captured_date, bytes):
             captured_date = captured_date.decode()
+        captured_date = datetime.datetime.strptime(captured_date, '%Y:%m:%d %H:%M:%S')
 
     try:
         # extract GEOExif data as dictionary, use GEOTAGS to get specific data
         img_location = exifdata.get(_TAGS_r["GSPInfo"])
 
-    except AttributeError:
+    except:
         img_location = None
 
-    try:
-        # get IPTC caption data
-        img_title = img_iptc['object name'] or img_iptc['headline']
-        img_description = img_iptc['caption/abstract']
-        img_keywords = img_iptc['keywords']
+    # get IPTC data
+    img_iptc = iptcinfo3.IPTCInfo(os.path.join(upload_path, filename))
 
-    except AttributeError:
+    if not img_iptc:
         img_title = None
         img_description = None
         img_keywords = None
+    else:
+        # get name, description and keywords from IPTC data
+        img_title = img_iptc['object name'] or img_iptc['headline']
+        if not img_title:
+            img_title = filename
+        img_description = img_iptc['caption/abstract']
+        if not img_description:
+            img_description = None
+        img_keywords = img_iptc['keywords']
+        if not img_keywords:
+            img_keywords = None
+
+    # get current user data
+    # user_id = current_user.id
 
     # create image object
-    if img_title is None:
-        name = filename
-    else:
-        name = img_title
-
     image = Image(
-        name=name,
+        name=img_title,
         filename=filename,
         url=url,
         description=img_description,
@@ -74,8 +89,17 @@ def create_image(filename, url):
         location=img_location
     )
 
-    # save image to database
-    db.session.add(image)
-    db.session.commit()
+    try:
+        # save image to database
+        db.session.add(image)
+        db.session.commit()
+
+    except:
+        abort(400)
 
     return True
+
+
+@images.route('/images/<filename>')
+def get_image(filename):
+    return send_file(os.path.join(upload_path, filename))

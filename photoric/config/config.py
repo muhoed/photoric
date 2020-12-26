@@ -43,12 +43,13 @@ class Config:
 
     # Flask-Uploads and Flask-Dropzone
     UPLOADS_DEFAULT_DEST = path.join('instance', environ.get('PHOTO_STORAGE'))
-    UPLOADS_DEFAULT_URL = 
+    UPLOADS_DEFAULT_URL = 'http://127.0.0.1:5000/'
     MAX_CONTENT_LENGTH = 256 * 1024 * 1024
     DROPZONE_MAX_FILE_SIZE = 256
     DROPZONE_ALLOWED_FILE_TYPE = 'image'
     DROPZONE_UPLOAD_MULTIPLE = True
     DROPZONE_PARALLEL_UPLOADS = 5
+    DROPZONE_REDIRECT_VIEW = 'views.index'
     DROPZONE_ENABLE_CSRF = True
 
     # Views specific variables
@@ -74,4 +75,4 @@ class DevConfig(Config):
     FLASK_ENV = 'development'
     FLASK_DEBUG = True
     FLASK_TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # + path.join(basedir,  'photoric.db')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///photoric.db'  # 'sqlite:///:memory:'

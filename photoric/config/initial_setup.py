@@ -42,7 +42,7 @@ def initial_setup():
         db.session.commit()
         
     """ create base navigation elements """
-    if not get_navbar_by_name('topnavbar'):
+    if get_navbar_by_name('topbar') is None:
         # create top navbar
         topnavbar = Navbar(
             name='topbar',
@@ -71,7 +71,7 @@ def initial_setup():
         db.session.add(topnavbar)
         db.session.commit()
 
-        if not get_menu_by_name('topmenu'):
+        if get_menu_by_name('topmenu') is None:
             # create top menu
             topmenu = Menu(
                 name='topmenu',
@@ -124,7 +124,7 @@ def initial_setup():
             db.session.add(topmenu)
             db.session.commit()
 
-        if not get_navbar_by_name('mainnavbar'):
+        if get_navbar_by_name('mainbar') is None:
             # create main navbar
             mainnavbar = Navbar(
                 name='mainbar',
@@ -164,7 +164,7 @@ def initial_setup():
             db.session.add(mainnavbar)
             db.session.commit()
 
-            if not get_menu_by_name('mainmenu'):
+            if get_menu_by_name('mainmenu') is None:
                 # create first part of main menu
                 mainmenu = Menu(
                     name='mainmenu',
@@ -194,7 +194,7 @@ def initial_setup():
                 db.session.commit()
         
 
-        if not get_navbar_by_name('actionnavbar'):
+        if get_navbar_by_name('actionbar') is None:
             # create action navbar
             actionnavbar = Navbar(
                 name='actionbar',
@@ -212,7 +212,7 @@ def initial_setup():
             db.session.add(actionnavbar)
             db.session.commit()
 
-            if not get_menu_by_name('actionmenu'):
+            if get_menu_by_name('actionmenu') is None:
                 # create action menu
                 actionmenu = Menu(
                     name='actionmenu',

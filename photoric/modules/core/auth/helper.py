@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 
-from photoric.config.models import db, GalleryItem, Image, Album, User
+from photoric.config.models import db, Image, Album, User
 
 
 # get user by name or list all reqistered users

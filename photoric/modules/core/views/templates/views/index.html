@@ -16,7 +16,7 @@
         
         <!-- Public galleries / or albums icon images carousel here / or icons of all albums and images not included in albums if admin -->
 
-        {% if gallery_items == [] %}
+        {% if albums == [] and images == [] %}
             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
                 <div class="flex-grow-1 h-100 bg-light p-2 text-center">There are no images uploaded to the site yet.</div>
             {% else %}
@@ -31,7 +31,8 @@
             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
                 <p>to be done</p>
             {% else %}
-                <p>to be done</p>
+                <p>{{ albums }}</p>
+                <p>{{ images }}</p>
             {% endif %}
         {% endif %}
 
@@ -40,5 +41,5 @@
     {% block scripts %}
         {{ super() }}
         {{ dropzone.load_js() }}
-        {{ dropzone.config(default_message="Drop images here<br>or<br><button class='btn btn-success'>Click to Upload</button>") }}
+        {{ dropzone.config(default_message="Drop images here<br>or<br><span class='btn btn-success'>Click to Upload</span>") }}
     {% endblock %}
