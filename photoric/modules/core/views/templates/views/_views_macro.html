@@ -1,5 +1,25 @@
-{% macro render_view() %}
+{% macro render_albums(albums) %}
 <p> to be done </p>
+{% endmacro %}
+
+{% macro render_images(images) %}
+	<div class="card-columns">
+		{% for image in images ℅}
+			<div class="card" style="width:500px">
+				<img class="card-img-top" src="{{ image.url }}" alt="{{ image.name }}">
+					<div class="card-body">
+    					<h4 class="card-title">{{ image.name.capitalize() }}</h4>
+    					<p class="card-text">Published: 
+    						{% if image.is_published %}<span class="text-success">yes</span>{% else %}<span class="text-danger">no</span>{% endif%}</p>
+    					<a href="#" class="btn btn-primary">Like/Dislike</a>
+    				</div>
+					<div class="card-img-overlay">
+						{{ image.watermark }}
+						<a href="#"><img src="{{ url_for('views.static', filename='images/check.svg') }}"></a>
+					</div>
+			</div>
+		{% endfor %}
+	</div>
 {% endmacro %}
 
 {% macro render_contrib_view() %}

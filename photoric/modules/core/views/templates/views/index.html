@@ -31,8 +31,10 @@
             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
                 <p>to be done</p>
             {% else %}
-                <p>{{ albums }}</p>
-                <p>{{ images }}</p>
+            	{% if albums != [] %}
+            		{{ render_albums(albums) }}
+            	{% endif %}
+                {{ render_images(images) }}
             {% endif %}
         {% endif %}
 

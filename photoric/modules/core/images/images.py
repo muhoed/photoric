@@ -3,7 +3,7 @@ import os
 import datetime
 
 from flask import Blueprint, send_file, abort
-# from flask_login import current_user
+from flask_login import current_user
 from PIL import Image as Picture
 from PIL.ExifTags import TAGS
 
@@ -86,7 +86,9 @@ def create_image(filename, url):
         description=img_description,
         keywords=img_keywords,
         captured_on=captured_date,
-        location=img_location
+        location=img_location,
+        owner_id=current_user.id,
+        group=current_user.groups
     )
 
     try:
