@@ -27,7 +27,9 @@
      <div class="flex-fill">
         <!-- include navbars stored in database -->
         {% from "nav/_nav_macros.html" import render_navbar with context %}
-        {{ render_navbar() }}
+        {{ render_navbar('topbar') }}
+        {{ render_navbar('mainbar') }}
+        {{ render_navbar('actionbar') }}
         
             <header class="m-3">
                        

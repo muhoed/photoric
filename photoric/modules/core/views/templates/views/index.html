@@ -11,7 +11,13 @@
     {% block header %}
         <div class="text-success"><h4>{{ title }}</h4></div>          
     {% endblock %}
-    
+
+    {% block sidebar %}
+        {% if authorize.in_group('admins') or authorize.in_group('contributors') %}
+            {{ render_navbar('sidebar') }}
+        {% endif %}
+    {% endblock %}
+
     {% block main %}  
         
         <!-- Public galleries / or albums icon images carousel here / or icons of all albums and images not included in albums if admin -->
@@ -37,14 +43,14 @@
 	                <div class="w-100 text-success border border-top-0 border-left-0 border-right-0 p-2">Albums:</div>
 	                <!-- </div> -->
 	                <!-- <div class="row"> -->
-                		{{ render_albums(albums) }}
+                		{{ render_albums(albums, False) }}
                     <!-- </div> -->
             	{% endif %}
 	                <!-- <div class="row w-100 mx-auto"> -->
 	                    <div class="w-100 text-success border border-top-0 border-left-0 border-right-0 p-2">Images:</div>
 	                <!-- </div> -->
 	                <div class="d-flex flex-row d-sm-flex flex-sm-row justify-content-space">
-                        {{ render_images(images) }}
+                        {{ render_images(images, False) }}
                     </div>
                 </div>
             {% endif %}

@@ -151,6 +151,15 @@ def initial_setup():
                     group_req='contributors'
                 ),
                 NavbarItem(
+                    name='create_album_button',
+                    item_type='button',
+                    item_target='#',
+                    icon_type='svg',
+                    icon_src='folder-plus',
+                    auth_req=True,
+                    group_req='contributors'
+                ),
+                NavbarItem(
                     name='settings_button',
                     item_type='button',
                     item_target='#',
@@ -281,4 +290,51 @@ def initial_setup():
                 ]
                 
                 db.session.add(actionmenu)
+                db.session.commit()
+
+        if get_navbar_by_name('sidebar') is None:
+            # create side navbar
+            sidenavbar = Navbar(
+                name='sidebar',
+                html_class='navbar'
+            )
+            # create side navbar items
+            sidenavbar.items = [
+                NavbarItem(
+                    name='sidemenu',
+                    item_type='menu'
+                )
+            ]
+
+            db.session.add(sidenavbar)
+            db.session.commit()
+
+            if get_menu_by_name('sidemenu') is None:
+                # create action menu
+                sidemenu = Menu(
+                    name='sidemenu',
+                    html_class='navbar-nav',
+                )
+                # create sidemenu items
+                sidemenu.items = [
+
+                    MenuItem(
+                        item_type='tree',
+                        name='albums',
+                        desc='Albums tree',
+                        item_target='albumsTree'
+                    ),
+                    MenuItem(
+                        name='images',
+                        desc='Images not included in albums'
+                    ),
+                    MenuItem(
+                        item_type='tree',
+                        name='shares',
+                        desc='Shared items tree',
+                        item_target='sharesTree'
+                    )
+                ]
+
+                db.session.add(sidemenu)
                 db.session.commit()

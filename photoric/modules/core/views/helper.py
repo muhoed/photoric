@@ -4,10 +4,10 @@ from photoric.config.models import db, Image, Album
 
 
 # get gallery items
-def get_gallery_items(parent='no', item='parent'):
+def get_gallery_items(parent='', item='albums'):
 
     """ request gallery items of specific type """
-    if item == 'album':
+    if item == 'albums':
         if parent == 'no':
             return Album.query.filter_by(parent_id=None).all()
         elif isinstance(parent, int):

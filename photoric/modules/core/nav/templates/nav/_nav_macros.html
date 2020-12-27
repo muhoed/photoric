@@ -23,12 +23,14 @@
 <!-- get Menu object -->    
   {% set menu = get_menu_by_name(menu_name) %}
         <div class="{{ menu.html_class }}" style="{{ menu.html_style }}" id="{{ menu.name.capitalize() }}">
-          <ul class="navbar-nav">
+          <ul class="navbar-nav" id="{{ menu.name() }}">
              <!-- insert menu items -->
                 {% for menu_item in menu.items %}
                     {% if check_menu_item(menu_item.id) %}
                         {% if menu_item.item_type == 'dropdown' %}
                             {{ navlink_dropdown(menu_item) }}
+                        {% elif menu_item.item_type == 'tree'%}
+                            {{ navlink_tree(menu_item) }}
                         {% elif menu_item.item_type == 'plain'%}
                             {{ navlink(menu_item) }}
                         {% endif %}
@@ -72,3 +74,55 @@
               </div>
             </li>
 {% endmacro %} 
+
+<!-- generate tree menu -->
+{% macro navlink_tree(item) %}
+<!-- check tree menu items exist -->
+{% set sets = {"albums":albums, "images":images, "shares":shares} %}
+{% if sets[item.name] != None %}
+    {% set tree_id = item.id + '-tree' %}
+    <li class="nav-item" id="{{ tree_id }}">
+             <a class="nav-link" href="{{ '#' + item.item_target }}" title="{{ item.desc }}" data-toggle="collapse">
+                 {% if item.icon_type == None %}
+                    {{ item.name.capitalize() }}
+                {% else %}
+                    {% set path = url_for('nav.static', filename = 'images/' + item.icon_src + '.' + item.icon_type) %}
+                    <img width="24" height="24" id="{{ item.name }}" src="{{ path }}">
+                {% endif %}
+              </a>
+              <ul class="navbar-nav collapse" id="{{ item.item_target }}" data-parent="{{ '#' + tree_id }}">
+                {# loop through top level albums #}
+                {% for album in albums %}
+                  {% if album.parent_id == None %}
+                    {{ tree_item(album) }}
+                {% endfor %}
+              </ul>
+    </li>
+{% endif %}
+{% endmacro %}
+
+{% macro tree_item(album) %}
+    {% set tree_id = album.id + '-tree' %}
+    <li id="{{ tree_id }}" class="nav-item">
+        {% if album.children != None %}
+            {% set tree_href = '#' + album.id %}
+            <a href="{{ '#' + album.id }}" role="button" data-toggle="collapse">
+                <img src="{{ url_for('nav.static', filename = 'images/plus-square.svg') }}" width="8" height="8">
+                -
+            </a>
+            <!-- generate link to gallery items set to display -->
+            <a class="nav-link" href="#" id="{{ item.name + '/' + album.id }}" onclick="">
+                {{ album.name.capitalize() }}
+            </a>
+            <ul class="navbar-nav collapse" id="{{ album.id }}" data-parent="{{ '#' + tree_id }}">
+                {% for child in album.children %}
+                    {{ tree_item(child) }}
+                {% endfor %}
+            </ul>
+        {% else %}
+            |-
+            <a class="nav-link" href="#" id="{{ item.name + '/' + album.id }}" onclick="">
+                {{ album.name.capitalize() }}
+            </a>
+        {% endif %}
+{% endmacro %}

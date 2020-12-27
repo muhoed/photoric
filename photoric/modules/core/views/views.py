@@ -22,8 +22,9 @@ def index():
     # page was loaded without action
     else:
         # get top-level gallery items from database
-        albums = get_gallery_items('no', 'album')
-        images = get_gallery_items('no', 'image')
+        albums = get_gallery_items('no', 'albums')
+        images = get_gallery_items('no', 'images')
+        # shares = get_shared_items(current_user.id)
 
         # if user is not admin show gallery items if any
         return render_template('views/index.html', title='Home page', albums=albums, images=images)
