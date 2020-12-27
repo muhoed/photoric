@@ -2,9 +2,11 @@
 <p> to be done </p>
 {% endmacro %}
 
-{% macro render_images(images) %}
+{% macro render_images(images, public) %}
 		{% for image in images %}
-		<!-- <div class="col-sm-12 col-md-6 col-xl-3"> -->
+		{% if public and not image.is_published %}
+		{% pass %}
+		{% else %}
 			<div class="card shadow-sm m-2" style="min-width:300px; max-width:500px;">
 				<img class="card-img-top" src="{{ image.url }}" alt="{{ image.name }}">
 				<div class="card-body">
@@ -25,12 +27,13 @@
 				</div>
 				<div class="card-img-overlay">
 					{{ image.watermark }}
-					<span class="custom-control custom-checkbox">
+					<form class="custom-control custom-checkbox">
 						<input type="checkbox" class="custom-control-input" id="{{ image.name + '-check'}}" name="{{ image.name + '-check'}}">
-					</span>
+					</form>
 				</div>
 			</div>
-		<!-- </div> -->
+		
+		{% endif %}
 		{% endfor %}
 {% endmacro %}
 
