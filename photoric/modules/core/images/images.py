@@ -27,12 +27,6 @@ _TAGS_r = dict(((v, k) for k, v in TAGS.items()))
 upload_path = os.path.abspath(os.path.join(Config.UPLOADS_DEFAULT_DEST, 'photos'))
 
 
-@images.app_context_processor
-def image_processors():
-    def get_image(filename):
-        return send_from_directory(upload_path, filename.upper())
-    return dict(get_image=get_image)
-
 @authorize.create(Image)
 def create_image(filename, url):
 
@@ -83,7 +77,11 @@ def create_image(filename, url):
 
     # get current user data
     user_id = current_user.id
-    group = current_user.groups
+    
+    for group in current_user.groups:
+        if group is not None:
+            group_id = group.id
+            break
 
     # create image object
     image = Image(
@@ -95,7 +93,7 @@ def create_image(filename, url):
         captured_on=captured_date,
         location=img_location,
         owner_id=user_id,
-        group=group
+        group_id=group_id
     )
 
     try:
@@ -108,3 +106,8 @@ def create_image(filename, url):
 
     return True
 
+
+# return image from url
+@images.route('/photos/<filename>')
+def get_image(filename):
+    return send_from_directory(upload_path, filename)

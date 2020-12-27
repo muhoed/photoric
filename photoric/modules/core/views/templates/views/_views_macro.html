@@ -3,11 +3,10 @@
 {% endmacro %}
 
 {% macro render_images(images) %}
-	<div class="container card-columns">
 		{% for image in images %}
-			<div class="card" style="width:500px">
-				{% set image_url = get_image(image.filename) %}
-				<img class="card-img-top" src="{{ image_url }}" alt="{{ image.name }}">
+		<!-- <div class="col-sm-12 col-md-6 col-xl-3"> -->
+			<div class="card shadow-sm m-2" style="min-width:300px; max-width:500px;">
+				<img class="card-img-top" src="{{ image.url }}" alt="{{ image.name }}">
 				<div class="card-body">
 					<h5 class="card-title">
 						{{ image.name.capitalize() }}
@@ -31,8 +30,8 @@
 					</span>
 				</div>
 			</div>
+		<!-- </div> -->
 		{% endfor %}
-	</div>
 {% endmacro %}
 
 {% macro render_contrib_view() %}

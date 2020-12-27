@@ -43,7 +43,7 @@ class Config:
 
     # Flask-Uploads and Flask-Dropzone
     UPLOADS_DEFAULT_DEST = path.join('instance', environ.get('PHOTO_STORAGE'))
-    UPLOADS_DEFAULT_URL = 'http://127.0.0.1:5000/'
+    UPLOADS_DEFAULT_URL = 'http://127.0.0.1:5000/images/'
     MAX_CONTENT_LENGTH = 256 * 1024 * 1024
     DROPZONE_MAX_FILE_SIZE = 256
     DROPZONE_ALLOWED_FILE_TYPE = 'image'

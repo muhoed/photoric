@@ -81,4 +81,4 @@ def uploads():
     flash(u"{} images were successfully added to the site! You can rename it and add / \
     edit description and keywords at individual image pages or through site administration.".format(files_number),
           "success")
-    return True  # redirect("views.index")
+    return redirect("views.index")
