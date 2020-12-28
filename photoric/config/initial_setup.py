@@ -296,7 +296,8 @@ def initial_setup():
             # create side navbar
             sidenavbar = Navbar(
                 name='sidebar',
-                html_class='navbar'
+                html_class='navbar navbar-light d-none d-md-flex flex-column',
+                html_style='min-width:8%;'
             )
             # create side navbar items
             sidenavbar.items = [
@@ -313,7 +314,7 @@ def initial_setup():
                 # create action menu
                 sidemenu = Menu(
                     name='sidemenu',
-                    html_class='navbar-nav',
+                    html_class='navbar-nav align-self-start font-weight-bold',
                 )
                 # create sidemenu items
                 sidemenu.items = [
@@ -326,7 +327,8 @@ def initial_setup():
                     ),
                     MenuItem(
                         name='images',
-                        desc='Images not included in albums'
+                        desc='Images not included in albums',
+                        item_target='views.index'
                     ),
                     MenuItem(
                         item_type='tree',

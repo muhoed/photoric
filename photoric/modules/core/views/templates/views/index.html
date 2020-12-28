@@ -40,16 +40,16 @@
                 <div class="d-flex flex-column">
             	{% if albums != [] %}
             	    <!-- <div class="row w-100 mx-auto"> -->
-	                <div class="w-100 text-success border border-top-0 border-left-0 border-right-0 p-2">Albums:</div>
+	                <div class="w-90 text-success border border-top-0 border-left-0 border-right-0 p-2">Albums:</div>
 	                <!-- </div> -->
 	                <!-- <div class="row"> -->
                 		{{ render_albums(albums, False) }}
                     <!-- </div> -->
             	{% endif %}
-	                <!-- <div class="row w-100 mx-auto"> -->
-	                    <div class="w-100 text-success border border-top-0 border-left-0 border-right-0 p-2">Images:</div>
+	                <!-- <div class="row w-75 mx-auto"> -->
+	                    <div class="w-90 ml-3 text-success border border-top-0 border-left-0 border-right-0 p-2">Images:</div>
 	                <!-- </div> -->
-	                <div class="d-flex flex-row d-sm-flex flex-sm-row justify-content-space">
+	                <div class="row flex-wrap justify-content-around">
                         {{ render_images(images, False) }}
                     </div>
                 </div>
