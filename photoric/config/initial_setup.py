@@ -1,6 +1,8 @@
-from photoric.config.models import db, User, Role, Group, Navbar, NavbarItem, Menu, MenuItem
+from photoric.config.models import db, User, Role, Group, Navbar, NavbarItem
+from photoric.config.models import Menu, MenuItem, Album, Image, Config
 from photoric.modules.core.auth.helper import get_user_by_name
 from photoric.modules.core.nav.helper import get_navbar_by_name, get_menu_by_name
+from photoric.modules.core.admin.settings import admin_manager, PhotoricView
 
 def initial_setup():
     """ create admin user if not exist """
@@ -162,7 +164,7 @@ def initial_setup():
                 NavbarItem(
                     name='settings_button',
                     item_type='button',
-                    item_target='#',
+                    item_target='admin',
                     icon_type='svg',
                     icon_src='gear',
                     auth_req=True,
@@ -340,3 +342,15 @@ def initial_setup():
 
                 db.session.add(sidemenu)
                 db.session.commit()
+
+    # register models with admin_manager
+    admin_manager.add_view(PhotoricView(User, db.session, category='Users and Access rights'))
+    admin_manager.add_view(PhotoricView(Role, db.session, category='Users and Access rights'))
+    admin_manager.add_view(PhotoricView(Group, db.session, category='Users and Access rights'))
+    admin_manager.add_view(PhotoricView(Album, db.session, category='Gallery Items'))
+    admin_manager.add_view(PhotoricView(Image, db.session, category='Gallery Items'))
+    admin_manager.add_view(PhotoricView(Navbar, db.session, category='Navigation and Menu system'))
+    admin_manager.add_view(PhotoricView(NavbarItem, db.session, category='Navigation and Menu system'))
+    admin_manager.add_view(PhotoricView(Menu, db.session, category='Navigation and Menu system'))
+    admin_manager.add_view(PhotoricView(MenuItem, db.session, category='Navigation and Menu system'))
+    admin_manager.add_view(PhotoricView(Config, db.session, category='Style and Behavior'))

@@ -33,6 +33,9 @@ class Config:
     USE_SESSION_FOR_NEXT = True
     REMEMBER_COOKIE_DURATION = 10
 
+    # Flask-Admin
+    FLASK_ADMIN_SWATCH = 'cerulean'
+
     # Flask-Authorize
     AUTHORIZE_DISABLE_JINJA = False
     AUTHORIZE_ALLOW_ANONYMOUS_ACTIONS = True

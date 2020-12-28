@@ -1,4 +1,5 @@
 flask
+flask_admin
 flask_authorize
 flask_dropzone
 flask_login

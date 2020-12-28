@@ -54,6 +54,10 @@ def create_app(conf='dev'):
     from .modules.core.auth.auth import authorize
     authorize.init_app(app)
 
+    # Initialize admin module
+    from .modules.core.admin.settings import admin_manager
+    admin_manager.init_app(app)
+
     # Initialize upload managers
     from .modules.core.upload.upload import photos, dropzone
     configure_uploads(app, photos)
@@ -72,6 +76,7 @@ def create_app(conf='dev'):
         from .modules.core.search import search
         from .modules.core.upload import upload
         from .modules.core.images import images
+        from .modules.core.admin import settings
 
         # app.register_blueprint(modfactory.modfactory)
         app.register_blueprint(views.views)
@@ -80,6 +85,7 @@ def create_app(conf='dev'):
         app.register_blueprint(search.search)
         app.register_blueprint(upload.upload)
         app.register_blueprint(images.images)
+        app.register_blueprint(settings.settings)
 
         # create database
         db.create_all()
