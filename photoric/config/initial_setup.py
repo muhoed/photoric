@@ -155,7 +155,7 @@ def initial_setup():
                 NavbarItem(
                     name='create_album_button',
                     item_type='button',
-                    item_target='#',
+                    item_target='#create_album',
                     icon_type='svg',
                     icon_src='folder-plus',
                     auth_req=True,
@@ -164,7 +164,7 @@ def initial_setup():
                 NavbarItem(
                     name='settings_button',
                     item_type='button',
-                    item_target='admin',
+                    item_target='settings.manage_settings',
                     icon_type='svg',
                     icon_src='gear',
                     auth_req=True,

@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, redirect
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
@@ -19,6 +19,11 @@ class PhotoricView(ModelView):
     page_size = 20
     create_modal = True
     edit_model = True
+    
+
+@settings.route("/settings")
+def manage_settings():
+    return redirect('/admin/')
 
 
 

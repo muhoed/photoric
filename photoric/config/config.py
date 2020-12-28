@@ -34,7 +34,7 @@ class Config:
     REMEMBER_COOKIE_DURATION = 10
 
     # Flask-Admin
-    FLASK_ADMIN_SWATCH = 'cerulean'
+    FLASK_ADMIN_FLUID_LAYOUT = True
 
     # Flask-Authorize
     AUTHORIZE_DISABLE_JINJA = False

@@ -57,6 +57,17 @@
         {% endif %}
 
     {% endblock %}
+    
+    {% block modals %}
+        {{ super() }}
+        
+        {% if authorize.in_group('admins') or authorize.in_group('contributors') %}
+        
+        {% include "views/create_album_dialog.html" %}
+        
+        {% endif %}
+    
+    {% endblock %}
 
     {% block scripts %}
         {{ super() }}

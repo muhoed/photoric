@@ -9,8 +9,8 @@
     {% set category_title = '' %}
 {% endif %}
     {% set title = category_title + admin_view.name + ' - ' + admin_view.admin.name %}
-
-    {% block head_css %}
+    
+{% block head_css %}
         {{ super() }}
         {% if admin_view.extra_css %}
           {% for css_url in admin_view.extra_css %}
@@ -24,21 +24,35 @@
         </style>
     {% endblock %}
 
-    {% block main %}  
+{% block site_messages %}
+    {{ super() }}
+        
+{% if not authorize.in_group('admins') %}
+
+    
+        <div class="container-fluid alert alert-danger">
+            <p>Sorry, you do not have enough rights to access this page</p>
+            <p>Please <a href="{{ url_for('views.index') }}" role="button" class="btn btn-success">press here</a> to return to Home page</p>
+        </div>
+        
+{% endif %}        
+    
+{% endblock %}
+
+{% block header %}
+        <div class="text-success"><h4>{{ title }}</h4></div>          
+    {% endblock %}
+
+    {% block main %}
+    
+    {% if authorize.in_group('admins') %}  
         
         {% block page_body %}
-            <div class="container{% if config.get('FLASK_ADMIN_FLUID_LAYOUT', False) %}-fluid{% endif %}">
-                <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-2" role="navigation">
-                    <!-- Brand and toggle get grouped for better mobile display -->
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#admin-navbar-collapse"
-                            aria-controls="admin-navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <!-- navbar content -->
-                    <div class="collapse navbar-collapse" id="admin-navbar-collapse">
-                    {% block brand %}
-                        <a class="navbar-brand" href="{{ admin_view.admin.url }}">{{ admin_view.admin.name }}</a>
-                    {% endblock %}
+            <div class="d-flex flex-nowrap mt-4">
+                <nav class="navbar navbar-light mb-2" role="navigation">
+                    
+                    <div class="flex-column">
+                    
                     {% block main_menu %}
                         <ul class="navbar-nav mr-auto">
                             {{ layout.menu() }}
@@ -54,7 +68,7 @@
                     {% endblock %}
                     </div>
                 </nav>
-
+                <div class="flex-row ml-2">
                 {% block messages %}
                     {{ layout.messages() }}
                 {% endblock %}
@@ -65,11 +79,16 @@
                 {% block body %}{% endblock %}
             </div>
         {% endblock %}
-
+        
+        {% endif %}
+        
     {% endblock %}
 
     {% block tail_js %}
-        {{ super() }}
+    
+    {{ super() }}
+    {% if authorize.in_group('admins') %}
+        
         <script src="{{ admin_static.url(filename='vendor/moment.min.js', v='2.9.0') }}" type="text/javascript"></script>
         <script src="{{ admin_static.url(filename='vendor/bootstrap4/util.js', v='4.3.1') }}" type="text/javascript"></script>
         <script src="{{ admin_static.url(filename='vendor/bootstrap4/dropdown.js', v='4.3.1') }}" type="text/javascript"></script>
@@ -82,4 +101,7 @@
                 <script src="{{ js_url }}" type="text/javascript"></script>
             {% endfor %}
         {% endif %}
+    {% endif %}
     {% endblock %}
+
+
