@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, url_for
+from flask import Flask
 from flask_session import Session
 from flask_uploads import configure_uploads, patch_request_class
 from flask_wtf.csrf import CSRFProtect

@@ -85,7 +85,7 @@ class Image(db.Model, PermissionsMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
-    name = db.Column(db.String(100), unique=True, nullable=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
     description = db.Column(db.String(500), nullable=True)
     keywords = db.Column(db.String(255), nullable=True)
     filename = db.Column(db.String, unique=True, nullable=False)
@@ -130,10 +130,10 @@ class Album(db.Model, PermissionsMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
-    name = db.Column(db.String(100), unique=True, nullable=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
     description = db.Column(db.String(500), nullable=True)
     keywords = db.Column(db.String(255), nullable=True)
-    icon_id = db.Column(db.Integer, nullable=False)
+    icon_id = db.Column(db.Integer, nullable=True)
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
     is_published = db.Column(db.Boolean(), nullable=False, default=False)
     published_on = db.Column(db.DateTime, nullable=True, index=True)

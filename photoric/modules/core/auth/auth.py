@@ -1,5 +1,5 @@
 """Routes for user authentication"""
-from flask import Blueprint, request, render_template, redirect, abort, url_for, flash
+from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import current_user, login_user, logout_user, LoginManager
 from flask_authorize import Authorize
 from urllib.parse import urlparse, urljoin
@@ -7,7 +7,7 @@ from datetime import datetime
 
 from .forms import LoginForm, SignupForm
 from .helper import get_user_by_name
-from photoric.config.models import db, User, Role, Group
+from photoric.config.models import db, User
 
 
 # Blueprint initialization
@@ -35,9 +35,12 @@ def signin():
     GET requests serve sign-in page
     POST requests validate form & log user in
     """
-    
+
+    # redirect user to home page if it is already logged in
     if current_user.is_authenticated:
         return redirect(url_for('views.index'))
+
+    # check provided credentials and log user in
     login_form = LoginForm()
     if login_form.validate_on_submit():
         user = get_user_by_name(name=login_form.name.data)
@@ -45,12 +48,19 @@ def signin():
             flash(u'Invalid username or password', 'danger')
             return redirect(url_for('auth.signin'))
         login_user(user, remember=login_form.remember_me.data)
-        current_user.last_login = datetime.now
+
+        # remember login date and time
+        user.last_login = datetime.now
+        db.session.commit()
+
+        # return logged in user to the requested page or home page if not
         return_page = request.args.get('next')
         if not is_safe_url(return_page):
             return redirect(url_for('views.index'))
         flash(u'You were successfully logged in as ' + current_user.name, 'success')
         return redirect(return_page or url_for('views.index'))
+
+    # load log in dialog if GET method
     return render_template('auth/signin.html', title='Sign In', form=login_form)
 
 
