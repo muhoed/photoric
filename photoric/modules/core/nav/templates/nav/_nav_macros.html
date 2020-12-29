@@ -103,26 +103,28 @@
 {% endmacro %}
 
 {% macro tree_item(album) %}
-    {% set tree_id = album.id + '-tree' %}
+    {% set tree_id = album.id|string + '-tree' %}
     <li id="{{ tree_id }}" class="nav-item">
         {% if album.children != None %}
-            {% set tree_href = '#' + album.id %}
-            <a href="{{ '#' + album.id }}" role="button" data-toggle="collapse">
+        <!-- collapse subtree button -->
+            {% set tree_href = '#' + album.id|string %}
+            <a href="{{ '#' + album.id|string }}" role="button" data-toggle="collapse">
                 <img src="{{ url_for('nav.static', filename = 'images/plus-square.svg') }}" width="8" height="8">
                 -
             </a>
             <!-- generate link to gallery items set to display -->
-            <a class="nav-link" href="#" id="{{ item.name + '/' + album.id }}" onclick="">
+            <a class="nav-link" href="{{ url_for('albums.show_album', album_id=album.id) }}" id="{{ item.name + '/' + album.id|string }}" onclick="">
                 {{ album.name.capitalize() }}
             </a>
-            <ul class="navbar-nav collapse" id="{{ album.id }}" data-parent="{{ '#' + tree_id }}">
+            <!--generate subtree recursively-->
+            <ul class="navbar-nav collapse" id="{{ album.id|string }}" data-parent="{{ '#' + tree_id }}">
                 {% for child in album.children %}
                     {{ tree_item(child) }}
                 {% endfor %}
             </ul>
         {% else %}
             |-
-            <a class="nav-link" href="#" id="{{ item.name + '/' + album.id }}" onclick="">
+            <a class="nav-link" href="{{ url_for('albums.show_album', album_id=album.id) }}" id="{{ item.name + '/' + album.id|string }}" onclick="">
                 {{ album.name.capitalize() }}
             </a>
         {% endif %}
