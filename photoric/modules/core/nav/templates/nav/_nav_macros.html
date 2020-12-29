@@ -78,11 +78,11 @@
 <!-- generate tree menu -->
 {% macro navlink_tree(item) %}
 <!-- check tree menu items exist -->
-{% set sets = {"albums":albums, "images":images, "shares":shares} %}
+{% set sets = {"albums":albums, "shares":shares} %}
 {% if sets[item.name] != None %}
     {% set tree_id = item.id|string + '-tree' %}
     <li class="nav-item" id="{{ tree_id }}">
-             <a class="nav-link" href="{{ '#' + item.item_target }}" title="{{ item.desc }}" data-toggle="collapse">
+             <a class="nav-link" href="{{ '#' + item.item_target }}" title="{{ item.desc }}" data-toggle="collapse" aria-expanded="false">
                  {% if item.icon_type == None %}
                     {{ item.name.capitalize() }}
                 {% else %}
@@ -90,14 +90,21 @@
                     <img width="24" height="24" id="{{ item.name }}" src="{{ path }}">
                 {% endif %}
               </a>
-              <ul class="navbar-nav collapse" id="{{ item.item_target }}" data-parent="{{ '#' + tree_id }}">
+              {% if item.name == 'albums' %}
+              <ul class="navbar-nav collapse" id="{{ item.item_target }}">
                 {# loop through top level albums #}
+                {% set albums = list_albums() %}
                 {% for album in albums %}
                   {% if album.parent_id == None %}
                     {{ tree_item(album) }}
                   {% endif %}
                 {% endfor %}
               </ul>
+              {% elif item.name == 'shares' %}
+              
+              <!-- TO BE DONE -->
+              
+              {% endif %}
     </li>
 {% endif %}
 {% endmacro %}
@@ -105,7 +112,7 @@
 {% macro tree_item(album) %}
     {% set tree_id = album.id|string + '-tree' %}
     <li id="{{ tree_id }}" class="nav-item">
-        {% if album.children != None %}
+        {% if album.children_albums %}
         <!-- collapse subtree button -->
             {% set tree_href = '#' + album.id|string %}
             <a href="{{ '#' + album.id|string }}" role="button" data-toggle="collapse">
@@ -113,19 +120,20 @@
                 -
             </a>
             <!-- generate link to gallery items set to display -->
-            <a class="nav-link" href="{{ url_for('albums.show_album', album_id=album.id) }}" id="{{ item.name + '/' + album.id|string }}" onclick="">
+            <a class="nav-link" href="{{ url_for('albums.show_album', album_id=album.id) }}" id="{{ 'album' + album.id|string }}" onclick="">
                 {{ album.name.capitalize() }}
             </a>
             <!--generate subtree recursively-->
-            <ul class="navbar-nav collapse" id="{{ album.id|string }}" data-parent="{{ '#' + tree_id }}">
-                {% for child in album.children %}
+            <ul class="navbar-nav collapse" id="{{ album.id|string }}">
+                {% for child in album.children_albums %}
                     {{ tree_item(child) }}
                 {% endfor %}
             </ul>
         {% else %}
             |-
-            <a class="nav-link" href="{{ url_for('albums.show_album', album_id=album.id) }}" id="{{ item.name + '/' + album.id|string }}" onclick="">
+            <span style="display:inline-block"><a class="nav-link" href="{{ url_for('albums.show_album', album_id=album.id) }}" id="{{ 'album-' + album.id|string }}" onclick="">
                 {{ album.name.capitalize() }}
-            </a>
+            </a></span>
         {% endif %}
+       </li>
 {% endmacro %}

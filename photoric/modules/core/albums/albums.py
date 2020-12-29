@@ -14,10 +14,19 @@ albums = Blueprint('albums', __name__,
                    static_url_path='/static')
 
 
-# context processor to make create album form available in modals
+# create album form context processor
 @albums.app_context_processor
 def create_album_form():
     return dict(create_album_form=CreateAlbumForm())
+
+# db context processors
+@albums.app_context_processor
+def albums_processors():
+    # get list of all albums
+    def list_albums():
+        return Album.query.all()
+
+    return dict(list_albums=list_albums)
 
 # route for album creation
 @authorize.create(Album)
@@ -65,4 +74,4 @@ def create_album():
 @authorize.read
 @albums.route("/show_album/<int:album_id>")
 def show_album(album_id):
-    print("to be done")
+    return render_template("views/index.html", title='Home page')

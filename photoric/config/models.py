@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import backref
 from datetime import datetime
 from flask_login import UserMixin
 from flask_authorize import RestrictionsMixin, AllowancesMixin
@@ -142,10 +143,9 @@ class Album(db.Model, PermissionsMixin):
         secondary=AlbumImage,
         back_populates='parents'
     )
-    parent = db.relationship(
-        'Album',
-        foreign_keys=[parent_id],
-        remote_side=[id]
+    children_albums = db.relationship(
+        'Album', backref=backref('parent',
+        remote_side=[id])
     )
 
     def publish(self):
