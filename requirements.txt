@@ -2,6 +2,7 @@ flask
 flask_admin
 flask_authorize
 flask_dropzone
+flask_jsglue
 flask_login
 flask_session
 flask_sqlalchemy

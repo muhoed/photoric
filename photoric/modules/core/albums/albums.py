@@ -19,6 +19,7 @@ albums = Blueprint('albums', __name__,
 def create_album_form():
     return dict(create_album_form=CreateAlbumForm())
 
+
 # db context processors
 @albums.app_context_processor
 def albums_processors():
@@ -27,6 +28,7 @@ def albums_processors():
         return Album.query.all()
 
     return dict(list_albums=list_albums)
+
 
 # route for album creation
 @authorize.create(Album)
@@ -70,8 +72,20 @@ def create_album():
     flash(u"Create album form was not valid", "danger")
     return render_template("views/index.html", title='Home page')
 
+
 # route for show album
 @authorize.read
-@albums.route("/show_album/<int:album_id>")
+@albums.route("/show_album/<album_id>")
 def show_album(album_id):
-    return render_template("views/index.html", title='Home page')
+    if album_id:
+        album = Album.query.filter_by(id=int(album_id)).first()
+        children_albums = album.children_albums
+        children_images = album.children_images
+        # write id of displayed album
+        session["current_album"] = album_id
+        return render_template("views/index.html",
+                               title=album.name,
+                               albums=children_albums,
+                               images=children_images
+                               )
+    return render_template("views/index.html", title="Home page")

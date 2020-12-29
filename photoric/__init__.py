@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_jsglue import JSGlue
 from flask_session import Session
 from flask_uploads import configure_uploads, patch_request_class
 from flask_wtf.csrf import CSRFProtect
@@ -10,6 +11,8 @@ from .config import config
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+# create JS integration plugin object
+jsglue = JSGlue()
 
 def create_app(conf='dev'):
     # Initialize core application and load configuration
@@ -41,6 +44,9 @@ def create_app(conf='dev'):
 
     # Initialize session
     Session(app)
+
+    # Initialize JS integration plugin
+    jsglue.init_app(app)
 
     # Initialize database
     from .config.models import db

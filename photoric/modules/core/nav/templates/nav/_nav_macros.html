@@ -120,7 +120,11 @@
                 -
             </a>
             <!-- generate link to gallery items set to display -->
-            <a class="nav-link" href="{{ url_for('albums.show_album', album_id=album.id) }}" id="{{ 'album' + album.id|string }}" onclick="">
+            <a class="nav-link
+                        {% if request.url == session['current_album'] %}
+                            active
+                        {% endif %}"
+                      href="{{ url_for('albums.show_album', album_id=album.id) }}" id="{{ 'album' + album.id|string }}" onclick="">
                 {{ album.name.capitalize() }}
             </a>
             <!--generate subtree recursively-->
@@ -131,7 +135,11 @@
             </ul>
         {% else %}
             |-
-            <span style="display:inline-block"><a class="nav-link" href="{{ url_for('albums.show_album', album_id=album.id) }}" id="{{ 'album-' + album.id|string }}" onclick="">
+            <span style="display:inline-block"><a class="nav-link
+                                        {% if request.url == session['current_album'] %}
+                                            active
+                                        {% endif %}"
+                                        href="{{ url_for('albums.show_album', album_id=album.id) }}" id="{{ 'album-' + album.id|string }}" onclick="">
                 {{ album.name.capitalize() }}
             </a></span>
         {% endif %}

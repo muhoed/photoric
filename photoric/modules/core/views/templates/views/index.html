@@ -24,10 +24,10 @@
 
         {% if albums == [] and images == [] %}
             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
-                <div class="flex-grow-1 h-100 bg-light p-2 text-center">There are no images uploaded to the site yet.</div>
+                <div class="flex-grow-1 h-100 bg-light p-2 text-center">There are no images yet.</div>
             {% else %}
                 <div class="container">
-                    <div class="row flex-grow-1 justify-content-center text-center">There are no images uploaded to the site yet.</div>
+                    <div class="row flex-grow-1 justify-content-center text-center">There are no images yet.</div>
                     <div class="row">
                         {{ dropzone.create(action=url_for('upload.uploads')) }}
                     </div>
@@ -38,20 +38,21 @@
                 <p>to be done</p>
             {% else %}
                 <div class="d-flex flex-column">
-            	{% if albums != [] %}
-            	    <!-- <div class="row w-100 mx-auto"> -->
-	                <div class="w-100 text-success border border-top-0 border-left-0 border-right-0 p-2">Albums:</div>
-	                <!-- </div> -->
-	                <!-- <div class="row"> -->
-                		{{ render_albums(albums, False) }}
-                    <!-- </div> -->
-            	{% endif %}
-	                <!-- <div class="row w-100 mx-auto"> -->
-	                    <div class="w-100 text-success border border-top-0 border-left-0 border-right-0 p-2">Images:</div>
-	                <!-- </div> -->
-	                <div class="d-flex flex-row d-sm-flex flex-sm-row justify-content-space">
-                        {{ render_images(images, False) }}
-                    </div>
+                    {% if albums != [] %}
+                        <!-- <div class="row w-100 mx-auto"> -->
+                        <div class="w-100 text-success border border-top-0 border-left-0 border-right-0 p-2">Albums:</div>
+                        <!-- </div> -->
+                        <div class="d-flex flex-row d-sm-flex flex-sm-row justify-content-space">
+                            {{ render_albums(albums, False) }}
+                        </div>
+                    {% elif images != [] %}
+                        <!-- <div class="row w-100 mx-auto"> -->
+                        <div class="w-100 text-success border border-top-0 border-left-0 border-right-0 p-2">Images:</div>
+                        <!-- </div> -->
+                        <div class="row justify-content-around">
+                            {{ render_images(images, False) }}
+                        </div>
+                    {% endif %}
                 </div>
             {% endif %}
         {% endif %}
@@ -69,8 +70,9 @@
     
     {% endblock %}
 
-    {% block scripts %}
+    {% block tail_js %}
         {{ super() }}
         {{ dropzone.load_js() }}
         {{ dropzone.config(default_message="Drop images here<br>or<br><span class='btn btn-success'>Click to Upload</span>") }}
+        <script src="{{ url_for('views.static', filename='views.js') }}"></script>>
     {% endblock %}

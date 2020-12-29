@@ -9,6 +9,9 @@ views = Blueprint('views', __name__,
                   url_prefix='/',
                   static_url_path='/views/static')
 
+# set current active menu item
+# session["active"] = "home:"
+
 
 @views.route("/", methods=['GET', 'POST'])
 @views.route("/index", methods=['GET', 'POST'])

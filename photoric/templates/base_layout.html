@@ -26,6 +26,7 @@
         <title>{% block title %}{{ site_name() + ' - ' + title }}{% endblock %}</title>
         
         {% block head %}
+        {{ JSGlue.include() }}
         {% endblock %}
         
         {% block head_tail %}

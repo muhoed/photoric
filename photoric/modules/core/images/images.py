@@ -2,7 +2,7 @@ import iptcinfo3
 import os
 import datetime
 
-from flask import Blueprint, send_from_directory, abort
+from flask import Blueprint, send_from_directory, abort, session, redirect, url_for
 from flask_login import current_user
 from PIL import Image as Picture
 from PIL.ExifTags import TAGS
@@ -96,6 +96,11 @@ def create_image(filename, url):
         group_id=group_id
     )
 
+    # get parent album
+    parent_id = session.get("current_album")
+    if parent_id is not None:
+        image.parent_id = parent_id
+
     try:
         # save image to database
         db.session.add(image)
@@ -111,3 +116,10 @@ def create_image(filename, url):
 @images.route('/photos/<filename>')
 def get_image(filename):
     return send_from_directory(upload_path, filename)
+
+
+# route to show individual image view
+@images.route('images/<image_id>')
+def show_image(image_id):
+    # TODO
+    return redirect(url_for('views.index'))

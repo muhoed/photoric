@@ -1,5 +1,5 @@
 """Routes for user authentication"""
-from flask import Blueprint, request, redirect, render_template, flash
+from flask import Blueprint, request, redirect, render_template, flash, session, url_for
 from flask_uploads import UploadSet, IMAGES
 from flask_dropzone import Dropzone
 from flask_wtf import FlaskForm
@@ -77,8 +77,11 @@ def uploads():
     # redirect to home page in case of GET method
     else:
         return render_template("views/index.html", title='Home page')    
-    
-    flash(u"{} images were successfully added to the site! You can rename it and add / \
+
+    flash(u"{} images were successfully uploaded! You can rename it and add / \
     edit description and keywords at individual image pages or through site administration.".format(files_number),
           "success")
+    album_id = session.get("current_album")
+    if album_id:
+        return redirect(url_for("albums.show_album", album_id=album_id))
     return redirect("views.index")

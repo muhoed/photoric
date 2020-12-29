@@ -5,29 +5,30 @@
 {% macro render_images(images, public) %}
 		{% for image in images %}
 			{% if (public and image.is_published) or not public %}
-				<div class="card shadow-sm m-2" style="min-width:300px; max-width:500px; max-height:500px;">
-					<img class="card-img-top" src="{{ image.url }}" alt="{{ image.name }}">
-					<div class="card-body">
-						<h5 class="card-title">
-							{{ image.name.capitalize() }}
-							<a href="#" class="btn btn-primary float-right">Like/Dislike</a>
-						</h5>
-						<p class="card-text">
-							{% if authorize.in_group('admins') %}
-								Published:
-								{% if image.is_published %}
-									<span class="text-success">yes</span>
-								{% else %}
-									<span class="text-danger">no</span>
-								{% endif %}
-							{% endif %}
-						</p>
+
+				<div class="gallery col-12 col-sm-5 col-lg-3 col-xl-2 shadow-md m-2">
+					<div class="item_name">
+						<span>{{ image.name.capitalize() }}</span>
+						<img id="{{ image.id }}"
+							 name="{{ 'image-' + image.name }}"
+							 class="float-right"
+							 src="{{ url_for('views.static', filename='/images/check-circle.svg') }}"
+						onclick="checkItem(this.id)">
 					</div>
-					<div class="card-img-overlay">
-						{{ image.watermark }}
-						<div class="form-check float-right">
-							<input type="checkbox" class="form-check-input" id="{{ image.name + '-check'}}" name="{{ image.name + '-check'}}" style="opaciry:0.1;">
+					<a href="{{ url_for('images.show_image', image_id=image.id) }}">
+						<div class="item">
+							<img src="{{ image.url }}" alt="{{ image.name }}">
 						</div>
+					</a>
+					<div class="item_footer">
+						{% if authorize.in_group('admins') %}
+							Published:
+							{% if image.is_published %}
+								<span class="text-success">yes</span>
+							{% else %}
+								<span class="text-danger">no</span>
+							{% endif %}
+						{% endif %}
 					</div>
 				</div>
 
