@@ -50,7 +50,7 @@ def signin():
         login_user(user, remember=login_form.remember_me.data)
 
         # remember login date and time
-        user.last_login = datetime.now
+        user.last_login = datetime.now()
         db.session.commit()
 
         # return logged in user to the requested page or home page if not

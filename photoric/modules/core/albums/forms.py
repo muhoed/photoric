@@ -29,7 +29,7 @@ class CreateAlbumForm(FlaskForm):
     keywords = TextAreaField(
         'Keywords:',
         validators=[Length(max=300, message='300 symbols max'),
-                    Regexp(r'(.*[\w\s,;])',
+                    Regexp(r'(^[\w\s,;]*$)',
                            message='Only letters, numbers, spaces, underscore, /'
                                    'commas and semicolons are permitted')
                     ]

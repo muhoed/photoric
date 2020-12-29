@@ -76,6 +76,7 @@ def create_app(conf='dev'):
         from .modules.core.search import search
         from .modules.core.upload import upload
         from .modules.core.images import images
+        from .modules.core.albums import albums
         from .modules.core.admin import settings
 
         # app.register_blueprint(modfactory.modfactory)
@@ -85,6 +86,7 @@ def create_app(conf='dev'):
         app.register_blueprint(search.search)
         app.register_blueprint(upload.upload)
         app.register_blueprint(images.images)
+        app.register_blueprint(albums.albums)
         app.register_blueprint(settings.settings)
 
         # create database

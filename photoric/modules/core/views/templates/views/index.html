@@ -61,9 +61,9 @@
     {% block modals %}
         {{ super() }}
         
-        {% if authorize.in_group('admins') or authorize.in_group('contributors') %}
+        {% if authorize.create('albums') %}
         
-        {% include "views/create_album_dialog.html" %}
+            {% include "albums/create_album_dialog.html" %}
         
         {% endif %}
     

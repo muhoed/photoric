@@ -19,9 +19,9 @@ class NameExists(object):
     def __call__(self, form, field):
         name = field.data or None
         if self.item_type == 'album':
-            if not get_album_by_name(name):
+            if get_album_by_name(name):
                 raise ValidationError(self.message)
         elif self.item_type == 'image':
-            if not get_image_by_name(name):
+            if get_image_by_name(name):
                 raise ValidationError(self.message)
 

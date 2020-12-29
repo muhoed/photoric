@@ -27,7 +27,7 @@ def index():
 
         # shares = get_shared_items(current_user.id)
 
-        session["current_item"] = None
+        session["current_album"] = None
 
         # if user is not admin show gallery items if any
         return render_template('views/index.html', title='Home page', albums=albums, images=images)
