@@ -1,0 +1,25 @@
+<!-- Home page -->
+{% extends 'base_layout.html' %}
+{% from 'views/_views_macro.html' import render_albums, render_images, render_contrib_view with context %}
+
+    {% block header %}
+        <div class="text-success"><h4>{{ title }}</h4></div>
+        {{ debug_message }}
+    {% endblock %}
+
+    {% block main %}  
+        
+        <!-- Public galleries / or albums icon images carousel here / or icons of all albums and images not included in albums if admin -->
+
+
+
+    {% endblock %}
+    
+    {% block modals %}
+
+    {% endblock %}
+
+    {% block tail_js %}
+        {{ super() }}
+        <script src="{{ url_for('views.static', filename='views.js') }}"></script>
+    {% endblock %}

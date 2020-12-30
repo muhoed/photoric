@@ -7,6 +7,11 @@
     font-size:1.5em;
     }
 
+div.collapse-opener a:link, a:visited, a:hover, a:active {
+    text-decoration: none;
+    color: green;
+}
+
 div.gallery {
   border: 1px solid #ccc;
   height: 400px;
@@ -60,6 +65,18 @@ div.item_footer {
   padding: 15px;
 }
 
+div.empty_album {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  width: 90%;
+  height: 75%;
+  text-align: center;
+  color: white;
+  background-color: lightgreen;
+}
+
 @media only screen and (max-width: 756px) {
   div.gallery {
     height: 300px;
@@ -105,5 +122,12 @@ div.item_footer {
 
 .upload_button:hover {
     cursor:pointer;
+}
+
+.list-group-item.active a,
+.list-group-item.active a:hover,
+.list-group-item.active a:focus, {
+    background: none;
+    color: green;
 }
 

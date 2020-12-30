@@ -7,9 +7,10 @@
         {{ dropzone.load_css() }}
         {{ dropzone.style('border: 2px dashed green; margin: 2%; width: 100%; min-height: 400px;') }}
     {% endblock %}
-    
+
     {% block header %}
-        <div class="text-success"><h4>{{ title }}</h4></div>          
+        <div class="text-success"><h4>{{ title }}</h4></div>
+        {{ debug_message }}
     {% endblock %}
 
     {% block sidebar %}
@@ -21,19 +22,8 @@
     {% block main %}  
         
         <!-- Public galleries / or albums icon images carousel here / or icons of all albums and images not included in albums if admin -->
-        {% if not request.args['albums'] or not request.args['images'] %}
-            {% set albums = get_top_albums() %}
-            {{ albums }}<br>
-            {% set images = get_top_images() %}
-            {{ images }}
-            
-        {% else %}
-            from reuqest: <br> {{ request.args['albums'] }}<br>
-            {{ request.args['images'] }}
-        
-        {% endif %}
-        
-        {% if albums == [] and images == [] %}
+
+        {% if (albums == [] and images == []) or (albums == None and images == None) %}
             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
                 <div class="flex-grow-1 h-100 bg-light p-2 text-center">There are no images yet.</div>
             {% else %}
@@ -49,15 +39,25 @@
                 <p>authorization problem: to be done</p>
             {% else %}
                 <div class="d-flex flex-column">
-                    {% if albums != [] %}
-                        <div class="w-100 text-success border border-top-0 border-left-0 border-right-0 p-2">Albums:</div>
-                        <div class="d-flex flex-row d-sm-flex flex-sm-row justify-content-space">
+                    {% if albums != [] and albums != None %}
+                        <div class="text-success border border-top-0 border-left-0 border-right-0 p-2">
+                            Albums:
+                            <span><a href="#albumsList" title="close" id="albumOpener" aria-expanded="true" data-toggle="collapse" onclick="collapseAlbum(this.id)">
+                                  &#8629;
+                            </a></span>
+                        </div>
+                        <div class="albums flex-row row justify-content-around p-2 collapse show" id="albumsList">
                             {{ render_albums(albums, False) }}
                         </div>
                      {% endif %}
-                    {% if images != [] %}
-                        <div class="w-100 text-success border border-top-0 border-left-0 border-right-0 p-2">Images:</div>
-                        <div class="row justify-content-around">
+                    {% if images != [] and images != None %}
+                        <div class="text-success border border-top-0 border-left-0 border-right-0 p-2">
+                            Images:
+                            <span><a href="#imagesList" title="close" id="imageOpener" aria-expanded="true" data-toggle="collapse" onclick="collapseImage(this.id)">
+                                  &#8629;
+                            </a></span>
+                        </div>
+                        <div class="images flex-row row justify-content-around p-2 collapse show" id="imagesList">
                             {{ render_images(images, False) }}
                         </div>
                     {% endif %}
@@ -73,6 +73,7 @@
         {% if authorize.create('albums') %}
         
             {% include "albums/create_album_dialog.html" %}
+
         
         {% endif %}
     
@@ -81,6 +82,10 @@
     {% block tail_js %}
         {{ super() }}
         {{ dropzone.load_js() }}
-        {{ dropzone.config(default_message="Drop images here<br>or<br><span class='btn btn-success'>Click to Upload</span>") }}
+        {{ dropzone.config(
+                        default_message="Drop images here<br>or<br><span class='btn btn-success'>Click to Upload</span>",
+                        redirect_url=url_for('albums.redirect_to_album')
+                        )
+        }}
         <script src="{{ url_for('views.static', filename='views.js') }}"></script>
     {% endblock %}

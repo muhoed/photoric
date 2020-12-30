@@ -209,7 +209,7 @@ def initial_setup():
             # create action navbar
             actionnavbar = Navbar(
                 name='actionbar',
-                html_class='navbar navbar-expand-sm',
+                html_class='navbar navbar-expand-sm justify-content-center fixed-top',
                 html_style='display:none;'
             )
             # create action navbar items
@@ -227,7 +227,7 @@ def initial_setup():
                 # create action menu
                 actionmenu = Menu(
                     name='actionmenu',
-                    html_class='justify-content-end',
+                    html_class='justify-content-center',
                 )
                 # create actionmenu items
                 actionmenu.items = [
@@ -245,6 +245,7 @@ def initial_setup():
                         desc='Manage album',
                         icon_type='svg',
                         icon_src='book',
+                        auth_req=True,
                         group_req='contributors',
                         children=[
                             MenuItem(
@@ -298,8 +299,8 @@ def initial_setup():
             # create side navbar
             sidenavbar = Navbar(
                 name='sidebar',
-                html_class='navbar navbar-light d-none d-md-flex flex-column',
-                html_style='min-width:8%;'
+                html_class='navbar navbar-light d-none d-md-flex flex-column ml-4',
+                html_style='min-width:15%;'
             )
             # create side navbar items
             sidenavbar.items = [

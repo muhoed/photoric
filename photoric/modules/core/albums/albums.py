@@ -4,6 +4,7 @@ from flask_login import current_user
 from .forms import CreateAlbumForm
 from photoric.modules.core.auth.auth import authorize
 from photoric.config.models import db, Album
+from photoric.modules.core.views.helper import get_gallery_items
 
 
 # Blueprint initialization
@@ -60,13 +61,14 @@ def create_album():
 
         # write new album id in session
         session["current_album"] = new_album.id
+        session["album_name"] = new_album.name
 
         # write new album to database
         db.session.commit()
 
         # redirect user to album view
         flash (u"Album was successfully created!", "success")
-        return redirect(url_for("albums.show_album", album_id=session.get("current_album")))
+        return redirect(url_for("albums.show_album", album_name=session.get("album_name")))
 
     # redirect to home page in case of GET method
     flash(u"Create album form was not valid", "danger")
@@ -75,17 +77,31 @@ def create_album():
 
 # route for show album
 @authorize.read
-@albums.route("/show_album/<album_id>")
-def show_album(album_id):
-    if album_id:
-        album = Album.query.filter(Album.id == int(album_id)).first()
-        children_albums = album.children_albums
-        children_images = album.children_images
+@albums.route("/<album_name>")
+def show_album(album_name=None):
+    if album_name:
+        album = Album.query.filter(Album.name == album_name).first()
+        children_albums = get_gallery_items(album.id, 'albums')
+        children_images = get_gallery_items(album.id, 'images')
+        if not children_albums:
+            children_albums = None
+        if not children_images:
+            children_images = None
         # write id of displayed album
-        session["current_album"] = album_id
+        session["current_album"] = album.id
         return render_template("views/index.html",
-                               title=album.name,
+                               title=album_name,
                                albums=children_albums,
                                images=children_images
                                )
+    return render_template("views/index.html", title="Home page")
+
+
+# redirect to show album to serve dropzone redirect
+@authorize.read
+@albums.route("/redirect_to_album")
+def redirect_to_album():
+    album_name = session.get("album_name")
+    if album_name:
+        return redirect(url_for('albums.show_album', album_name=album_name))
     return render_template("views/index.html", title="Home page")

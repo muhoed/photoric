@@ -91,7 +91,7 @@
                 {% endif %}
               </a>
               {% if item.name == 'albums' %}
-              <ul class="navbar-nav collapse" id="{{ item.item_target }}">
+              <ul class="list-group list-group-flush" id="{{ item.item_target }}">
                 {# loop through top level albums #}
                 {% set albums = list_albums() %}
                 {% for album in albums %}
@@ -110,38 +110,26 @@
 {% endmacro %}
 
 {% macro tree_item(album) %}
-    {% set tree_id = album.id|string + '-tree' %}
-    <li id="{{ tree_id }}" class="nav-item">
+    {% set subtree_id = album.id|string + '-tree' %}
+    <li id="{{ subtree_id }}" class="pt-0 pb-0 list-group-item {% if album.id == session['current_album'] %}active{% endif %}">
         {% if album.children_albums %}
-        <!-- collapse subtree button -->
-            {% set tree_href = '#' + album.id|string %}
-            <a href="{{ '#' + album.id|string }}" role="button" data-toggle="collapse">
-                <img src="{{ url_for('nav.static', filename = 'images/plus-square.svg') }}" width="8" height="8">
-                -
-            </a>
             <!-- generate link to gallery items set to display -->
-            <a class="nav-link
-                        {% if request.url == session['current_album'] %}
-                            active
-                        {% endif %}"
-                      href="{{ url_for('albums.show_album', album_id=album.id) }}" id="{{ 'album' + album.id|string }}" onclick="">
+            <a class="nav-link" href="{{ url_for('albums.show_album', album_name=album.name) }}" id="{{ 'album' + album.id|string }}" onclick="">
                 {{ album.name.capitalize() }}
             </a>
             <!--generate subtree recursively-->
-            <ul class="navbar-nav collapse" id="{{ album.id|string }}">
+            <ul class="list-group" id="{{ subtree_href }}">
                 {% for child in album.children_albums %}
                     {{ tree_item(child) }}
                 {% endfor %}
             </ul>
         {% else %}
-            |-
-            <span style="display:inline-block"><a class="nav-link
-                                        {% if request.url == session['current_album'] %}
-                                            active
-                                        {% endif %}"
-                                        href="{{ url_for('albums.show_album', album_id=album.id) }}" id="{{ 'album-' + album.id|string }}" onclick="">
+            <a class="nav-link {% if album.id == session['current_album'] %}
+                    active
+                {% endif %}"
+                href="{{ url_for('albums.show_album', album_name=album.name) }}" id="{{ 'album-' + album.id|string }}" onclick="">
                 {{ album.name.capitalize() }}
-            </a></span>
+            </a>
         {% endif %}
        </li>
 {% endmacro %}

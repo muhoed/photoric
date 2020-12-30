@@ -7,6 +7,7 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import SubmitField, MultipleFileField
 
 from photoric.modules.core.images.images import create_image
+from photoric.config.models import Album
 
 
 # Blueprint initialization
@@ -71,21 +72,24 @@ def uploads():
             if save_image(file):
                 files_number += 1  # files_number + 1
     # serve request from dropzone
-    elif request.method == "POST":
+    # elif request.method == "POST":
         for key, file in request.files.items():
             if key.startswith('file'):
                 if save_image(file):
                     files_number += 1  # files_number + 1
     # redirect to home page in case of GET method
     else:
-        return render_template("views/index.html", title='Home page')    
+        return render_template("views/index.html", title='Home page')
 
     flash(u"{} images were successfully uploaded! You can rename it and add / \
     edit description and keywords at individual image pages or through site administration.".format(files_number),
           "success")
-    album_id = session["current_album"]
-    if album_id:
-        return redirect(url_for("albums.show_album", album_id=album_id))
+    album_id = session.get("current_album")
+    album = Album.query.filter_by(id=int(album_id)).first()
+    # save album name to session for dropzone redirect function
+    session["album_name"] = album.name
+    if album:
+        return redirect(url_for("albums.show_album", album_name=album.name))
     return redirect(url_for("views.index"))
 
 # redirect to home page in case of dropzone errors

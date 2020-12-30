@@ -4,21 +4,21 @@ from photoric.config.models import db, Image, Album
 
 
 # get gallery items
-def get_gallery_items(parent='', item='albums'):
+def get_gallery_items(parent=None, item='albums'):
 
     """ request gallery items of specific type """
     if item == 'albums':
-        if parent == 'no':
+        if parent is None:
             return Album.query.filter(Album.parent_id == None).all()
         elif isinstance(parent, int):
-            return Album.query.filter(Album.parent_id == parent).first()
+            return Album.query.filter(Album.parent_id == parent).all()
         else:
             return Album.query.all()
     else:
-        if parent == 'no':
+        if parent is None:
             return Image.query.filter(Image.parent_id == None).all()
         elif isinstance(parent, int):
-            return Image.query.filter(Image.parent_id == parent).first()
+            return Image.query.filter(Image.parent_id == parent).all()
         else:
             return Image.query.all()
 

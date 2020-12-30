@@ -2,7 +2,7 @@ import iptcinfo3
 import os
 import datetime
 
-from flask import Blueprint, send_from_directory, abort, session, redirect, url_for
+from flask import Blueprint, send_from_directory, abort, session, redirect, url_for, render_template
 from flask_login import current_user
 from PIL import Image as Picture
 from PIL.ExifTags import TAGS
@@ -10,7 +10,7 @@ from PIL.ExifTags import TAGS
 from photoric.config.config import Config
 from photoric.config.models import db, Image
 from photoric.modules.core.auth.auth import authorize
-from photoric.modules.core.albums.helper import get_album_by_id
+from photoric.modules.core.images.helper import get_image_by_name
 
 
 # Blueprint initialization
@@ -100,7 +100,7 @@ def create_image(filename, url):
     # get parent album
     parent_id = session.get("current_album")
     if parent_id is not None:
-        image.parent_id = parent_id
+        image.parent_id = int(parent_id)
 
     try:
         # save image to database
@@ -114,13 +114,17 @@ def create_image(filename, url):
 
 
 # return image from url
+@authorize.read
 @images.route('/photos/<filename>')
 def get_image(filename):
     return send_from_directory(upload_path, filename)
 
 
 # route to show individual image view
-@images.route('images/<image_id>')
-def show_image(image_id):
-    # TODO
+@authorize.read
+@images.route('/<image_name>')
+def show_image(image_name):
+    image = get_image_by_name(image_name)
+    if image:
+        return render_template('/image_view.html', image=image, title=image.name)
     return redirect(url_for('views.index'))

@@ -35,12 +35,12 @@ def create_app(conf='dev'):
         pass
 
     # Ensure responses aren't cached
-    # @app.after_request
-    # def add_header(response):
-    #    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    #    response.headers["Expires"] = 0
-    #    response.headers["Pragma"] = "no-cache"
-    #    return response
+    @app.after_request
+    def add_header(response):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Expires"] = 0
+        response.headers["Pragma"] = "no-cache"
+        return response
 
     # Initialize session
     Session(app)

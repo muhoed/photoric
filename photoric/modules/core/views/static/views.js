@@ -2,37 +2,33 @@
 var checkedAlbums = [];
 var checkedImages = [];
 
-var checkedItems = {
-        albums:checkedAlbums,
-        images:checkedImages
-};
-
-/* add gallery items to checked lists */
+/* add album or image to list of checked items */
 function checkItem(itemId) {
     var checkbox = document.getElementById(itemId);
-    var checkboxName = checkbox.getAttribute("name");
-    var checkboxSrc = checkbox.getAttribute("src");
     var pos;
-    if (checkboxSrc.indexOf("-fill")) {
-        if (checkboxName.indexOf("album-") > -1) {
-            pos = checkedAlbums.indexOf(itemId);
-            checkedAlbums.splice(pos);
-        } else if (checkboxName.indexOf("image-") > -1) {
-            pos = checkedImages.indexOf(itemId);
-            checkedImages.splice(pos);
-        }
-        checkbox.src = Flask.url_for('views.static', {'filename': '/images/check-circle.svg'});
-    }
-    if (checkboxSrc.indexOf("-fill") == -1) {
-        if (checkboxName.indexOf("album-") > -1) {
+    var srcChecked = Flask.url_for('views.static', {'filename': '/images/check-circle-fill.svg'});
+    var srcUnchecked = Flask.url_for('views.static', {'filename': '/images/check-circle.svg'});
+    if (itemId.indexOf("album") > -1) {
+        pos = checkedAlbums.indexOf(itemId);
+        if (pos > -1) {
+            checkedAlbums.splice(pos, 1);
+            checkbox.setAttribute("src", srcUnchecked);
+        } else {
             checkedAlbums.push(itemId);
-        } else if (checkboxName.indexOf("image-") > -1) {
-            checkedImages.push(itemId);
+            checkbox.setAttribute("src", srcChecked);
         }
-        checkbox.src = Flask.url_for('views.static', {'filename': '/images/check-circle-fill.svg'});
+    } else if (itemId.indexOf("image") > -1) {
+        pos = checkedImages.indexOf(itemId);
+        if (pos > -1) {
+            checkedImages.splice(pos, 1);
+            checkbox.setAttribute("src", srcUnchecked);
+        } else {
+            checkedImages.push(itemId);
+            checkbox.setAttribute("src", srcChecked);
+        }
     }
-    if (checkedItems.albums[0] || checkedItems.images[0]) {
-        document.getElementById("actionbar").style="display: block;";
+    if (checkedAlbums.length > 0  || checkedImages.length > 0) {
+        document.getElementById("actionbar").style="display: flex;";
     } else {
         document.getElementById("actionbar").style="display: none;";
     }
@@ -50,3 +46,34 @@ function addToAlbum(itemId, checkFunction) {
     xhttp.send();
 }
 */
+
+function treeOpenClose(element) {
+    if (element.getAttribute("src").indexOf("plus")) {
+        element.setAttribute("src", Flask.url_for('nav.static', {'filename': '/images/dash-square.svg'}));
+    } else {
+        element.setAttribute("src", Flask.url_for('nav.static', {'filename': '/images/plus-square.svg'}));
+    }
+}
+
+
+var albumSwitcher = 1
+function collapseAlbum(id) {
+    var albumOpener = document.getElementById(id);
+    if (albumSwitcher % 2 > 0) {
+        albumOpener.title = "open";
+    } else {
+        albumOpener.title = "close";
+    }
+    albumSwitcher++;
+}
+
+var imageSwitcher = 1
+function collapseImage(id) {
+    var imageOpener = document.getElementById(id);
+    if (imageSwitcher % 2 > 0) {
+        imageOpener.title = "open";
+    } else {
+        imageOpener.title = "close";
+    }
+    imageSwitcher++;
+}

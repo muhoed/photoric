@@ -52,7 +52,7 @@ class Config:
     DROPZONE_ALLOWED_FILE_TYPE = 'image'
     DROPZONE_UPLOAD_MULTIPLE = True
     DROPZONE_PARALLEL_UPLOADS = 20
-    DROPZONE_REDIRECT_VIEW = 'views.index'
+    # DROPZONE_REDIRECT_VIEW = 'views.index'
     DROPZONE_ENABLE_CSRF = True
 
     # Views specific variables
