@@ -29,15 +29,15 @@ UserRole = db.Table('user_role',
                               db.ForeignKey('roles.id'))
 )
 
-
-AlbumImage = db.Table('album_image',
-                      db.Column('album_id',
-                                db.Integer,
-                                db.ForeignKey('albums.id')),
-                      db.Column('image_id',
-                                db.Integer,
-                                db.ForeignKey('images.id'))
-)    
+# to be revised
+# AlbumImage = db.Table('album_image',
+#                      db.Column('album_id',
+#                                db.Integer,
+#                                db.ForeignKey('albums.id')),
+#                      db.Column('image_id',
+#                                db.Integer,
+#                                db.ForeignKey('images.id'))
+#)    
 
 # declare models
 
@@ -85,8 +85,8 @@ class Image(db.Model, PermissionsMixin):
     )
 
     id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
     name = db.Column(db.String(100), unique=True, nullable=False)
+    parent_id=db.Column(db.Integer, db.ForeignKey('albums.id'))
     description = db.Column(db.String(500), nullable=True)
     keywords = db.Column(db.String(255), nullable=True)
     filename = db.Column(db.String, unique=True, nullable=False)
@@ -96,10 +96,11 @@ class Image(db.Model, PermissionsMixin):
     location = db.Column(db.Text, nullable=True)
     is_published = db.Column(db.Boolean(), nullable=False, default=False)
     published_on = db.Column(db.DateTime, nullable=True, index=True)
-    parents = db.relationship(
+    parent_album = db.relationship(
         'Album',
-        secondary=AlbumImage,
+        #secondary=AlbumImage,
         back_populates='children_images')
+    
     def publish(self):
         # mark gallery item as published, i.e. accessible for both registered and anonymous users
         is_published = True
@@ -140,8 +141,8 @@ class Album(db.Model, PermissionsMixin):
     published_on = db.Column(db.DateTime, nullable=True, index=True)
     children_images = db.relationship(
         'Image',
-        secondary=AlbumImage,
-        back_populates='parents'
+        # secondary=AlbumImage,
+        back_populates='parent_album'
     )
     children_albums = db.relationship(
         'Album', backref=backref('parent',
@@ -194,7 +195,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password, password)
     
     def __repr__(self):
-        return '<User %>' % self.name
+        return '<User %r>' % self.name
         
 
 class Group(db.Model, AllowancesMixin):

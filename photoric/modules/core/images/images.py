@@ -10,6 +10,7 @@ from PIL.ExifTags import TAGS
 from photoric.config.config import Config
 from photoric.config.models import db, Image
 from photoric.modules.core.auth.auth import authorize
+from photoric.modules.core.albums.helper import get_album_by_id
 
 
 # Blueprint initialization

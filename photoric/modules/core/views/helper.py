@@ -9,16 +9,16 @@ def get_gallery_items(parent='', item='albums'):
     """ request gallery items of specific type """
     if item == 'albums':
         if parent == 'no':
-            return Album.query.filter_by(parent_id=None).all()
+            return Album.query.filter(Album.parent_id == None).all()
         elif isinstance(parent, int):
-            return Album.query.filter_by(parent_id=parent).first()
+            return Album.query.filter(Album.parent_id == parent).first()
         else:
             return Album.query.all()
     else:
         if parent == 'no':
-            return Image.query.filter_by(parent_id=None).all()
+            return Image.query.filter(Image.parent_id == None).all()
         elif isinstance(parent, int):
-            return Image.query.filter_by(parent_id=parent).first()
+            return Image.query.filter(Image.parent_id == parent).first()
         else:
             return Image.query.all()
 

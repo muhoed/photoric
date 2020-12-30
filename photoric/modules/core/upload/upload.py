@@ -4,7 +4,7 @@ from flask_uploads import UploadSet, IMAGES
 from flask_dropzone import Dropzone
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from wtforms import SubmitField
+from wtforms import SubmitField, MultipleFileField
 
 from photoric.modules.core.images.images import create_image
 
@@ -24,11 +24,13 @@ dropzone = Dropzone()
 # upload form
 class UploadButton(FlaskForm):
     """Images upload form"""
-    photo = FileField(
+    photo = MultipleFileField("upload_images",
+        render_kw={'multiple': True,
+                   'onchange':'this.form.submit()'},
         validators=[
             FileAllowed(photos, message='Only files of valid image formats (i.e. .jpg, .jpeg, .png, .tiff etc.) \
-            are allowed'),
-            FileRequired('File is empty')
+            are allowed') # ,
+            # FileRequired('File is empty')
         ]
     )
 
@@ -61,11 +63,11 @@ def uploads():
     files_number = 0
     # serve request from upload form
     if form.validate_on_submit():
-        if 'files[]' not in request.files:
-            flash(u'No images were uploaded', "warning")
-            return redirect(request.url)
-        files = request.files.getlist('files[]')
-        for file in files:
+        # if 'files[]' not in request.files:
+        #    flash(u'No images were uploaded', "warning")
+        #    return redirect(request.url)
+        # files = request.files.getlist('files[]')
+        for file in form.photo.data:
             if save_image(file):
                 files_number += 1  # files_number + 1
     # serve request from dropzone
@@ -81,7 +83,12 @@ def uploads():
     flash(u"{} images were successfully uploaded! You can rename it and add / \
     edit description and keywords at individual image pages or through site administration.".format(files_number),
           "success")
-    album_id = session.get("current_album")
+    album_id = session["current_album"]
     if album_id:
         return redirect(url_for("albums.show_album", album_id=album_id))
-    return redirect("views.index")
+    return redirect(url_for("views.index"))
+
+# redirect to home page in case of dropzone errors
+@upload.route("/index")
+def index():
+    return redirect(url_for('views.index'))

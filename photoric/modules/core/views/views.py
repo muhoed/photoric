@@ -12,6 +12,23 @@ views = Blueprint('views', __name__,
 # set current active menu item
 # session["active"] = "home:"
 
+# context processor to get parent gallery items in template
+@views.app_context_processor
+def views_processors():
+
+    # get top-level albums
+    def get_top_albums():
+        return get_gallery_items('no', 'albums')
+
+    # get top-level images
+    def get_top_images():
+        return get_gallery_items('no', 'images')
+
+    return dict(
+        get_top_albums=get_top_albums,
+        get_top_images=get_top_images
+    )
+
 
 @views.route("/", methods=['GET', 'POST'])
 @views.route("/index", methods=['GET', 'POST'])

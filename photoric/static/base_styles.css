@@ -90,3 +90,20 @@ div.item_footer {
     }
 
 }
+
+.upload_images {
+    display:none;
+    height:0;
+    width:0;
+}
+
+.upload_button {
+    padding-right: 5;
+    padding-top: 5;
+    padding-bottom: 0;
+}
+
+.upload_button:hover {
+    cursor:pointer;
+}
+

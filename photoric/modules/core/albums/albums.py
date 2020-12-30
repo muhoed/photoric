@@ -78,7 +78,7 @@ def create_album():
 @albums.route("/show_album/<album_id>")
 def show_album(album_id):
     if album_id:
-        album = Album.query.filter_by(id=int(album_id)).first()
+        album = Album.query.filter(Album.id == int(album_id)).first()
         children_albums = album.children_albums
         children_images = album.children_images
         # write id of displayed album

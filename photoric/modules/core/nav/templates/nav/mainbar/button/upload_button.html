@@ -1,5 +1,19 @@
 <!-- Upload images button -->
-<a class="nav-link" href="{{ navbar_item.item_target }}" id="{{ navbar_item.name.capitalize() }}" title="Upload images">
-    {% set path = url_for('nav.static', filename = 'images/' + navbar_item.icon_src + '.' + navbar_item.icon_type) %}
-    <img width="24" height="24" id="{{ navbar_item.name }}" src="{{ path }}">
+<a class="nav-link upload_button" href="#" title="Upload images">
+<form action="{{ url_for('upload.uploads') }}" method="POST" enctype="multipart/form-data">
+        {{ upload_form.csrf_token }}
+        <label for="photo">
+            {{ upload_form.photo(class_="upload_images") }}
+            {% if upload_form.photo.errors %}
+                <ul class="errors">
+                    {% for error in upload_form.photo.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% set path = url_for('nav.static', filename = 'images/' + navbar_item.icon_src + '.' + navbar_item.icon_type) %}
+            <img class="upload_button" width="24" height="24" id="{{ navbar_item.name }}" src="{{ path }}">
+        </label>
+    </form>
 </a>
+  
