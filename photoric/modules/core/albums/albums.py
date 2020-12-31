@@ -3,7 +3,7 @@ from flask_login import current_user
 
 from .forms import CreateAlbumForm
 from photoric.modules.core.auth.auth import authorize
-from photoric.config.models import db, Album
+from photoric.config.models import db, Album, Image
 from photoric.modules.core.views.helper import get_gallery_items
 
 
@@ -28,7 +28,16 @@ def albums_processors():
     def list_albums():
         return Album.query.filter(Album.authorized('read')).all()
 
-    return dict(list_albums=list_albums)
+    # get number of images in album
+    def get_elements_number(album_id):
+        album_content = {}
+        album_content['albums'] = Album.query.filter(Album.parent_id == album_id).count()
+        album_content['images'] = Image.query.filter(Image.parent_id == album_id).count()
+        return album_content
+
+    return dict(list_albums=list_albums,
+                get_elements_number=get_elements_number
+                )
 
 
 # route for album creation
@@ -90,7 +99,7 @@ def show_album(album_name=None):
         # write id of displayed album
         session["current_album"] = album.id
         return render_template("views/index.html",
-                               title=album_name,
+                               title='Album: ' + album_name,
                                albums=children_albums,
                                images=children_images
                                )

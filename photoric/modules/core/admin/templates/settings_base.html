@@ -2,6 +2,7 @@
 {% extends 'base_layout.html' %}
 {% import 'admin/layout.html' as layout with context -%}
 {% import 'admin/static.html' as admin_static with context %}
+{% from "nav/_nav_macros.html" import render_navbar with context %}
 
 {% if admin_view.category %}
     {% set category_title = admin_view.category + ' - ' %}
@@ -37,6 +38,15 @@
         
 {% endif %}        
     
+{% endblock %}
+
+{% block topnavbars %}
+
+{{ super() }}
+
+{{ render_navbar('topbar') }}
+{{ render_navbar('mainbar') }}
+
 {% endblock %}
 
 {% block header %}

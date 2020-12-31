@@ -1,6 +1,20 @@
 <!-- Home page -->
 {% extends 'base_layout.html' %}
-{% from 'views/_views_macro.html' import render_albums, render_images, render_contrib_view with context %}
+{% from "nav/_nav_macros.html" import render_navbar with context %}
+
+        {% block head_css %}
+        {{ super() }}
+        <style>
+            body {
+                background-color:black;
+            }
+            img.d-block {
+                display: block !important;
+                max-height: 100vh;
+                object-fit: cover;
+            }
+        </style>
+        {% endblock %}
 
         {% block topnavbars %}
         
@@ -9,35 +23,45 @@
         
         {% endblock %}
 
-    {% block header %}
-        <div class="text-success"><h4>{{ title }}</h4></div>
-        {{ debug_message }}
-    {% endblock %}
-
     {% block main %}
-    <div class="d-flex flex-nowrap flex-column h-100 bg-dark justify-content-between align-item-center">  
-        <div class="h-100 flex-grow">        
-            <!-- Image carousel with switched off sliding -->
-            <div id="ImageViewCarousel" class="carousel slide carousel-fade" data-interval="false" data-ride="" data-wrap="false">
-              
-              {% for image in siblings %}
-                {# if (current_user.is_authenticated and authorize.read(image)) or image.is_published #}
-                  <div class="carousel-inner">
-                    <div class="carousel-item {% if image.id == current_image.id %}active{% endif %}" data-interval="false">
-                      <img src="{{ image.url }}" class="d-block w-100" alt="{{ image.name }}">
+    <div class="container-fluid align-item-center bg-dark m-0">
+        <div class="row bg-dark justify-content-between align-item-center">
+            <div class="col-1">
+                <a class="image-view-back text-white" href="{{ request.args.get('next') }}" role="button">
+                    <button class="btn btn-secondary mt-5 float-left">Back</button>
+                </a>
+            </div>
+            <div class="col-10 max-vh-100">
+                <div class="d-flex flex-column">
+
+                    <!-- Image carousel with switched off sliding -->
+                    <div class="row justify-content-center">
+                        <div id="ImageViewCarousel" class="carousel slide carousel-fade" data-interval="false" data-ride="" data-wrap="false">
+                              <div class="carousel-inner bg-white">
+                                  {% for image in siblings %}
+                                    {# if (current_user.is_authenticated and authorize.read(image)) or image.is_published #}
+                                        <div class="carousel-item {% if image.id == current_image.id %}active{% endif %} p-2" data-interval="false">
+                                          <img src="{{ image.url }}" class="d-block w-100 m-auto" alt="{{ image.name }}">
+                                        </div>
+                                    {# endif #}
+                                  {% endfor %}
+                              </div>
+                        </div>
+                          <a class="carousel-control-prev" href="#ImageViewCarousel" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                          </a>
+                          <a class="carousel-control-next" href="#ImageViewCarousel" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                          </a>
                     </div>
-                  </div>
-                {# endif #}
-              {% endfor %}
-              
-              <a class="carousel-control-prev" href="#ImageViewCarousel" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-              </a>
-              <a class="carousel-control-next" href="#ImageViewCarousel" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-              </a>
+                </div>
+            </div>
+            <div class="col-1">
+                <a class="image-view-back text-white" href="{{ request.args.get('next') }}" role="button">
+                    <button class="btn btn-secondary mt-5 float-left">Back</button>
+                </a>
             </div>
         </div>
     </div>

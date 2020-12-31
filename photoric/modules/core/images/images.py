@@ -10,6 +10,7 @@ from PIL.ExifTags import TAGS
 from photoric.config.config import Config
 from photoric.config.models import db, Image
 from photoric.modules.core.auth.auth import authorize
+from photoric.modules.core.albums.helper import get_album_by_id
 from photoric.modules.core.images.helper import get_image_by_name
 from photoric.modules.core.views.helper import get_gallery_items
 
@@ -150,7 +151,7 @@ def show_image(image_name):
                                current_image=image,
                                parent_album=parent_album,
                                siblings=siblings,
-                               title=image.name)
+                               title='Image: ' + image.name)
 
     # redirect to home page if image is not found
     return redirect(url_for('views.index'))

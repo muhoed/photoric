@@ -4,7 +4,8 @@
 
 				<div class="gallery shadow-md m-2"> <!-- col-12 col-sm-5 col-lg-3 col-xl-2 -->
 					<div class="item_name">
-						<span>{{ album.name.capitalize() }}</span>
+						<span>{{ album.name.capitalize() }}: </span>
+						<span style="font-size:0.5em;">{{ get_elements_number(album.id).albums }} sub-album(-es), {{ get_elements_number(album.id).albums }} image(-s)</span>
 						<img id="{{ 'album -' + album.id|string }}"
 							 name="{{ 'album -' + album.id|string }}"
 							 class="float-right"
@@ -42,6 +43,7 @@
 
 			{% endif %}
 		{% endfor %}
+
 {% endmacro %}
 
 {% macro render_images(images, public) %}
@@ -76,6 +78,7 @@
 
 			{% endif %}
 		{% endfor %}
+
 {% endmacro %}
 
 {% macro render_contrib_view() %}
