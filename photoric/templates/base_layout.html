@@ -35,11 +35,17 @@
 
     <body class="d-flex flex-column min-vh-100">
      <div class="flex-fill">
-        <!-- include navbars stored in database -->
+        <!-- include all or some navbars stored in database -->
+        {% block topnavbars %}
+        
         {% from "nav/_nav_macros.html" import render_navbar with context %}
+        {#
+        {{ render_navbar() }} // for all navbars in db
         {{ render_navbar('topbar') }}
         {{ render_navbar('mainbar') }}
         {{ render_navbar('actionbar') }}
+        #}
+        {% endblock %}
         
             <header class="m-3">
         {% block site_messages %}               

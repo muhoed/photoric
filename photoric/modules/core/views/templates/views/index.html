@@ -7,6 +7,15 @@
         {{ dropzone.load_css() }}
         {{ dropzone.style('border: 2px dashed green; margin: 2%; width: 100%; min-height: 400px;') }}
     {% endblock %}
+    
+        {% block topnavbars %}
+        
+        {{ super() }}
+        {{ render_navbar('topbar') }}
+        {{ render_navbar('mainbar') }}
+        {{ render_navbar('actionbar') }}
+        
+        {% endblock %}
 
     {% block header %}
         <div class="text-success"><h4>{{ title }}</h4></div>

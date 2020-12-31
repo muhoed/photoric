@@ -2,6 +2,8 @@ from flask import Blueprint, redirect
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
+from photoric.modules.core.auth.auth import authorize
+
 
 settings = Blueprint('settings', __name__,
                      template_folder="templates",
@@ -22,6 +24,7 @@ class PhotoricView(ModelView):
     
 
 @settings.route("/settings")
+@authorize.in_group('admins')
 def manage_settings():
     return redirect('/admin/')
 

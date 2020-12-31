@@ -11,6 +11,7 @@ from photoric.config.config import Config
 from photoric.config.models import db, Image
 from photoric.modules.core.auth.auth import authorize
 from photoric.modules.core.images.helper import get_image_by_name
+from photoric.modules.core.views.helper import get_gallery_items
 
 
 # Blueprint initialization
@@ -114,17 +115,42 @@ def create_image(filename, url):
 
 
 # return image from url
-@authorize.read
 @images.route('/photos/<filename>')
 def get_image(filename):
-    return send_from_directory(upload_path, filename)
+
+    # return image file if image exists and user is authorised to read it
+    image = Image.query.filter_by(filename=filename).first()
+    if image:
+        if authorize.read(image):
+            return send_from_directory(upload_path, filename)
+        else:
+            raise Unauthorized
+    raise NotFound
 
 
 # route to show individual image view
-@authorize.read
 @images.route('/<image_name>')
+@authorize.read
 def show_image(image_name):
+
+    # get image object to display
     image = get_image_by_name(image_name)
+
     if image:
-        return render_template('/image_view.html', image=image, title=image.name)
+
+        # get parent album and siblings if any
+        if image.parent_id is not None:
+            parent_album = get_album_by_id(image.parent_id)
+            siblings = parent_album.children_images
+        else:
+            parent_album = None
+            siblings = get_gallery_items(parent_album, 'images')
+    
+        return render_template('images/image_view.html',
+                               current_image=image,
+                               parent_album=parent_album,
+                               siblings=siblings,
+                               title=image.name)
+
+    # redirect to home page if image is not found
     return redirect(url_for('views.index'))

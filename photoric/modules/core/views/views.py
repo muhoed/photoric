@@ -73,12 +73,7 @@ def index():
 
         session["current_album"] = None
 
-        # if user is not admin show gallery items if any
         return render_template('views/index.html', title='Home page', albums=albums, images=images)
-
-        # if user is admin gallery_items is not None load admin version of the page
-
-        # if user is admin and get view items is None load dropzone page to upload
 
 
 @views.route("/about")

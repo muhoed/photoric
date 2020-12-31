@@ -1,6 +1,13 @@
 <!-- About page -->
 {% extends 'base_layout.html' %}
-{% from 'views/_views_macro.html' import render_view, render_contrib_view with context %}
+
+        {% block topnavbars %}
+        
+        {{ super() }}
+        {{ render_navbar('topbar') }}
+        {{ render_navbar('mainbar') }}
+        
+        {% endblock %}
 
     {% block header %}
         <div class="text-success"><h4>{{ title }}</h4></div>

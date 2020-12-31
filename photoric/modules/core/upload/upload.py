@@ -6,6 +6,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import SubmitField, MultipleFileField
 
+from photoric.modules.core.auth.auth import authorize
 from photoric.modules.core.images.images import create_image
 from photoric.config.models import Album
 
@@ -39,6 +40,7 @@ class UploadButton(FlaskForm):
 
 
 # save image and return parameters required to store its information in database
+@authorize.in_group('contributors')
 def save_image(file):
     filename = photos.save(file)
     url = photos.url(filename)
@@ -59,6 +61,7 @@ def upload_form():
 
 
 @upload.route('/uploads', methods=['GET', 'POST'])
+@authorize.in_group('contributors')
 def uploads():
     form = UploadButton()
     files_number = 0

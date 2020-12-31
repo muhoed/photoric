@@ -26,7 +26,7 @@ def create_album_form():
 def albums_processors():
     # get list of all albums
     def list_albums():
-        return Album.query.all()
+        return Album.query.filter(Album.authorized('read')).all()
 
     return dict(list_albums=list_albums)
 
@@ -76,11 +76,11 @@ def create_album():
 
 
 # route for show album
-@authorize.read
 @albums.route("/<album_name>")
+@authorize.read
 def show_album(album_name=None):
     if album_name:
-        album = Album.query.filter(Album.name == album_name).first()
+        album = Album.query.filter(Album.name == album_name, Album.authorized('read')).first()
         children_albums = get_gallery_items(album.id, 'albums')
         children_images = get_gallery_items(album.id, 'images')
         if not children_albums:
@@ -98,8 +98,8 @@ def show_album(album_name=None):
 
 
 # redirect to show album to serve dropzone redirect
-@authorize.read
 @albums.route("/redirect_to_album")
+@authorize.read
 def redirect_to_album():
     album_name = session.get("album_name")
     if album_name:

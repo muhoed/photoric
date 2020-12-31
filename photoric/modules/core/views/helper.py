@@ -9,18 +9,18 @@ def get_gallery_items(parent=None, item='albums'):
     """ request gallery items of specific type """
     if item == 'albums':
         if parent is None:
-            return Album.query.filter(Album.parent_id == None).all()
+            return Album.query.filter(Album.parent_id == None, Album.authorized('read')).all()
         elif isinstance(parent, int):
-            return Album.query.filter(Album.parent_id == parent).all()
+            return Album.query.filter(Album.parent_id == parent, Album.authorized('read')).all()
         else:
-            return Album.query.all()
+            return Album.query.filter(Album.authorized('read')).all()
     else:
         if parent is None:
-            return Image.query.filter(Image.parent_id == None).all()
+            return Image.query.filter(Image.parent_id == None, Image.authorized('read')).all()
         elif isinstance(parent, int):
-            return Image.query.filter(Image.parent_id == parent).all()
+            return Image.query.filter(Image.parent_id == parent, Image.authorized('read')).all()
         else:
-            return Image.query.all()
+            return Image.query.filter(Image.authorized('read')).all()
 
 
 
