@@ -78,8 +78,8 @@
 <!-- generate tree menu -->
 {% macro navlink_tree(item) %}
 <!-- check tree menu items exist -->
-{% set sets = {"albums":albums, "shares":shares} %}
-{% if sets[item.name] != None %}
+{# set sets = {"albums":albums, "shares":shares} #}
+{# if sets[item.name] != None #}
     {% set tree_id = item.id|string + '-tree' %}
     <li class="nav-item" id="{{ tree_id }}">
              <a class="nav-link" href="{{ '#' + item.item_target }}" title="{{ item.desc }}" data-toggle="collapse" aria-expanded="false">
@@ -104,9 +104,9 @@
               
               <!-- TO BE DONE -->
               
-              {% endif %}
+             {% endif %}
     </li>
-{% endif %}
+{# endif #}
 {% endmacro %}
 
 {% macro tree_item(album) %}
@@ -124,10 +124,7 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <a class="nav-link {% if album.id == session['current_album'] %}
-                    active
-                {% endif %}"
-                href="{{ url_for('albums.show_album', album_name=album.name) }}" id="{{ 'album-' + album.id|string }}" onclick="">
+            <a class="nav-link" href="{{ url_for('albums.show_album', album_name=album.name) }}" id="{{ 'album-' + album.id|string }}" onclick="">
                 {{ album.name.capitalize() }}
             </a>
         {% endif %}

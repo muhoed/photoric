@@ -84,7 +84,8 @@
         {{ dropzone.load_js() }}
         {{ dropzone.config(
                         default_message="Drop images here<br>or<br><span class='btn btn-success'>Click to Upload</span>",
-                        redirect_url=url_for('albums.redirect_to_album')
+                        redirect_url=url_for('albums.redirect_to_album'),
+                        max_file_size=256
                         )
         }}
         <script src="{{ url_for('views.static', filename='views.js') }}"></script>
