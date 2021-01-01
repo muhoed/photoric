@@ -6,7 +6,7 @@
         {{ super() }}
         <style>
             body {
-                background-color:black;
+                background-color: #343a40;
             }
             img.d-block {
                 display: block !important;
@@ -24,14 +24,14 @@
         {% endblock %}
 
     {% block main %}
-    <div class="container-fluid align-item-center bg-dark m-0">
-        <div class="row bg-dark justify-content-between align-item-center">
+    <div class="container-fluid img-centered bg-dark m-0 d-inline align-items-center">
+        <div class="row bg-dark justify-content-between">
             <div class="col-1">
                 <a class="image-view-back text-white" href="{{ request.args.get('next') }}" role="button">
                     <button class="btn btn-secondary mt-5 float-left">Back</button>
                 </a>
             </div>
-            <div class="col-10 max-vh-100">
+            <div class="col-10 max-vh-100 m-auto">
                 <div class="d-flex flex-column">
 
                     <!-- Image carousel with switched off sliding -->
@@ -60,7 +60,7 @@
             </div>
             <div class="col-1">
                 <a class="image-view-back text-white" href="{{ request.args.get('next') }}" role="button">
-                    <button class="btn btn-secondary mt-5 float-left">Back</button>
+                    <button class="btn btn-secondary mt-5 float-right">Back</button>
                 </a>
             </div>
         </div>
