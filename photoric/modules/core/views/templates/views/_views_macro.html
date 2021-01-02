@@ -8,7 +8,7 @@
 						<span style="font-size:0.5em;">{{ get_elements_number(album.id).albums }} sub-album(-es), {{ get_elements_number(album.id).albums }} image(-s)</span>
 						<img id="{{ 'album -' + album.id|string }}"
 							 name="{{ 'album -' + album.id|string }}"
-							 class="float-right"
+							 class="float-right check-icon"
 							 src="{{ url_for('views.static', filename='/images/check-circle.svg') }}"
 							 onclick="checkItem(this.id)">
 					</div>
@@ -55,7 +55,7 @@
 						<span>{{ image.name.capitalize() }}</span>
 						<img id="{{ 'image -' + image.id|string }}"
 							 name="{{ 'image -' + image.id|string }}"
-							 class="float-right"
+							 class="float-right check-icon"
 							 src="{{ url_for('views.static', filename='/images/check-circle.svg') }}"
 						onclick="checkItem(this.id)">
 					</div>

@@ -5,10 +5,6 @@
     
 #Mainmenu {
     font-size:1.5em;
-    }
-
-img.content-img {
-pointer-events: none;
 }
 
 div.collapse-opener a:link, a:visited, a:hover, a:active {
@@ -64,14 +60,14 @@ div.carousel-item-overlay, div.item-overlay {
     width: 100%;
     height: 100%;
     opacity: 0.5;
-    background-image: url({{ url_for('static', filename='103016_0000.png'));
+    background-image: url({{ url_for('static', filename='103016_0000.png') }});
 }
 
-div.item img {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+img.content-img {
+    pointer-events: none;
+    /*width: 100%;
+    height: 100%;*/
+    object-fit: cover;
 }
 
 div.item_name {
@@ -95,7 +91,7 @@ div.empty_album {
   background-color: lightgreen;
 }
 
-@media only screen and (max-width: 756px) {
+@media only screen and (max-width: 768px) {
   div.gallery {
     height: 300px;
   }
@@ -138,7 +134,7 @@ div.empty_album {
     padding-bottom: 0;
 }
 
-.upload_button:hover {
+.upload_button:hover, .check-icon {
     cursor:pointer;
 }
 
