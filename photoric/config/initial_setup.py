@@ -2,7 +2,7 @@ from photoric.config.models import db, User, Role, Group, Navbar, NavbarItem
 from photoric.config.models import Menu, MenuItem, Album, Image, Config
 from photoric.modules.core.auth.helper import get_user_by_name
 from photoric.modules.core.nav.helper import get_navbar_by_name, get_menu_by_name
-from photoric.modules.core.admin.settings import admin_manager, PhotoricView
+from photoric.modules.core.admin.settings import admin_manager, PhotoricView, UserView
 
 def initial_setup():
     """ create admin user if not exist """
@@ -345,7 +345,7 @@ def initial_setup():
                 db.session.commit()
 
     # register models with admin_manager
-    admin_manager.add_view(PhotoricView(User, db.session, category='Users and Access rights'))
+    admin_manager.add_view(UserView(User, db.session, category='Users and Access rights'))
     admin_manager.add_view(PhotoricView(Role, db.session, category='Users and Access rights'))
     admin_manager.add_view(PhotoricView(Group, db.session, category='Users and Access rights'))
     admin_manager.add_view(PhotoricView(Album, db.session, category='Gallery Items'))

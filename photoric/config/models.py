@@ -182,9 +182,17 @@ class User(UserMixin, db.Model):
     roles = db.relationship('Role', secondary=UserRole)
     groups = db.relationship('Group', secondary=UserGroup)
 
+    @property
+    def is_authenticated(self):
+        return True
+
     def is_active(self):
     # return True if the user is active (was not banned)
         return self.active
+
+    @property
+    def is_anonymous(self):
+        return False
 
     def set_password(self, password):
         """create hashed password"""
@@ -193,6 +201,13 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         """check hashed password"""
         return check_password_hash(self.password, password)
+
+    def get_id(self):
+        return self.id
+
+    # Required for administrative interface
+    def __unicode__(self):
+        return self.name
     
     def __repr__(self):
         return '<User %r>' % self.name
@@ -291,4 +306,12 @@ class Config(db.Model, PermissionsMixin):
     id = db.Column(db.Integer, primary_key=True)
     theme = db.Column(db.String, nullable=False, default='light')
     view_mode = db.Column(db.String, nullable=False, default='grid')
-    
+
+
+def check_object_name(object_type=None, name=None):
+    if object_type is None or name is None:
+        return False
+    requested_object = db.session.query(*object_type.capitalize()).filter_by(name=name).first()
+    if requested_object:
+        return True
+    return False

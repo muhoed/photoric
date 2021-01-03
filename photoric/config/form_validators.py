@@ -2,6 +2,7 @@ from wtforms.validators import ValidationError
 
 from photoric.modules.core.albums.helper import get_album_by_name
 from photoric.modules.core.images.helper import get_image_by_name
+from photoric.config.models import check_object_name
 
 """ custom form validators to use with wtforms """
 
@@ -18,10 +19,6 @@ class NameExists(object):
 
     def __call__(self, form, field):
         name = field.data or None
-        if self.item_type == 'album':
-            if get_album_by_name(name):
-                raise ValidationError(self.message)
-        elif self.item_type == 'image':
-            if get_image_by_name(name):
-                raise ValidationError(self.message)
+        if check_object_name(self.item_type, name):
+            raise ValidationError(self.message)
 
