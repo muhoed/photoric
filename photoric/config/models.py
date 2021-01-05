@@ -308,10 +308,22 @@ class Config(db.Model, PermissionsMixin):
     view_mode = db.Column(db.String, nullable=False, default='grid')
 
 
+models = {
+    'album':Album,
+    'image':Image,
+    'user':User,
+    'role':Role,
+    'group':Group,
+    'navbar':Navbar,
+    'navbar_item':NavbarItem,
+    'menu':Menu,
+    'menu_item':MenuItem
+    }
+
 def check_object_name(object_type=None, name=None):
     if object_type is None or name is None:
         return False
-    requested_object = db.session.query(*object_type.capitalize()).filter_by(name=name).first()
+    requested_object = db.session.query(models[object_type]).filter_by(name=name).first()
     if requested_object:
         return True
     return False

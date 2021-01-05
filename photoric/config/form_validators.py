@@ -22,3 +22,6 @@ class NameExists(object):
         if check_object_name(self.item_type, name):
             raise ValidationError(self.message)
 
+
+# initialize name check validator
+name_exists = NameExists

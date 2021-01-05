@@ -1,5 +1,4 @@
 from photoric.config.models import Album
-from photoric.modules.core.auth.auth import authorize
 
 
 # get album by name
