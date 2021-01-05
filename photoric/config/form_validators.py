@@ -1,7 +1,7 @@
 from wtforms.validators import ValidationError
 
-from photoric.modules.core.albums.helper import get_album_by_name
-from photoric.modules.core.images.helper import get_image_by_name
+# from photoric.modules.core.albums.helper import get_album_by_name
+# from photoric.modules.core.images.helper import get_image_by_name
 from photoric.config.models import check_object_name
 
 """ custom form validators to use with wtforms """
@@ -14,7 +14,7 @@ class NameExists(object):
             item_type = 'album'
         self.item_type = item_type
         if not message:
-            message = u'The {} with such name already exists'.format(item_type)
+            message = u'The %s with such name already exists' % item_type
         self.message = message
 
     def __call__(self, form, field):
@@ -24,4 +24,4 @@ class NameExists(object):
 
 
 # initialize name check validator
-name_exists = NameExists
+name_check = NameExists

@@ -6,7 +6,7 @@ from wtforms.validators import (
     Regexp
 )
 
-from photoric.config.form_validators import name_exists
+from photoric.config.form_validators import name_check
 
 
 class CreateAlbumForm(FlaskForm):
@@ -15,7 +15,7 @@ class CreateAlbumForm(FlaskForm):
         'Name:',
         validators=[InputRequired(message='Please enter album name'),
                     Length(min=3, message='Album name must be at least 3 symbols long'),
-                    name_exists('album', message='Album with such name already exists')
+                    name_check(item_type='album', message='Album with such name already exists')
                     ]
     )
     description = TextAreaField(

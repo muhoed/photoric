@@ -74,19 +74,16 @@ def signup():
     """
     form = SignupForm()
     if form.validate_on_submit():
-        existing_user = get_user_by_name(name=form.name.data)
-        if existing_user is None:
-            user = User(
-                name=form.name.data,
-                email=form.email.data,
-            )
-            user.set_password(form.password.data)
-            db.session.add(user)
-            db.session.commit()  # Create new user
-            login_user(user)  # Log in as newly created user
-            flash(u'Congratulation! You were successfully registered!', 'success')
-            return redirect(url_for('views.index'))
-        flash(u'A user already exists with that name.', 'warning')
+        user = User(
+            name=form.name.data,
+            email=form.email.data,
+        )
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()  # Create new user
+        login_user(user)  # Log in as newly created user
+        flash(u'Congratulation! You were successfully registered!', 'success')
+        return redirect(url_for('views.index'))
 
     return render_template(
         'auth/signup.html',

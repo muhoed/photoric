@@ -9,13 +9,16 @@ from wtforms.validators import (
     Regexp
 )
 
+from photoric.config.form_validators import name_check
+
 
 class SignupForm(FlaskForm):
     """User Sign-Up Form."""
     name = StringField(
         'Name:',
         validators=[InputRequired(message='Please enter name'),
-                    Length(min=3, message='Name must be at least 3 symbols long')
+                    Length(min=3, message='Name must be at least 3 symbols long'),
+                    name_check(item_type='user', message='User with such name already exists')
         ]
     )
     email = EmailField(
