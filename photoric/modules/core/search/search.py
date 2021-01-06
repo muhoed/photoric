@@ -1,7 +1,10 @@
 """Routes for search functions"""
+import re
 from flask import Blueprint
 
 from .forms import SimpleSearch
+
+from photoric.modules.core.search.helper import search_gallery_items
 
 
 # Blueprint initialization
@@ -27,4 +30,17 @@ def simple_search_form():
 
 @search.route('/simple_search', methods=('GET', 'POST'))
 def simple_search():
-    print('to be done')
+    form = SimpleSearch()
+    if form.validate_on_submin():
+        text = form.text.data
+        albums = []
+        images= []
+        words = re.findall(r"[^,;\s]+", text)
+        for word in words:
+            search_gallery_items(word)
+            albums.extend(albums)
+            images.extend(images)
+        for album in albums:
+            albums
+
+
