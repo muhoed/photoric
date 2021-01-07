@@ -27,13 +27,12 @@ dropzone = Dropzone()
 class UploadButton(FlaskForm):
     """Images upload form"""
     photo = MultipleFileField("upload_images",
-        render_kw={'multiple': True,
-                   'onchange':'this.form.submit()'},
-        validators=[
-            FileAllowed(photos, message='Only files of valid image formats (i.e. .jpg, .jpeg, .png, .tiff etc.) \
-            are allowed') # ,
-            # FileRequired('File is empty')
-        ]
+                              render_kw={'multiple': True,
+                                         'onchange': 'this.form.submit()'},
+                              validators=[
+                                    FileAllowed(photos, message='Only files of valid image formats (i.e. .jpg, .jpeg, .png, .tiff etc.) \
+                                    are allowed')  # , FileRequired('File is empty')
+                              ]
     )
 
     submit = SubmitField('Add')
@@ -94,6 +93,7 @@ def uploads():
     if album:
         return redirect(url_for("albums.show_album", album_name=album.name))
     return redirect(url_for("views.index"))
+
 
 # redirect to home page in case of dropzone errors
 @upload.route("/index")

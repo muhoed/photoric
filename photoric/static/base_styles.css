@@ -43,31 +43,16 @@ div.gallery a:active {
 }
 
 div.item, {
-  position: relative;
   margin-left: auto;
   margin-right: auto;
-  width: 90%;
+  width: 100%;
   height: 75%;
-}
-
-div.carousel-item {
-	position: relative;
-}
-
-div.carousel-item-overlay, div.item-overlay {
-	position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.5;
-    background-image: url({{ url_for('static', filename='103016_0000.png') }});
 }
 
 img.content-img {
     pointer-events: none;
-    /*width: 100%;
-    height: 100%;*/
-    object-fit: cover;
+    height: 290px;
+    object-fit: contain;
 }
 
 div.item_name {
@@ -101,8 +86,15 @@ div.empty_album {
       font-size: 1em;
     }
 
+  img.content-img {
+    pointer-events: none;
+    height: 225px;
+    object-fit: contain;
+    }
+
     div.item_footer {
       padding: 10px;
+      font-size: 1em;
     }
 }
 
@@ -116,8 +108,15 @@ div.empty_album {
       font-size: 0.75em;
     }
 
+  img.content-img {
+    pointer-events: none;
+    height: 190px;
+    object-fit: contain;
+    }
+
     div.item_footer {
       padding: 5px;
+      font-size: 0.75em;
     }
 
 }

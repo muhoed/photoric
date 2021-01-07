@@ -1,6 +1,6 @@
 """Routes for search functions"""
 import re
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, request
 
 from .forms import SimpleSearch
 
@@ -40,5 +40,5 @@ def simple_search():
             albums, images = search_gallery_items(word)
             albums_search.extend(albums)
             images_search.extend(images)
-        return render_template(url_for('views/index.html', title='search results', albums=albums_search, images=images_search))
+        return render_template('views/index.html', title='search results', albums=albums_search, images=images_search)
     return redirect(request.url)
