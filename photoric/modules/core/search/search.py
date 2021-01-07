@@ -1,6 +1,6 @@
 """Routes for search functions"""
 import re
-from flask import Blueprint
+from flask import Blueprint, render_template, redirect, url_for
 
 from .forms import SimpleSearch
 
@@ -31,16 +31,14 @@ def simple_search_form():
 @search.route('/simple_search', methods=('GET', 'POST'))
 def simple_search():
     form = SimpleSearch()
-    if form.validate_on_submin():
+    if form.validate_on_submit():
         text = form.text.data
-        albums = []
-        images= []
+        albums_search = []
+        images_search = []
         words = re.findall(r"[^,;\s]+", text)
         for word in words:
-            search_gallery_items(word)
-            albums.extend(albums)
-            images.extend(images)
-        for album in albums:
-            albums
-
-
+            albums, images = search_gallery_items(word)
+            albums_search.extend(albums)
+            images_search.extend(images)
+        return render_template(url_for('views/index.html', title='search results', albums=albums_search, images=images_search))
+    return redirect(request.url)
