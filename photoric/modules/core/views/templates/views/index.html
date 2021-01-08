@@ -55,7 +55,7 @@
                                   &#8629;
                             </a></span>
                         </div>
-                        <div class="albums flex-row row justify-content-around p-2 collapse show" id="albumsList">
+                        <div class="albums flex-row row justify-content-start p-2 collapse show" id="albumsList">
                             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
                                 {{ render_albums(albums, True) }}
                             {% else %}
@@ -70,7 +70,7 @@
                                   &#8629;
                             </a></span>
                         </div>
-                        <div class="images flex-row row justify-content-around p-2 collapse show" id="imagesList">
+                        <div class="images flex-row row justify-content-start p-2 collapse show mb-3" id="imagesList">
                             {% if not current_user.is_authenticated or not authorize.in_group('admins') or not authorize.in_group('contributors') %}
                                 {{ render_images(images, True) }}
                             {% else %}

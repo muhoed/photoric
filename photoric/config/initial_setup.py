@@ -300,7 +300,7 @@ def initial_setup():
             sidenavbar = Navbar(
                 name='sidebar',
                 html_class='navbar navbar-light d-none d-md-flex flex-column ml-4',
-                html_style='min-width:15%;'
+                html_style='max-width:25%;'
             )
             # create side navbar items
             sidenavbar.items = [

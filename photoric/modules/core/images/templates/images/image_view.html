@@ -41,7 +41,7 @@
                                   {% for image in siblings %}
                                     {# if (current_user.is_authenticated and authorize.read(image)) or image.is_published #}
                                         <div class="carousel-item {% if image.id == current_image.id %}active{% endif %} p-2" data-interval="false">
-                                          <img src="{{ image.url }}" class="d-block w-100 content-img m-auto" alt="{{ image.name }}">
+                                          <img src="{{ image.url }}" class="d-block w-100 carousel-content-img m-auto" alt="{{ image.name }}">
                                         </div>
                                     {# endif #}
                                   {% endfor %}

@@ -98,6 +98,7 @@ def show_album(album_name=None):
             children_images = None
         # write id of displayed album
         session["current_album"] = album.id
+        session["album_name"] = album.name
         return render_template("views/index.html",
                                title='Album: ' + album_name,
                                albums=children_albums,

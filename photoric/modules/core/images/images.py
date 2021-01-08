@@ -11,7 +11,7 @@ from photoric.config.config import Config
 from photoric.config.models import db, Image
 from photoric.modules.core.auth.auth import authorize
 from photoric.modules.core.albums.helper import get_album_by_id
-from photoric.modules.core.images.helper import get_image_by_name
+from photoric.modules.core.images.helper import get_image_by_name, decode_bytes
 from photoric.modules.core.views.helper import get_gallery_items
 
 
@@ -71,12 +71,24 @@ def create_image(filename, url):
         img_title = img_iptc['object name'] or img_iptc['headline']
         if not img_title:
             img_title = filename
+
+        img_title = decode_bytes(img_title)
+            
         img_description = img_iptc['caption/abstract']
         if not img_description:
             img_description = None
-        img_keywords = img_iptc['keywords']
-        if not img_keywords:
+
+        img_description = decode_bytes(img_description)
+            
+        keywords_list = img_iptc['keywords']
+        img_keywords = ''
+        if not keywords_list:
             img_keywords = None
+        else:
+            for keyword in keywords_list:
+                keyword = decode_bytes(keyword)
+                img_keywords = img_keywords + ', ' + keyword    
+
 
     # get current user data
     user_id = current_user.id

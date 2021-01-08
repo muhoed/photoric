@@ -12,7 +12,7 @@ div.collapse-opener a:link, a:visited, a:hover, a:active {
     color: green;
 }
 
-div.gallery {
+div.gallery {  
   border: 1px solid #ccc;
   height: 400px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -42,7 +42,7 @@ div.gallery a:active {
   color: black;
 }
 
-div.item, {
+div.item, {  
   margin-left: auto;
   margin-right: auto;
   width: 100%;
@@ -51,8 +51,14 @@ div.item, {
 
 img.content-img {
     pointer-events: none;
+    width: 100%;
     height: 290px;
-    object-fit: contain;
+    object-fit: cover;
+}
+
+img.carousel-content-img {
+    pointer-events: none;
+    object-fit: cover;
 }
 
 div.item_name {
@@ -89,12 +95,12 @@ div.empty_album {
   img.content-img {
     pointer-events: none;
     height: 225px;
-    object-fit: contain;
+    object-fit: fill;
     }
 
     div.item_footer {
       padding: 10px;
-      font-size: 1em;
+      font-size: 0.9em;
     }
 }
 
@@ -116,7 +122,7 @@ div.empty_album {
 
     div.item_footer {
       padding: 5px;
-      font-size: 0.75em;
+      font-size: 0.7em;
     }
 
 }
@@ -137,9 +143,7 @@ div.empty_album {
     cursor:pointer;
 }
 
-.list-group-item.active a,
-.list-group-item.active a:hover,
-.list-group-item.active a:focus, {
+ul.list-group > li.active {
     background: none;
     color: green;
 }
