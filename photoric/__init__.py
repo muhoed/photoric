@@ -51,6 +51,12 @@ def create_app(conf='dev'):
     # Initialize database
     from .config.models import db
     db.init_app(app)
+    from .config.models import migrate
+    migrate.init_app(app, db)
+
+    # Initialize (de-)serializer and RESTful API tools
+    from .config.models import mm
+    mm.init_app(app)
 
     # Initialize Login manager
     from .modules.core.auth.auth import login_manager

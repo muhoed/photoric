@@ -5,9 +5,13 @@ from flask_login import UserMixin
 from flask_authorize import RestrictionsMixin, AllowancesMixin
 from flask_authorize import PermissionsMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_migrate import Migrate
+from flask_marshmallow import Marshmallow
 
 
 db = SQLAlchemy()
+migrate = Migrate()
+mm = Marshmallow()
 
 # map tables to classes
 UserGroup = db.Table('user_group',
@@ -29,15 +33,15 @@ UserRole = db.Table('user_role',
                               db.ForeignKey('roles.id'))
 )
 
-# to be revised
-# AlbumImage = db.Table('album_image',
-#                      db.Column('album_id',
-#                                db.Integer,
-#                                db.ForeignKey('albums.id')),
-#                      db.Column('image_id',
-#                                db.Integer,
-#                                db.ForeignKey('images.id'))
-#)    
+
+AlbumImage = db.Table('album_image',
+                      db.Column('album_id',
+                                db.Integer,
+                                db.ForeignKey('albums.id')),
+                      db.Column('image_id',
+                                db.Integer,
+                                db.ForeignKey('images.id'))
+)    
 
 # declare models
 
@@ -86,7 +90,7 @@ class Image(db.Model, PermissionsMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
-    parent_id=db.Column(db.Integer, db.ForeignKey('albums.id'))
+    # parent_id=db.Column(db.Integer, db.ForeignKey('albums.id'))
     description = db.Column(db.String(500), nullable=True)
     keywords = db.Column(db.String(255), nullable=True)
     filename = db.Column(db.String, unique=True, nullable=False)
@@ -96,9 +100,9 @@ class Image(db.Model, PermissionsMixin):
     location = db.Column(db.Text, nullable=True)
     is_published = db.Column(db.Boolean(), nullable=False, default=False)
     published_on = db.Column(db.DateTime, nullable=True, index=True)
-    parent_album = db.relationship(
+    parent_albums = db.relationship(
         'Album',
-        #secondary=AlbumImage,
+        secondary=AlbumImage,
         back_populates='children_images')
     
     def publish(self):
@@ -141,8 +145,8 @@ class Album(db.Model, PermissionsMixin):
     published_on = db.Column(db.DateTime, nullable=True, index=True)
     children_images = db.relationship(
         'Image',
-        # secondary=AlbumImage,
-        back_populates='parent_album'
+        secondary=AlbumImage,
+        back_populates='parent_albums'
     )
     children_albums = db.relationship(
         'Album', backref=backref('parent',
