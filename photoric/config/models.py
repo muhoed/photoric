@@ -2,16 +2,13 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 from datetime import datetime
 from flask_login import UserMixin
-from flask_authorize import RestrictionsMixin, AllowancesMixin
-from flask_authorize import PermissionsMixin
+from flask_authorize import RestrictionsMixin, AllowancesMixin, PermissionsMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
-from flask_marshmallow import Marshmallow
 
 
 db = SQLAlchemy()
 migrate = Migrate()
-mm = Marshmallow()
 
 # map tables to classes
 UserGroup = db.Table('user_group',

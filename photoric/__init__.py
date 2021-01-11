@@ -55,7 +55,7 @@ def create_app(conf='dev'):
     migrate.init_app(app, db)
 
     # Initialize (de-)serializer and RESTful API tools
-    from .config.models import mm
+    from .config.api import mm
     mm.init_app(app)
 
     # Initialize Login manager
