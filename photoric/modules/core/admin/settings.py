@@ -8,6 +8,8 @@ from wtforms.validators import (
 )
 
 from photoric.modules.core.auth.auth import authorize
+from photoric.config.models import db, User, Role, Group, Navbar, NavbarItem
+from photoric.config.models import Menu, MenuItem, Album, Image, Config
 
 
 settings = Blueprint('settings', __name__,
@@ -75,6 +77,18 @@ class RoleView(PhotoricView):
                             )]
         }
     }
+
+# register models with admin_manager
+admin_manager.add_view(UserView(User, db.session, category='Users and Access rights'))
+admin_manager.add_view(PhotoricView(Role, db.session, category='Users and Access rights'))
+admin_manager.add_view(PhotoricView(Group, db.session, category='Users and Access rights'))
+admin_manager.add_view(PhotoricView(Album, db.session, category='Gallery Items'))
+admin_manager.add_view(PhotoricView(Image, db.session, category='Gallery Items'))
+admin_manager.add_view(PhotoricView(Navbar, db.session, category='Navigation and Menu system'))
+admin_manager.add_view(PhotoricView(NavbarItem, db.session, category='Navigation and Menu system'))
+admin_manager.add_view(PhotoricView(Menu, db.session, category='Navigation and Menu system'))
+admin_manager.add_view(PhotoricView(MenuItem, db.session, category='Navigation and Menu system'))
+admin_manager.add_view(PhotoricView(Config, db.session, category='Style and Behavior'))
 
 
 @settings.route("/settings")

@@ -54,10 +54,6 @@ def create_app(conf='dev'):
     from .config.models import migrate
     migrate.init_app(app, db)
 
-    # Initialize (de-)serializer and RESTful API tools
-    from .config.api import mm
-    mm.init_app(app)
-
     # Initialize Login manager
     from .modules.core.auth.auth import login_manager
     login_manager.init_app(app)
@@ -69,6 +65,12 @@ def create_app(conf='dev'):
     # Initialize admin module
     from .modules.core.admin.settings import admin_manager
     admin_manager.init_app(app)
+
+    # Initialize (de-)serializer and RESTful API tools
+    from .modules.core.api.api import mm
+    mm.init_app(app)
+    from .modules.core.api.api import api
+    api.init_app(app)
 
     # Initialize upload managers
     from .modules.core.upload.upload import photos, dropzone
@@ -90,6 +92,7 @@ def create_app(conf='dev'):
         from .modules.core.images import images
         from .modules.core.albums import albums
         from .modules.core.admin import settings
+        from .modules.core.api import api
 
         # app.register_blueprint(modfactory.modfactory)
         app.register_blueprint(views.views)
@@ -100,6 +103,7 @@ def create_app(conf='dev'):
         app.register_blueprint(images.images)
         app.register_blueprint(albums.albums)
         app.register_blueprint(settings.settings)
+        app.register_blueprint(api.photoric_api)
 
         # create database
         db.create_all()
