@@ -1,33 +1,16 @@
 """Routes for user authentication"""
-from flask import Blueprint, request, render_template, redirect, url_for, flash
-from flask_login import current_user, login_user, logout_user, LoginManager
-from flask_authorize import Authorize
+from flask import request, render_template, redirect, url_for, flash
+from flask_login import current_user, login_user, logout_user
 from urllib.parse import urlparse, urljoin
 from datetime import datetime
 
-from .forms import LoginForm, SignupForm
-from .helper import get_user_by_name
-from photoric.config.models import db, User
+from photoric.modules.auth.forms import LoginForm, SignupForm
+from photoric.modules.auth.helper import get_user_by_name
+from photoric.core.models import db, User
+from photoric.modules.auth import auth_bp
 
 
-# Blueprint initialization
-auth = Blueprint(
-    'auth', __name__,
-    url_prefix='/auth',
-    template_folder='templates',
-    static_folder='static',
-    static_url_path='/static'
-)
-
-# setup LoginManager object
-login_manager = LoginManager()
-login_manager.login_view = "auth.signin"
-
-# setup Authorize object
-authorize = Authorize()
-
-
-@auth.route('/signin', methods=['GET', 'POST'])
+@auth_bp.route('/signin', methods=['GET', 'POST'])
 def signin():
     """
     User Sign-In
@@ -64,7 +47,7 @@ def signin():
     return render_template('auth/signin.html', title='Sign In', form=login_form)
 
 
-@auth.route('/signup', methods=['GET', 'POST'])
+@auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
     """
     User Sign-Up
@@ -92,7 +75,7 @@ def signup():
     )
 
 
-@auth.route('/logout')
+@auth_bp.route('/logout')
 def logout():
     logout_user()
     flash(u'You were logged out', 'info')

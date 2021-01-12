@@ -6,7 +6,7 @@ from flask_session import Session
 from flask_uploads import configure_uploads, patch_request_class
 from flask_wtf.csrf import CSRFProtect
 
-from .config import config
+from photoric.config import config
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -49,31 +49,29 @@ def create_app(conf='dev'):
     jsglue.init_app(app)
 
     # Initialize database
-    from .config.models import db
+    from photoric.core.models import db
     db.init_app(app)
-    from .config.models import migrate
+    from .photoric.core.models import migrate
     migrate.init_app(app, db)
 
     # Initialize Login manager
-    from .modules.core.auth.auth import login_manager
+    from .modules.auth import login_manager
     login_manager.init_app(app)
 
     # Initialize permission control
-    from .modules.core.auth.auth import authorize
+    from .modules.auth import authorize
     authorize.init_app(app)
 
     # Initialize admin module
-    from .modules.core.admin.settings import admin_manager
+    from .modules.admin import admin_manager
     admin_manager.init_app(app)
 
-    # Initialize (de-)serializer and RESTful API tools
-    from .modules.core.api.api import mm
+    # Initialize API tools
+    from .modules.api import mm
     mm.init_app(app)
-    from .modules.core.api.api import api
-    api.init_app(app)
 
     # Initialize upload managers
-    from .modules.core.upload.upload import photos, dropzone
+    from .modules.upload import photos, dropzone
     configure_uploads(app, photos)
     app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(app.instance_path, 'storage')
     patch_request_class(app)
@@ -84,26 +82,26 @@ def create_app(conf='dev'):
     with app.app_context():
         # register blueprints with views
         # from .modules.core.modfactory import modfactory
-        from .modules.core.views import views
-        from .modules.core.auth import auth
-        from .modules.core.nav import nav
-        from .modules.core.search import search
-        from .modules.core.upload import upload
-        from .modules.core.images import images
-        from .modules.core.albums import albums
-        from .modules.core.admin import settings
-        from .modules.core.api import api
+        from .modules.views import views_bp
+        from .modules.auth import auth_bp
+        from .modules.nav import nav_bp
+        from .modules.search import search_bp
+        from .modules.upload import upload_bp
+        from .modules.images import images_bp
+        from .modules.albums import albums_bp
+        from .modules.admin import admin_bp
+        from .modules.api import api_bp
 
         # app.register_blueprint(modfactory.modfactory)
-        app.register_blueprint(views.views)
-        app.register_blueprint(auth.auth)
-        app.register_blueprint(nav.nav)
-        app.register_blueprint(search.search)
-        app.register_blueprint(upload.upload)
-        app.register_blueprint(images.images)
-        app.register_blueprint(albums.albums)
-        app.register_blueprint(settings.settings)
-        app.register_blueprint(api.photoric_api)
+        app.register_blueprint(views_bp)
+        app.register_blueprint(auth_bp)
+        app.register_blueprint(nav_bp)
+        app.register_blueprint(search_bp)
+        app.register_blueprint(upload_bp)
+        app.register_blueprint(images_bp)
+        app.register_blueprint(albums_bp)
+        app.register_blueprint(admin_bp)
+        app.register_blueprint(api_bp)
 
         # create database
         db.create_all()

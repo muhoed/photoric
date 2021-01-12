@@ -1,41 +1,11 @@
 """Routes for user authentication"""
-from flask import Blueprint, request, redirect, render_template, flash, session, url_for
-from flask_uploads import UploadSet, IMAGES
-from flask_dropzone import Dropzone
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired, FileAllowed
-from wtforms import SubmitField, MultipleFileField
+from flask import request, redirect, render_template, flash, session, url_for
 
-from photoric.modules.core.auth.auth import authorize
-from photoric.modules.core.images.images import create_image
-from photoric.config.models import Album
-
-
-# Blueprint initialization
-upload = Blueprint('upload', __name__,
-                   url_prefix='/upload',
-                   template_folder='templates',
-                   static_folder='static',
-                   static_url_path='/static')
-
-# setup upload set and dropzone instances
-photos = UploadSet('photos', IMAGES)
-dropzone = Dropzone()
-
-
-# upload form
-class UploadButton(FlaskForm):
-    """Images upload form"""
-    photo = MultipleFileField("upload_images",
-                              render_kw={'multiple': True,
-                                         'onchange': 'this.form.submit()'},
-                              validators=[
-                                    FileAllowed(photos, message='Only files of valid image formats (i.e. .jpg, .jpeg, .png, .tiff etc.) \
-                                    are allowed')  # , FileRequired('File is empty')
-                              ]
-    )
-
-    submit = SubmitField('Add')
+from photoric.modules.auth import authorize
+from photoric.modules.images import create_image
+from photoric.core.models import Album
+from photoric.modules.upload.forms import UploadButton
+from photoric.modules.upload import upload_bp
 
 
 # save image and return parameters required to store its information in database
@@ -50,7 +20,7 @@ def save_image(file):
 
 
 # add upload form to templates through context processor
-@upload.app_context_processor
+@upload_bp.app_context_processor
 def upload_form():
     """ inflect upload form to templates """
     return dict(upload_form=UploadButton())
@@ -59,7 +29,7 @@ def upload_form():
 """ upload logic routes """
 
 
-@upload.route('/uploads', methods=['GET', 'POST'])
+@upload_bp.route('/uploads', methods=['GET', 'POST'])
 @authorize.in_group('contributors')
 def uploads():
     form = UploadButton()
@@ -96,6 +66,6 @@ def uploads():
 
 
 # redirect to home page in case of dropzone errors
-@upload.route("/index")
+@upload_bp.route("/index")
 def index():
     return redirect(url_for('views.index'))

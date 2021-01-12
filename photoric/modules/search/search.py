@@ -1,34 +1,21 @@
 """Routes for search functions"""
 import re
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request
 
-from .forms import SimpleSearch
-
-from photoric.modules.core.search.helper import search_gallery_items
-
-
-# Blueprint initialization
-search = Blueprint(
-    'search', __name__,
-    url_prefix='/search',
-    template_folder='templates',
-    static_folder='static',
-    static_url_path='/static'
-)
+from photoric.modules.search.forms import SimpleSearch
+from photoric.modules.search.helper import search_gallery_items
+from photoric.modules.search import search_bp
 
 
-""" initialize custom templates context processors """
-
-
-@search.app_context_processor
+# initialize custom templates context processors
+@search_bp.app_context_processor
 def simple_search_form():
     """ inflect search form to templates """
     return dict(search_form=SimpleSearch())
 
-""" view routes """
 
-
-@search.route('/simple_search', methods=('GET', 'POST'))
+# search routes
+@search_bp.route('/simple_search', methods=('GET', 'POST'))
 def simple_search():
     form = SimpleSearch()
     if form.validate_on_submit():

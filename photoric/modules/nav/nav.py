@@ -1,24 +1,16 @@
 """Navigation bars setup and helpers"""
-from flask import Blueprint, render_template, url_for
+from flask import render_template, url_for
 from flask_login import current_user
 
-from photoric.config.models import db, Navbar, NavbarItem, Menu, MenuItem
-from photoric.modules.core.auth.auth import authorize
-
-# Blueprint initialization
-nav = Blueprint(
-    'nav', __name__,
-    template_folder='templates',
-    static_folder='static',
-    static_url_path='/static',
-    url_prefix='/nav'
-)
+from photoric.core.models import db, Navbar, NavbarItem, Menu, MenuItem
+from photoric.modules.auth import authorize
+from photoric.modules.nav import nav_bp
 
 
 """ initialize custom context processors and variables to use in templates"""
 
 
-@nav.app_context_processor
+@nav_bp.app_context_processor
 def navbar_processors():
     def list_navbars():
         """ get a list of navbars available """

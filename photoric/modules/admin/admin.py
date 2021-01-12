@@ -1,5 +1,4 @@
-from flask import Blueprint, redirect, request, url_for
-from flask_admin import Admin
+from flask import redirect, request, url_for
 from flask_admin.contrib.sqla import ModelView
 from wtforms.validators import (
     InputRequired,
@@ -7,20 +6,10 @@ from wtforms.validators import (
     Length
 )
 
-from photoric.modules.core.auth.auth import authorize
-from photoric.config.models import db, User, Role, Group, Navbar, NavbarItem
-from photoric.config.models import Menu, MenuItem, Album, Image, Config
-
-
-settings = Blueprint('settings', __name__,
-                     template_folder="templates",
-                     static_folder="static",
-                     url_prefix='/settings',
-                     static_url_path='/settings/static')
-
-admin_manager = Admin(name='Settings',
-                      template_mode='bootstrap4',
-                      base_template='settings_base.html')
+from photoric.modules.auth.auth import authorize
+from photoric.core.models import db, User, Role, Group, Navbar, NavbarItem
+from photoric.core.models import Menu, MenuItem, Album, Image, Config
+from photoric.modules.admin import admin_bp
 
 
 # customize flask-admin ModelView to tune its functionality
@@ -91,7 +80,7 @@ admin_manager.add_view(PhotoricView(MenuItem, db.session, category='Navigation a
 admin_manager.add_view(PhotoricView(Config, db.session, category='Style and Behavior'))
 
 
-@settings.route("/settings")
+@admin_bp.route("/settings")
 @authorize.in_group('admins')
 def manage_settings():
     return redirect('/admin/')

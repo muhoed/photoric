@@ -6,7 +6,7 @@ from wtforms.validators import (
     Regexp
 )
 
-from photoric.config.form_validators import name_check
+from photoric.core.form_validators import name_check
 
 
 class CreateAlbumForm(FlaskForm):

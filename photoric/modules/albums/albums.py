@@ -1,28 +1,21 @@
-from flask import Blueprint, redirect, url_for, session, flash, render_template
+from flask import redirect, url_for, session, flash, render_template
 from flask_login import current_user
 
-from .forms import CreateAlbumForm
-from photoric.modules.core.auth.auth import authorize
-from photoric.config.models import db, Album, Image
-from photoric.modules.core.views.helper import get_gallery_items
-
-
-# Blueprint initialization
-albums = Blueprint('albums', __name__,
-                   url_prefix='/albums',
-                   template_folder='templates',
-                   static_folder='static',
-                   static_url_path='/static')
+from photoric.modules.albums.forms import CreateAlbumForm
+from photoric.modules.auth.auth import authorize
+from photoric.core.models import db, Album, Image
+from photoric.modules.views.helper import get_gallery_items
+from photoric.modules.albums import albums_bp
 
 
 # create album form context processor
-@albums.app_context_processor
+@albums_bp.app_context_processor
 def create_album_form():
     return dict(create_album_form=CreateAlbumForm())
 
 
 # db context processors
-@albums.app_context_processor
+@albums_bp.app_context_processor
 def albums_processors():
     # get list of all albums
     def list_albums():
@@ -42,7 +35,7 @@ def albums_processors():
 
 # route for album creation
 @authorize.create(Album)
-@albums.route("/create", methods = ['GET', 'POST'])
+@albums_bp.route("/create", methods = ['GET', 'POST'])
 def create_album():
     form = CreateAlbumForm()
     parent = session.get("current_album")
@@ -85,7 +78,7 @@ def create_album():
 
 
 # route for show album
-@albums.route("/<album_name>")
+@albums_bp.route("/<album_name>")
 @authorize.read
 def show_album(album_name=None):
     if album_name:
@@ -108,7 +101,7 @@ def show_album(album_name=None):
 
 
 # redirect to show album to serve dropzone redirect
-@albums.route("/redirect_to_album")
+@albums_bp.route("/redirect_to_album")
 @authorize.read
 def redirect_to_album():
     album_name = session.get("album_name")

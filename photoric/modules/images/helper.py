@@ -1,5 +1,5 @@
-from photoric.config.models import Image
-from photoric.modules.core.auth.auth import authorize
+from photoric.core.models import Image
+from photoric.modules.auth import authorize
 
 
 # get image by name

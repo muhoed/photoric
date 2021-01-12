@@ -1,20 +1,15 @@
-from flask import Blueprint, render_template, request, session, abort
+from flask import render_template, request, session, abort
 
-from .helper import get_gallery_items
-from photoric.config.models import Album, Image
+from photoric.modules.views.helper import get_gallery_items
+from photoric.core.models import Album, Image
+from photoric.modules.views import views_bp
 
-
-views = Blueprint('views', __name__,
-                  template_folder="templates",
-                  static_folder="static",
-                  url_prefix='/',
-                  static_url_path='/views/static')
 
 # set current active menu item
 # session["active"] = "home:"
 
 # context processor to get parent gallery items in template
-@views.app_context_processor
+@views_bp.app_context_processor
 def views_processors():
 
     # get top-level albums
@@ -54,8 +49,8 @@ def views_processors():
     )
 
 
-@views.route("/", methods=['GET', 'POST'])
-@views.route("/index", methods=['GET', 'POST'])
+@views_bp.route("/", methods=['GET', 'POST'])
+@views_bp.route("/index", methods=['GET', 'POST'])
 def index():
     """Show main page"""
 
@@ -76,6 +71,6 @@ def index():
         return render_template('views/index.html', title='Home page', albums=albums, images=images)
 
 
-@views.route("/about")
+@views_bp.route("/about")
 def about():
     return render_template('views/about.html', title='About me')

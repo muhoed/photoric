@@ -1,4 +1,4 @@
-from  photoric.config.models import Navbar, Menu
+from  photoric.core.models import Navbar, Menu
 
 
 def get_navbar_by_name(name):

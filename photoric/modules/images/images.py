@@ -2,25 +2,18 @@ import iptcinfo3
 import os
 import datetime
 
-from flask import Blueprint, send_from_directory, abort, session, redirect, url_for, render_template
+from flask import send_from_directory, abort, session, redirect, url_for, render_template
 from flask_login import current_user
 from PIL import Image as Picture
 from PIL.ExifTags import TAGS
 
 from photoric.config.config import Config
-from photoric.config.models import db, Image
-from photoric.modules.core.auth.auth import authorize
-from photoric.modules.core.albums.helper import get_album_by_id
-from photoric.modules.core.images.helper import get_image_by_name, decode_bytes
-from photoric.modules.core.views.helper import get_gallery_items
-
-
-# Blueprint initialization
-images = Blueprint('images', __name__,
-                   url_prefix='/images',
-                   template_folder='templates',
-                   static_folder='static',
-                   static_url_path='/static')
+from photoric.core.models import db, Image
+from photoric.modules.auth import authorize
+from photoric.modules.albums.helper import get_album_by_id
+from photoric.modules.images.helper import get_image_by_name, decode_bytes
+from photoric.modules.views.helper import get_gallery_items
+from photoric.modules.images import images_bp
 
 
 # reverse exif tags dictionary
@@ -128,7 +121,7 @@ def create_image(filename, url):
 
 
 # return image from url
-@images.route('/photos/<filename>')
+@images_bp.route('/photos/<filename>')
 def get_image(filename):
 
     # return image file if image exists and user is authorised to read it
@@ -142,7 +135,7 @@ def get_image(filename):
 
 
 # route to show individual image view
-@images.route('/<image_name>')
+@images_bp.route('/<image_name>')
 @authorize.read
 def show_image(image_name):
 

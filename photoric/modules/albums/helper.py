@@ -1,4 +1,4 @@
-from photoric.config.models import Album
+from photoric.core.models import Album
 
 
 # get album by name

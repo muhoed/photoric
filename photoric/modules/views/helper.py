@@ -1,6 +1,6 @@
 from sqlalchemy import or_
 
-from photoric.config.models import db, Image, Album
+from photoric.core.models import db, Image, Album
 
 
 # get gallery items
