@@ -16,8 +16,8 @@ class UserSchema(mm.SQLAlchemySchema):
     active = mm.auto_field()
     last_login = mm.auto_field()
 
-    roles = mm.List(ma.HyperlinkRelated("role_detail"))
-    groups = mm.List(ma.HyperlinkRelated("group_detail"))
+    roles = mm.auto_field()
+    groups = mm.auto_field()
 
     _links = mm.Hyperlinks(
         {
