@@ -1,7 +1,7 @@
 """Routes for API requests"""
 from flask_restful import Resource, reqparse, abort
 
-from photoric.core.models import db, User, Album, Image, AlbumImage
+from photoric.core.models import db, User, Role, Group, Album, Image, AlbumImage
 from photoric.modules.api import api_bp
 
 
@@ -16,8 +16,18 @@ class UserSchema(mm.SQLAlchemySchema):
     active = mm.auto_field()
     last_login = mm.auto_field()
 
-    roles = mm.auto_field()
-    groups = mm.auto_field()
+    roles = mm.List(ma.HyperlinkRelated("role_detail"))
+    groups = mm.List(ma.HyperlinkRelated("group_detail"))
+
+    _links = mm.Hyperlinks(
+        {
+            "self": mm.URLFor("user_detail", values=dict(id="<id>")),
+            "collection": mm.URLFor("users")
+        }
+    )
+
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)
 
 
 class UserApi(Resource):
