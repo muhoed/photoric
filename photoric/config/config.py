@@ -78,4 +78,4 @@ class DevConfig(Config):
     FLASK_ENV = 'development'
     FLASK_DEBUG = True
     FLASK_TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # "sqlite:////" + path.join('instance', environ.get('DEV_DATABASE'))
+    SQLALCHEMY_DATABASE_URI = "sqlite:////" + path.abspath(path.join(current_dir.parents[2], 'instance', environ.get('DEV_DATABASE')))
