@@ -2,10 +2,10 @@
 from flask import request, redirect, render_template, flash, session, url_for
 
 from photoric.modules.auth import authorize
-from photoric.modules.images import create_image
+from photoric.modules.images.images import create_image
 from photoric.core.models import Album
 from photoric.modules.upload.forms import UploadButton
-from photoric.modules.upload import upload_bp
+from photoric.modules.upload import upload_bp, photos
 
 
 # save image and return parameters required to store its information in database

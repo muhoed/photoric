@@ -2,7 +2,7 @@ from wtforms.validators import ValidationError
 
 # from photoric.modules.core.albums.helper import get_album_by_name
 # from photoric.modules.core.images.helper import get_image_by_name
-from photoric.config.models import check_object_name
+from photoric.core.models import check_object_name
 
 """ custom form validators to use with wtforms """
 

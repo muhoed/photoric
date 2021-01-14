@@ -2,6 +2,8 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import SubmitField, MultipleFileField
 
+from photoric.modules.upload import photos
+
 
 # upload form
 class UploadButton(FlaskForm):

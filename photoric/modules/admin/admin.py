@@ -9,7 +9,7 @@ from wtforms.validators import (
 from photoric.modules.auth.auth import authorize
 from photoric.core.models import db, User, Role, Group, Navbar, NavbarItem
 from photoric.core.models import Menu, MenuItem, Album, Image, Config
-from photoric.modules.admin import admin_bp
+from photoric.modules.admin import admin_bp, admin_manager
 
 
 # customize flask-admin ModelView to tune its functionality

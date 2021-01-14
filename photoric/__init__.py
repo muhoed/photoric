@@ -51,27 +51,27 @@ def create_app(conf='dev'):
     # Initialize database
     from photoric.core.models import db
     db.init_app(app)
-    from .photoric.core.models import migrate
+    from photoric.core.models import migrate
     migrate.init_app(app, db)
 
     # Initialize Login manager
-    from .modules.auth import login_manager
+    from photoric.modules.auth import login_manager
     login_manager.init_app(app)
 
     # Initialize permission control
-    from .modules.auth import authorize
+    from photoric.modules.auth import authorize
     authorize.init_app(app)
 
     # Initialize admin module
-    from .modules.admin import admin_manager
+    from photoric.modules.admin import admin_manager
     admin_manager.init_app(app)
 
     # Initialize API tools
-    from .modules.api import mm
+    from photoric.modules.api import mm
     mm.init_app(app)
 
     # Initialize upload managers
-    from .modules.upload import photos, dropzone
+    from photoric.modules.upload import photos, dropzone
     configure_uploads(app, photos)
     app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(app.instance_path, 'storage')
     patch_request_class(app)

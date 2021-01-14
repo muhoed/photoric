@@ -7,7 +7,7 @@ from datetime import datetime
 from photoric.modules.auth.forms import LoginForm, SignupForm
 from photoric.modules.auth.helper import get_user_by_name
 from photoric.core.models import db, User
-from photoric.modules.auth import auth_bp
+from photoric.modules.auth import auth_bp, login_manager, authorize
 
 
 @auth_bp.route('/signin', methods=['GET', 'POST'])
