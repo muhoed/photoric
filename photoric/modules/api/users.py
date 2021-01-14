@@ -19,7 +19,7 @@ class UserSchema(mm.SQLAlchemySchema):
 
     roles = mm.auto_field()  # mm.Nested(RoleSchema(), many=True, exclude=("users", "_links"))
     groups = mm.auto_field()  # mm.Nested(GroupSchema(), many=True, exclude=("users", "_links"))
-
+'''
     _links = mm.Hyperlinks(
         {
             "self": mm.URLFor("user_detail", values=dict(id="<id>")),
@@ -27,8 +27,8 @@ class UserSchema(mm.SQLAlchemySchema):
             "self.groups": mm.URLFor("user_groups", values=dict(id="<id>")),
             "collection": mm.URLFor("users")
         }
-    )
-
+    ) 
+'''
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
@@ -79,7 +79,8 @@ roles_schema = RoleSchema(many=True)
 
 class UserApi(Resource):
     def get(self, id):
-        pass
+        user = User.query.get_or_404(id)
+        return user_schema.dump(user)
 
     def put(self, id):
         pass
@@ -89,3 +90,6 @@ class UserApi(Resource):
 
     def delete(self, id):
         pass
+
+
+api.add_resource(UserApi, '/users/<int:id>')

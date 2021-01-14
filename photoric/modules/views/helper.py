@@ -16,9 +16,11 @@ def get_gallery_items(parent=None, item='albums'):
             return Album.query.filter(Album.authorized('read')).all()
     else:
         if parent is None:
-            return Image.query.filter(Image.parent_id == None, Image.authorized('read')).all()
+            return Image.query.filter(Image.parent_albums == None, Image.authorized('read')).all()
         elif isinstance(parent, int):
-            return Image.query.filter(Image.parent_id == parent, Image.authorized('read')).all()
+            return db.session.query(Image).\
+                   options(selectinload('parent_albums')).\
+                   filter(Album.album_id==parent, Image.authorized('read')).all()  # Image.query.filter(Image.parent_id == parent, Image.authorized('read')).all()
         else:
             return Image.query.filter(Image.authorized('read')).all()
 
