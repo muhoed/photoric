@@ -19,16 +19,16 @@ class UserSchema(mm.SQLAlchemySchema):
 
     roles = mm.auto_field()  # mm.Nested(RoleSchema(), many=True, exclude=("users", "_links"))
     groups = mm.auto_field()  # mm.Nested(GroupSchema(), many=True, exclude=("users", "_links"))
-'''
+
     _links = mm.Hyperlinks(
         {
             "self": mm.URLFor("user_detail", values=dict(id="<id>")),
-            "self.roles": mm.URLFor("user_roles", values=dict(id="<id>")),
-            "self.groups": mm.URLFor("user_groups", values=dict(id="<id>")),
+            # "self.roles": mm.URLFor("user_roles", values=dict(id="<id>")),
+            # "self.groups": mm.URLFor("user_groups", values=dict(id="<id>")),
             "collection": mm.URLFor("users")
         }
     ) 
-'''
+
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
@@ -85,11 +85,18 @@ class UserApi(Resource):
     def put(self, id):
         pass
 
-    def post(self):
-        pass
-
     def delete(self, id):
         pass
 
 
-api.add_resource(UserApi, '/users/<int:id>')
+class UsersApi(Resource):
+    def get(self, id):
+        users = User.query.all()
+        return users_schema.dump(users)
+
+    def post(self):
+        pass
+
+
+api.add_resource(UserApi, '/users/<int:id>', endpoint='user_detail')
+api.add_resource(UserApi, '/users', endpoint='users')
