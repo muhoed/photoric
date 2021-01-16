@@ -25,7 +25,6 @@ def initial_setup():
             Group(
                 name='private',
                 allowances=dict(
-                    gallery_items=['read'],
                     albums=['read'],
                     images=['read']
                 )
@@ -33,7 +32,6 @@ def initial_setup():
             Group(
                 name='contributors',
                 allowances=dict(
-                    gallery_items=['read', 'create', 'update', 'revoke'],
                     albums=['read', 'create', 'update', 'revoke'],
                     images=['read', 'create', 'update', 'revoke']
                 )

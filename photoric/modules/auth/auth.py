@@ -5,7 +5,7 @@ from urllib.parse import urlparse, urljoin
 from datetime import datetime
 
 from photoric.modules.auth.forms import LoginForm, SignupForm
-from photoric.modules.auth.helper import get_user_by_name
+from photoric.modules.auth.helper import create_user, get_user_by_name
 from photoric.core.models import db, User
 from photoric.modules.auth import auth_bp, login_manager, authorize
 
@@ -33,14 +33,13 @@ def signin():
         login_user(user, remember=login_form.remember_me.data)
 
         # remember login date and time
-        user.last_login = datetime.now()
-        db.session.commit()
+        user.set_last_login()
 
         # return logged in user to the requested page or home page if not
         return_page = request.args.get('next')
+        flash(u'You were successfully logged in as ' + current_user.name, 'success')
         if not is_safe_url(return_page):
             return redirect(url_for('views.index'))
-        flash(u'You were successfully logged in as ' + current_user.name, 'success')
         return redirect(return_page or url_for('views.index'))
 
     # load log in dialog if GET method
@@ -57,14 +56,18 @@ def signup():
     """
     form = SignupForm()
     if form.validate_on_submit():
-        user = User(
-            name=form.name.data,
-            email=form.email.data,
-        )
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()  # Create new user
+        # prepare new user data
+        data = {}
+        data["name"] = form.name.data
+        data["email"] = form.email.data
+        # create new user
+        user = create_user(data)
+        
         login_user(user)  # Log in as newly created user
+        
+        # remember login date and time
+        user.set_last_login()
+
         flash(u'Congratulation! You were successfully registered!', 'success')
         return redirect(url_for('views.index'))
 

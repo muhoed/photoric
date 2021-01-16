@@ -1,4 +1,5 @@
 """Routes for API requests"""
+from flask import request
 from flask_restful import Resource, reqparse, abort
 
 from photoric.core.models import db, User, Role, Group, Album, Image, AlbumImage
@@ -10,27 +11,53 @@ class UserSchema(mm.SQLAlchemySchema):
         model = User
         load_instance = True
 
-    id = mm.auto_field()
+    id = mm.auto_field(dump_only=True)
     name = mm.auto_field()
     email = mm.auto_field()
     created_on = mm.auto_field()
     active = mm.auto_field()
     last_login = mm.auto_field()
 
-    roles = mm.auto_field()  # mm.Nested(RoleSchema(), many=True, exclude=("users", "_links"))
-    groups = mm.auto_field()  # mm.Nested(GroupSchema(), many=True, exclude=("users", "_links"))
+    roles = mm.Nested(lambda: RoleSchema(many=True, exclude=("users", "_links")))
+    groups = mm.Nested(lambda: GroupSchema(many=True, exclude=("users", "_links")))
 
     _links = mm.Hyperlinks(
         {
-            "self": mm.URLFor("user_detail", values=dict(id="<id>")),
+            "self": mm.URLFor("api.user_detail", values=dict(id="<id>")),
             # "self.roles": mm.URLFor("user_roles", values=dict(id="<id>")),
             # "self.groups": mm.URLFor("user_groups", values=dict(id="<id>")),
-            "collection": mm.URLFor("users")
+            "collection": mm.URLFor("api.users")
         }
     ) 
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
+
+
+class UserApi(Resource):
+    def get(self, id):
+        user = User.query.get_or_404(id)
+        return user_schema.dump(user)
+
+    def put(self, id):
+        pass
+
+    def delete(self, id):
+        pass
+
+
+class UsersApi(Resource):
+    def get(self):
+        users = User.query.all()
+        return users_schema.dump(users)
+
+    def post(self):
+        json_data = request.get_json()
+        pass
+
+api.add_resource(UserApi, '/users/<int:id>', endpoint='user_detail')
+api.add_resource(UsersApi, '/users', endpoint='users')
+
 
 class RoleSchema(mm.SQLAlchemySchema):
     class Meta:
@@ -41,7 +68,7 @@ class RoleSchema(mm.SQLAlchemySchema):
     name = mm.auto_field()
     restrictions = mm.auto_field()
 
-    users = mm.Nested(UserSchema(), many=True, exclude=("roles", "_links"))
+    users = mm.Nested(UserSchema, many=True, exclude=("roles", "_links"))
 
     _links = mm.Hyperlinks(
         {
@@ -63,7 +90,7 @@ class GroupSchema(mm.SQLAlchemySchema):
     name = mm.auto_field()
     allowances = mm.auto_field()
 
-    users = mm.Nested(UserSchema(), many=True, exclude=("groups", "_links"))
+    users = mm.Nested(UserSchema, many=True, exclude=("groups", "_links"))
 
     _links = mm.Hyperlinks(
         {
@@ -73,30 +100,5 @@ class GroupSchema(mm.SQLAlchemySchema):
         }
     )
 
-role_schema = RoleSchema()
-roles_schema = RoleSchema(many=True)
-
-
-class UserApi(Resource):
-    def get(self, id):
-        user = User.query.get_or_404(id)
-        return user_schema.dump(user)
-
-    def put(self, id):
-        pass
-
-    def delete(self, id):
-        pass
-
-
-class UsersApi(Resource):
-    def get(self, id):
-        users = User.query.all()
-        return users_schema.dump(users)
-
-    def post(self):
-        pass
-
-
-api.add_resource(UserApi, '/users/<int:id>', endpoint='user_detail')
-api.add_resource(UserApi, '/users', endpoint='users')
+group_schema = RoleSchema()
+groups_schema = RoleSchema(many=True)

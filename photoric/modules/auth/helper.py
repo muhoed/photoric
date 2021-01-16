@@ -11,3 +11,24 @@ def get_user_by_name(name = 'all'):
         requested_user = User.query.all()
 
     return requested_user
+
+# create new user
+def create_user(data):
+
+    # prepare user object
+    new_user =  User(
+        name = data.get("name"),
+        email = data.get("email")
+    )
+    new_user.set_password(data.get("password"))
+    if data.get("roles"):
+        new_user.roles.append(data.get("roles"))
+    if data.get("groups"):
+        new_user.roles.append(data.get("groups"))
+
+    # write new user to database
+    db.session.add(new_user)
+    db.session.commit()
+
+    # return created user object
+    return new_user

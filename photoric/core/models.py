@@ -203,6 +203,10 @@ class User(UserMixin, db.Model):
         """check hashed password"""
         return check_password_hash(self.password, password)
 
+    def set_last_login(self):
+        self.last_login = datetime.now()
+        db.session.commit()
+
     def get_id(self):
         return self.id
 
