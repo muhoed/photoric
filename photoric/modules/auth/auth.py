@@ -63,7 +63,7 @@ def signup():
         # create new user
         user = create_user(data)
         
-        login_user(user)  # Log in as newly created user
+        login_user(user.id)  # Log in as newly created user
         
         # remember login date and time
         user.set_last_login()

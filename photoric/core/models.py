@@ -176,7 +176,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String, nullable=False, unique=True)
     email = db.Column(db.String, )
     password = db.Column(db.String, nullable=False)
-    created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    created_on = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     active = db.Column(db.Boolean, nullable=False, default=True)
     last_login = db.Column(db.DateTime, nullable=True)
 
@@ -204,7 +204,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password, password)
 
     def set_last_login(self):
-        self.last_login = datetime.now()
+        self.last_login = datetime.utcnow()
         db.session.commit()
 
     def get_id(self):

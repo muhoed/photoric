@@ -92,6 +92,9 @@ def create_app(conf='dev'):
         from .modules.admin import admin_bp
         from .modules.api import api_bp
 
+        # exclude api routes from WTF csrf protection to avoid error on POST, PUT ...
+        csrf.exempt(api_bp)
+
         # app.register_blueprint(modfactory.modfactory)
         app.register_blueprint(views_bp)
         app.register_blueprint(auth_bp)

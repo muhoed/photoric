@@ -30,5 +30,7 @@ def create_user(data):
     db.session.add(new_user)
     db.session.commit()
 
+    created_user = get_user_by_name(name=new_user.name)
+
     # return created user object
-    return new_user
+    return created_user

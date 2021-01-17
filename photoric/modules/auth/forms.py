@@ -17,7 +17,7 @@ class SignupForm(FlaskForm):
     name = StringField(
         'Name:',
         validators=[InputRequired(message='Please enter name'),
-                    Length(min=3, message='Name must be at least 3 symbols long'),
+                    Length(min=3, message='c'),
                     name_check(item_type='user', message='User with such name already exists')
         ]
     )
