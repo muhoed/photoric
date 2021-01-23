@@ -12,6 +12,7 @@ def get_user_by_name(name = 'all'):
 
     return requested_user
 
+
 # create new user
 def create_user(data):
 

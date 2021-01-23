@@ -3,7 +3,7 @@ from flask import request
 from marshmallow import validate, ValidationError
 from flask_restful import Resource, reqparse, abort
 
-from photoric.core.models import db, User, Role, Group, Album, Image, AlbumImage, check_object_name
+from photoric.core.models import db, User, Role, Group, Album, Image, AlbumImage, check_object_name, check_object_exists
 from photoric.modules.api import api_bp, mm, api
 from photoric.modules.auth.helper import create_user
 
@@ -47,9 +47,8 @@ users_schema = UserSchema(many=True)
 class UserApi(Resource):
     def get(self, id):
         # check if requested user exists
-        try:
-            user = User.query.get(id)
-        except IntegrityError:
+        user = check_object_exists(object_type='user', id=id)
+        if not user:
             return {"message": "User was not found."}, 404
             
         # return serialized user details
@@ -59,7 +58,15 @@ class UserApi(Resource):
         pass
 
     def delete(self, id):
-        pass
+        # check if requested user exists
+        user = check_object_exists(object_type='user', id=id)
+        if not user:
+            return {"message": "User was not found."}, 404
+
+        # delete user
+        db.session.delete(user)
+        db.session.commit()
+        return {"message": "User was deleted."}, 204
 
 
 class UsersApi(Resource):
@@ -74,10 +81,6 @@ class UsersApi(Resource):
             return {"message": "New user data were not provided."}, 400
         
         # Validate input
-        # try:
-        #    data = user_schema.load(json_data)
-        # except ValidationError as err:
-        #    return err.messages, 422
         errors = user_schema.validate(json_data)
         if errors:
             return errors, 422
@@ -88,7 +91,7 @@ class UsersApi(Resource):
 
         # create new user
         user = user_schema.dump(create_user(json_data))
-        return {"message": "New user was created.", "user": user}
+        return {"message": "New user was created.", "user": user}, 201
             
 
 api.add_resource(UserApi, '/users/<int:id>', endpoint='user_detail')

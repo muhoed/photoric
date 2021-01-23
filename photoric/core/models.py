@@ -332,3 +332,13 @@ def check_object_name(object_type=None, name=None):
     if requested_object:
         return True
     return False
+
+def check_object_exists(object_type=None, id=None):
+    if object_type is None or id is None:
+        return False
+    try:
+        requested_object = db.session.query(models[object_type]).get(id)
+    except IntegrityError:
+            return False
+
+    return requested_object
