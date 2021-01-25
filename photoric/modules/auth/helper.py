@@ -2,6 +2,7 @@
 
 from photoric import db
 from photoric.core.models import Image, Album, User
+from photoric.core.models import check_object_name
 
 
 # get user by name or list all registered users
@@ -17,16 +18,27 @@ def get_user_by_name(name = 'all'):
 # create new user
 def create_user(new_user):
 
-    # prepare user object
-    #new_user =  User(
-    #    name = data.get("name"),
-    #    email = data.get("email")
-    #)
-    #new_user.set_password(data.get("password"))
-    #if data.get("roles"):
-    #    new_user.roles.append(data.get("roles"))
-    #if data.get("groups"):
-    #    new_user.roles.append(data.get("groups"))
+    # replace existing roles with respective db instances
+    if new_user.roles is not None:
+        roles=new_user.roles
+        new_user.roles = []
+        for role in roles:
+            existing_role = check_object_name(object_type='role', name=role.name)
+            if existing_role:
+                new_user.roles.append(existing_role)
+            else:
+                new_user.roles.append(role)
+            
+    # replace existing groups with respective db instances
+    if new_user.groups is not None:
+        groups=new_user.groups
+        new_user.groups = []
+        for group in groups:
+            existing_group = check_object_name(object_type='group', name=group.name)
+            if existing_group:
+                new_user.groups.append(existing_group)
+            else:
+                new_user.groups.append(group)
 
     # write new user to database
     db.session.add(new_user)

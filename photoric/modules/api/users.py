@@ -100,10 +100,6 @@ class UsersApi(Resource):
         if not json_data:
             return {"message": "New user data were not provided."}, 400
         
-        # Validate input
-        # errors = user_schema.validate(json_data)
-        # if errors:
-        #   return errors, 422
         # Validate and deserialize input
         try:
             data = user_schema.load(json_data)
@@ -128,8 +124,8 @@ class RoleSchema(mm.SQLAlchemySchema):
         model = Role
         load_instance = True
 
-    id = mm.auto_field()
-    name = mm.auto_field()
+    id = mm.auto_field(dump_only=True)
+    name = mm.auto_field(validate=validate.Length(min=1, error="Name must be at least 1 symbols long."))
     restrictions = mm.auto_field()
 
     users = mm.Nested(UserSchema, many=True, exclude=("roles", "_links"))
@@ -150,8 +146,8 @@ class GroupSchema(mm.SQLAlchemySchema):
         model = Group
         load_instance = True
 
-    id = mm.auto_field()
-    name = mm.auto_field()
+    id = mm.auto_field(dump_only=True)
+    name = mm.auto_field(validate=validate.Length(min=1, error="Name must be at least 1 symbols long."))
     allowances = mm.auto_field()
 
     users = mm.Nested(UserSchema, many=True, exclude=("groups", "_links"))

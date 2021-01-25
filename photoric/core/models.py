@@ -341,7 +341,7 @@ def check_object_name(object_type=None, name=None):
         return False
     requested_object = db.session.query(models[object_type]).filter_by(name=name).first()
     if requested_object:
-        return True
+        return requested_object
     return False
 
 def check_object_exists(object_type=None, id=None):
