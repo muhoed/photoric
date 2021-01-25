@@ -8,7 +8,8 @@ from PIL import Image as Picture
 from PIL.ExifTags import TAGS
 
 from photoric.config.config import Config
-from photoric.core.models import db, Image
+from photoric import db
+from photoric.core.models import Image
 from photoric.modules.auth import authorize
 from photoric.modules.albums.helper import get_album_by_id
 from photoric.modules.images.helper import get_image_by_name, decode_bytes

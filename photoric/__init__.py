@@ -5,6 +5,8 @@ from flask_jsglue import JSGlue
 from flask_session import Session
 from flask_uploads import configure_uploads, patch_request_class
 from flask_wtf.csrf import CSRFProtect
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 from photoric.config import config
 
@@ -13,6 +15,12 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # create JS integration plugin object
 jsglue = JSGlue()
+
+# create db instance
+db = SQLAlchemy()
+
+# create migrate instance
+migrate = Migrate()
 
 def create_app(conf='dev'):
     # Initialize core application and load configuration
@@ -49,9 +57,9 @@ def create_app(conf='dev'):
     jsglue.init_app(app)
 
     # Initialize database
-    from photoric.core.models import db
     db.init_app(app)
-    from photoric.core.models import migrate
+
+    # Initialize migration object
     migrate.init_app(app, db)
 
     # Initialize Login manager
@@ -106,9 +114,12 @@ def create_app(conf='dev'):
         app.register_blueprint(admin_bp)
         app.register_blueprint(api_bp)
 
-        # create database
-        db.create_all()
+        # import all models
+        # from photoric.core.models import *
 
+        # create database
+        # db.create_all()
+        
         # filters and variables for jinja2 templates
         @app.template_global()
         def site_name():

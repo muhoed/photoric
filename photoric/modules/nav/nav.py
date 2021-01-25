@@ -2,7 +2,8 @@
 from flask import render_template, url_for
 from flask_login import current_user
 
-from photoric.core.models import db, Navbar, NavbarItem, Menu, MenuItem
+from photoric import db
+from photoric.core.models import Navbar, NavbarItem, Menu, MenuItem
 from photoric.modules.auth import authorize
 from photoric.modules.nav import nav_bp
 

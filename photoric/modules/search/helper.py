@@ -1,6 +1,7 @@
 from sqlalchemy import or_
 
-from photoric.core.models import db, Album, Image
+from photoric import db
+from photoric.core.models import Album, Image
 
 
 def search_gallery_items(word):

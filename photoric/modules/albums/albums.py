@@ -3,7 +3,8 @@ from flask_login import current_user
 
 from photoric.modules.albums.forms import CreateAlbumForm
 from photoric.modules.auth.auth import authorize
-from photoric.core.models import db, Album, Image
+from photoric import db
+from photoric.core.models import Album, Image
 from photoric.modules.views.helper import get_gallery_items
 from photoric.modules.albums import albums_bp
 

@@ -6,7 +6,8 @@ from datetime import datetime
 
 from photoric.modules.auth.forms import LoginForm, SignupForm
 from photoric.modules.auth.helper import create_user, get_user_by_name
-from photoric.core.models import db, User
+from photoric import db
+from photoric.core.models import User
 from photoric.modules.auth import auth_bp, login_manager, authorize
 
 

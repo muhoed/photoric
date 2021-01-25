@@ -1,14 +1,16 @@
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 from datetime import datetime
 from flask_login import UserMixin
 from flask_authorize import RestrictionsMixin, AllowancesMixin, PermissionsMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_migrate import Migrate
+# from flask_migrate import Migrate
+
+from photoric import db
 
 
-db = SQLAlchemy()
-migrate = Migrate()
+# db = SQLAlchemy()
+# migrate = Migrate()
 
 # map tables to classes
 UserGroup = db.Table('user_group',

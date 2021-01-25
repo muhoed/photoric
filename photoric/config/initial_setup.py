@@ -1,4 +1,5 @@
-from photoric.core.models import db, User, Role, Group, Navbar, NavbarItem
+from photoric import db
+from photoric.core.models import User, Role, Group, Navbar, NavbarItem
 from photoric.core.models import Menu, MenuItem, Album, Image, Config
 from photoric.modules.auth.helper import get_user_by_name
 from photoric.modules.nav.helper import get_navbar_by_name, get_menu_by_name

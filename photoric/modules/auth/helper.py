@@ -1,6 +1,7 @@
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 
-from photoric.core.models import db, Image, Album, User
+from photoric import db
+from photoric.core.models import Image, Album, User
 
 
 # get user by name or list all registered users

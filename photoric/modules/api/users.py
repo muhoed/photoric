@@ -3,7 +3,8 @@ from flask import request
 from marshmallow import validate, ValidationError
 from flask_restful import Resource, reqparse, abort
 
-from photoric.core.models import db, User, Role, Group, Album, Image, AlbumImage, check_object_name, check_object_exists
+from photoric import db
+from photoric.core.models import User, Role, Group, Album, Image, AlbumImage, check_object_name, check_object_exists
 from photoric.modules.api import api_bp, mm, api
 from photoric.modules.auth.helper import create_user, update_user
 
