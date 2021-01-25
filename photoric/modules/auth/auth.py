@@ -57,13 +57,18 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
         # prepare new user data
-        data = {}
-        data["name"] = form.name.data
-        data["email"] = form.email.data
+        #data = {}
+        #data["name"] = form.name.data
+        #data["email"] = form.email.data
         # create new user
-        user = create_user(data)
+        new_user =  User(
+            name = form.name.data,
+            email = form.email.data,
+            password = form.password.data
+        )
+        user = create_user(new_user)
         
-        login_user(user.id)  # Log in as newly created user
+        login_user(user)  # Log in as newly created user
         
         # remember login date and time
         user.set_last_login()

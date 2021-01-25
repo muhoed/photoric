@@ -187,7 +187,7 @@ class User(UserMixin, db.Model):
     def is_authenticated(self):
         return True
 
-    def is_active(self):
+    #def is_active(self):
     # return True if the user is active (was not banned)
         return self.active
 
@@ -195,9 +195,13 @@ class User(UserMixin, db.Model):
     def is_anonymous(self):
         return False
 
-    def set_password(self, password):
+    #@password.setter
+    def new_password(self, password):
+        self.password = self.hash_password(password)
+
+    def hash_password(self, password):
         """create hashed password"""
-        self.password = generate_password_hash(password, method='sha256')
+        return generate_password_hash(password, method='sha256')
 
     def check_password(self, password):
         """check hashed password"""
@@ -209,6 +213,11 @@ class User(UserMixin, db.Model):
 
     def get_id(self):
         return self.id
+
+    def __init__(self, password=None, password_hash=None, **kwargs):
+        if password_hash is None and password is not None:
+            password_hash = self.hash_password(password)
+        super().__init__(password=password_hash, **kwargs)
 
     # Required for administrative interface
     def __unicode__(self):

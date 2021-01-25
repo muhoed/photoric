@@ -5,7 +5,7 @@ from flask_restful import Resource, reqparse, abort
 
 from photoric.core.models import db, User, Role, Group, Album, Image, AlbumImage, check_object_name, check_object_exists
 from photoric.modules.api import api_bp, mm, api
-from photoric.modules.auth.helper import create_user
+from photoric.modules.auth.helper import create_user, update_user
 
 
 class UserSchema(mm.SQLAlchemySchema):
@@ -38,7 +38,8 @@ class UserSchema(mm.SQLAlchemySchema):
             # "groups": mm.URLFor("api.user_groups", values=dict(id="<id>")),
             "collection": mm.URLFor("api.users")
         }
-    ) 
+    )
+    
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
@@ -55,7 +56,25 @@ class UserApi(Resource):
         return {"user": user_schema.dump(user)}
 
     def put(self, id):
-        pass
+        # check if requested user exists
+        user = check_object_exists(object_type='user', id=id)
+        if not user:
+            return {"message": "User was not found."}, 404
+
+        # extract user data from request
+        json_data = request.get_json()
+        if not json_data:
+            return {"message": "User data was not changes."}, 400
+        
+        # Validate and deserialize input
+        try:
+            data = user_schema.load(json_data, missing=None)
+        except ValidationError as err:
+            return err.messages, 422
+
+        # update user
+        user = user_schema.dump(update_user(data))
+        return {"message": "User details were updated.", "user": user}, 200
 
     def delete(self, id):
         # check if requested user exists
@@ -81,16 +100,21 @@ class UsersApi(Resource):
             return {"message": "New user data were not provided."}, 400
         
         # Validate input
-        errors = user_schema.validate(json_data)
-        if errors:
-            return errors, 422
+        # errors = user_schema.validate(json_data)
+        # if errors:
+        #   return errors, 422
+        # Validate and deserialize input
+        try:
+            data = user_schema.load(json_data)
+        except ValidationError as err:
+            return err.messages, 422
 
         # check if user with such name already exists
-        if check_object_name(object_type="user", name=json_data["name"]):
+        if check_object_name(object_type="user", name=data.name):
             return {"message": "User with such name already exists."}, 400
 
         # create new user
-        user = user_schema.dump(create_user(json_data))
+        user = user_schema.dump(create_user(data))
         return {"message": "New user was created.", "user": user}, 201
             
 

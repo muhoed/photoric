@@ -9,8 +9,8 @@ def initial_setup():
     if get_user_by_name('admin') is None:
 
         # create user and map it to respective groups and role
-        admin_user = User(name='admin')
-        admin_user.set_password('admin')
+        admin_user = User(name='admin', password='admin')
+        #admin_user.new_password('admin')
         admin_user.roles = [
             Role(
                 name='admin',
