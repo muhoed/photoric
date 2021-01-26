@@ -32,15 +32,15 @@ class UserSchema(mm.SQLAlchemySchema):
     roles = mm.Nested(lambda: RoleSchema(many=True, exclude=("users", "_links")))
     groups = mm.Nested(lambda: GroupSchema(many=True, exclude=("users", "_links")))
 
+    _roles_links = mm.List(mm.HyperlinkRelated("api.role_detail", attribute="roles"), attribute="roles", dump_only=True)
+    # _groups_links = mm.List(mm.HyperlinkRelated("api.group_detail", attribute="groups"), attribute="groups", dump_only=True)
+    
     _links = mm.Hyperlinks(
         {
             "self": mm.URLFor("api.user_detail", values=dict(id="<id>")),
-            # "roles": mm.URLFor("api.user_roles", values=dict(id="<id>")),
-            # "groups": mm.URLFor("api.user_groups", values=dict(id="<id>")),
             "collection": mm.URLFor("api.users")
         }
     )
-    
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
@@ -69,12 +69,16 @@ class UserApi(Resource):
         
         # Validate and deserialize input
         try:
-            data = user_schema.load(json_data, missing=None)
+            data = user_schema.load(json_data)
         except ValidationError as err:
             return err.messages, 422
 
+        # check if new name (if any) already in use
+        if data.name and check_object_name(object_type="user", name=data.name):
+            return {"message": "User with such name already exists."}, 400
+
         # update user
-        user = user_schema.dump(update_user(data))
+        user = user_schema.dump(update_user(data, user))
         return {"message": "User details were updated.", "user": user}, 200
 
     def delete(self, id):
@@ -132,14 +136,69 @@ class RoleSchema(mm.SQLAlchemySchema):
 
     _links = mm.Hyperlinks(
         {
-            "self": mm.URLFor("role_detail", values=dict(id="<id>")),
-            "self.users": mm.URLFor("role_users", values=dict(id="<id>")),
-            "collection": mm.URLFor("roles")
+            "self": mm.URLFor("api.role_detail", values=dict(id="<id>")),
+            "self.users": mm.URLFor("api.user_detail", values=dict(id="<id>")),
+            "collection": mm.URLFor("api.roles")
         }
     )
 
 role_schema = RoleSchema()
 roles_schema = RoleSchema(many=True)
+
+class RoleApi(Resource):
+    def get(self, id):
+        # check if requested user exists
+        role = check_object_exists(object_type='role', id=id)
+        if not role:
+            return {"message": "Role was not found."}, 404
+            
+        # return serialized user details
+        return {"role": role_schema.dump(role)}
+
+    def put(self, id):
+        # check if requested user exists
+        pass
+
+    def delete(self, id):
+        # check if requested user exists
+        role = check_object_exists(object_type='role', id=id)
+        if not role:
+            return {"message": "Role was not found."}, 404
+
+        # delete user
+        db.session.delete(role)
+        db.session.commit()
+        return {"message": "Role was deleted."}, 204
+
+
+class RolesApi(Resource):
+    def get(self):
+        roles = Role.query.all()
+        return roles_schema.dump(roles)
+
+    def post(self):
+        # extract new role data from request
+        json_data = request.get_json()
+        if not json_data:
+            return {"message": "New role data were not provided."}, 400
+        
+        # Validate and deserialize input
+        try:
+            data = role_schema.load(json_data)
+        except ValidationError as err:
+            return err.messages, 422
+
+        # check if role with such name already exists
+        if check_object_name(object_type="role", name=data.name):
+            return {"message": "Role with such name already exists."}, 400
+
+        # create new role
+        #role = role_schema.dump(create_role(data))
+        #return {"message": "New role was created.", "role": role}, 201
+        pass    
+
+api.add_resource(RoleApi, '/roles/<int:id>', endpoint='role_detail')
+api.add_resource(RolesApi, '/roles', endpoint='roles')
 
 class GroupSchema(mm.SQLAlchemySchema):
     class Meta:

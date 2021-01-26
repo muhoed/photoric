@@ -25,8 +25,8 @@ def albums_processors():
     # get number of images in album
     def get_elements_number(album_id):
         album_content = {}
-        album_content['albums'] = Album.query.filter(Album.parent_id == album_id).count()
-        album_content['images'] = Image.query.filter(Image.parent_id == album_id).count()
+        album_content['albums'] = get_gallery_items(album_id, 'albums').count() # Album.query.filter(Album.parent_id == album_id).count()
+        album_content['images'] = get_gallery_items(album_id, 'images').count() # Image.query.filter(Image.parent_id == album_id).count()
         return album_content
 
     return dict(list_albums=list_albums,
