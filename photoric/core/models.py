@@ -189,7 +189,7 @@ class User(UserMixin, db.Model):
     def is_authenticated(self):
         return True
 
-    #def is_active(self):
+    def is_active(self):
     # return True if the user is active (was not banned)
         return self.active
 
@@ -197,7 +197,6 @@ class User(UserMixin, db.Model):
     def is_anonymous(self):
         return False
 
-    #@password.setter
     def new_password(self, password):
         self.password = self.hash_password(password)
 

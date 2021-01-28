@@ -18,7 +18,7 @@ class UserSchema(mm.SQLAlchemySchema):
     name = mm.auto_field(required=True, validate=validate.Length(min=3,
                                                                  error="Name must be at least 3 symbols long."))
     email = mm.Email(required=True)
-    password = mm.auto_field(required=True,
+    password = mm.auto_field(load_only=True, required=True,
                              validate=validate.Regexp('(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*(&|%|#)).{8,}',
                                              error='Password must contain at least one number, \
                                              one uppercase and lowercase letter, \
@@ -65,17 +65,28 @@ class UserApi(Resource):
         # extract user data from request
         json_data = request.get_json()
         if not json_data:
-            return {"message": "User data was not changes."}, 400
+            return {"message": "User was not changes."}, 400
+
+        if "name" in json_data and json_data["name"] != user.name and \
+           check_object_name(object_type="user", name=json_data["name"]):
+            return {"message": "This name is already in use. Please use a different name."}, 400
+
+        # use current user's name and email if not to be updated
+        # these attributes should be filled in to pass validation
+        if "name" not in json_data:
+            json_data["name"] = user.name
+        if "email" not in json_data:
+            json_data["email"] = user.email
         
         # Validate and deserialize input
         try:
-            data = user_schema.load(json_data)
+            # if password is not to be updated skip password validation
+            if "password" not in json_data:
+                data = user_schema.load(json_data, partial=("password",))
+            else:
+                data = user_schema.load(json_data)
         except ValidationError as err:
             return err.messages, 422
-
-        # check if new name (if any) already in use
-        if data.name and check_object_name(object_type="user", name=data.name):
-            return {"message": "User with such name already exists."}, 400
 
         # update user
         user = user_schema.dump(update_user(data, user))
@@ -103,16 +114,17 @@ class UsersApi(Resource):
         json_data = request.get_json()
         if not json_data:
             return {"message": "New user data were not provided."}, 400
+
+        # check if user with such name already exists
+        if "name" in json_data and \
+           check_object_name(object_type="user", name=json_data["name"]):
+            return {"message": "User with such name already exists."}, 400
         
         # Validate and deserialize input
         try:
             data = user_schema.load(json_data)
         except ValidationError as err:
             return err.messages, 422
-
-        # check if user with such name already exists
-        if check_object_name(object_type="user", name=data.name):
-            return {"message": "User with such name already exists."}, 400
 
         # create new user
         user = user_schema.dump(create_user(data))

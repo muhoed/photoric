@@ -17,7 +17,7 @@ def get_user_by_name(name = 'all'):
 # fill in user roles and groups
 def fill_roles_groups(user):
     # replace existing roles with respective db instances
-    if user.roles is not None:
+    if user.roles:
         roles=user.roles
         user.roles = []
         for role in roles:
@@ -28,7 +28,7 @@ def fill_roles_groups(user):
                 user.roles.append(role)
                 
     # replace existing groups with respective db instances
-    if user.groups is not None:
+    if user.groups:
         groups=user.groups
         user.groups = []
         for group in groups:
@@ -59,22 +59,22 @@ def create_user(new_user):
 # update user details: name/email/password/roles/groups
 def update_user(changed_user, existing_user):
 
-    # update name, email and password if applicable
-    if changed_user.name is not None:
-        existing_user.name = changed_user.name
-    if changed_user.password is not None:
-        existing_user.password = changed_user.password
-    if changed_user.email is not None:
-        existing_user.email = changed_user.email
-
-    # update roles and groups lists
+    # set roles and groups of changed user
     changed_user = fill_roles_groups(changed_user)
-    if changed_user.roles is not None:
-        existing_user.roles = changed_user.roles
-    if changed_user.groups is not None:
-        existing_user.groups = changed_user.groups
 
-    # update user with changed data
+    # update existing user
+    existing_user.name = changed_user.name
+    existing_user.email = changed_user.email
+    # set old password if not changed
+    if changed_user.password is None:
+        changed_user.password = existing_user.password
+    # update roles and groups    
+    if changed_user.roles:
+        existing_user.roles.extend(changed_user.roles)
+    if changed_user.groups:
+        existing_user.groups.extend(changed_user.groups)
+
+    # save changes to db
     db.session.commit()
 
     updated_user = get_user_by_name(name=existing_user.name)
