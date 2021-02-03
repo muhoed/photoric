@@ -10,6 +10,7 @@ from wtforms.validators import (
 )
 
 from photoric.core.form_validators import name_check
+from photoric.modules.auth.models import User
 
 
 class SignupForm(FlaskForm):
@@ -18,7 +19,7 @@ class SignupForm(FlaskForm):
         'Name:',
         validators=[InputRequired(message='Please enter name'),
                     Length(min=3, message='c'),
-                    name_check(item_type='user', message='User with such name already exists')
+                    name_check(cls=User, message='User with such name already exists')
         ]
     )
     email = EmailField(

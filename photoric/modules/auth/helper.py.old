@@ -1,8 +1,9 @@
 # from flask_sqlalchemy import SQLAlchemy
 
 from photoric import db
-from photoric.core.models import Image, Album, User
+from photoric.core.models import Image, Album
 from photoric.core.models import check_object_name
+from photoric.modules.auth.models import User
 
 
 # get user by name or list all registered users
@@ -13,33 +14,6 @@ def get_user_by_name(name = 'all'):
         requested_user = User.query.all()
 
     return requested_user
-
-# fill in user roles and groups
-def fill_roles_groups(user):
-    # replace existing roles with respective db instances
-    if user.roles:
-        roles=user.roles
-        user.roles = []
-        for role in roles:
-            existing_role = check_object_name(object_type='role', name=role.name)
-            if existing_role:
-                user.roles.append(existing_role)
-            else:
-                user.roles.append(role)
-                
-    # replace existing groups with respective db instances
-    if user.groups:
-        groups=user.groups
-        user.groups = []
-        for group in groups:
-            existing_group = check_object_name(object_type='group', name=group.name)
-            if existing_group:
-                user.groups.append(existing_group)
-            else:
-                user.groups.append(group)
-                
-    return user
-
 
 # create new user
 def create_user(new_user):

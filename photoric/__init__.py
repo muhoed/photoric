@@ -7,6 +7,7 @@ from flask_uploads import configure_uploads, patch_request_class
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_marshmallow import Marshmallow
 
 from photoric.config import config
 
@@ -21,6 +22,9 @@ db = SQLAlchemy()
 
 # create migrate instance
 migrate = Migrate()
+
+# Initialize serializer object
+mm = Marshmallow()
 
 def create_app(conf='dev'):
     # Initialize core application and load configuration
@@ -74,8 +78,7 @@ def create_app(conf='dev'):
     from photoric.modules.admin import admin_manager
     admin_manager.init_app(app)
 
-    # Initialize API tools
-    from photoric.modules.api import mm
+    # Initialize (de)serialization schemas
     mm.init_app(app)
 
     # Initialize upload managers
@@ -115,7 +118,8 @@ def create_app(conf='dev'):
         app.register_blueprint(api_bp)
 
         # import all models
-        # from photoric.core.models import *
+        from photoric.core.models import AlbumImage, Image, Album, Navbar, NavbarItem, Menu, MenuItem, Config
+        from photoric.modules.auth.models import UserRole, UserGroup, User, Role, Group
 
         # create database
         # db.create_all()

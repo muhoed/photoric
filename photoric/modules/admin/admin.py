@@ -8,7 +8,8 @@ from wtforms.validators import (
 
 from photoric.modules.auth.auth import authorize
 from photoric import db
-from photoric.core.models import User, Role, Group, Navbar, NavbarItem
+from photoric.modules.auth.models import User, Role, Group
+from photoric.core.models import Navbar, NavbarItem
 from photoric.core.models import Menu, MenuItem, Album, Image, Config
 from photoric.modules.admin import admin_bp, admin_manager
 

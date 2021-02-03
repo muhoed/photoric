@@ -5,9 +5,9 @@ from urllib.parse import urlparse, urljoin
 from datetime import datetime
 
 from photoric.modules.auth.forms import LoginForm, SignupForm
-from photoric.modules.auth.helper import create_user, get_user_by_name
+# from photoric.modules.auth.helper import create_user, get_user_by_name
 from photoric import db
-from photoric.core.models import User
+from photoric.modules.auth.models import User
 from photoric.modules.auth import auth_bp, login_manager, authorize
 
 
@@ -27,14 +27,15 @@ def signin():
     # check provided credentials and log user in
     login_form = LoginForm()
     if login_form.validate_on_submit():
-        user = get_user_by_name(name=login_form.name.data)
+        #user = get_user_by_name(name=login_form.name.data)
+        user = User.get_by_name(name=login_form.name.data)
         if user is None or not user.check_password(login_form.password.data):
             flash(u'Invalid username or password', 'danger')
             return redirect(url_for('auth.signin'))
         login_user(user, remember=login_form.remember_me.data)
 
         # remember login date and time
-        user.set_last_login()
+        user.last_login = "set"
 
         # return logged in user to the requested page or home page if not
         return_page = request.args.get('next')
@@ -58,21 +59,23 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
         # prepare new user data
-        #data = {}
-        #data["name"] = form.name.data
-        #data["email"] = form.email.data
+        data = {}
+        data["name"] = form.name.data
+        data["email"] = form.email.data
+        data["password"] = form.password.data
         # create new user
-        new_user =  User(
-            name = form.name.data,
-            email = form.email.data,
-            password = form.password.data
-        )
-        user = create_user(new_user)
+        # new_user =  User(
+        #    name = form.name.data,
+        #    email = form.email.data,
+        #    password = form.password.data
+        #)
+        
+        user = User.create_from_json(data)
         
         login_user(user)  # Log in as newly created user
         
         # remember login date and time
-        user.set_last_login()
+        user.last_login = "set"
 
         flash(u'Congratulation! You were successfully registered!', 'success')
         return redirect(url_for('views.index'))

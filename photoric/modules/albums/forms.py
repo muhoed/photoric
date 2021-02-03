@@ -15,7 +15,7 @@ class CreateAlbumForm(FlaskForm):
         'Name:',
         validators=[InputRequired(message='Please enter album name'),
                     Length(min=3, message='Album name must be at least 3 symbols long'),
-                    name_check(item_type='album', message='Album with such name already exists')
+                    name_check(message='Album with such name already exists')
                     ]
     )
     description = TextAreaField(

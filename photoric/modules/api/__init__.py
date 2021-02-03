@@ -1,6 +1,5 @@
 """Initialize API blueprint"""
 from flask import Blueprint
-from flask_marshmallow import Marshmallow
 from flask_restful import Api
 
 
@@ -13,9 +12,6 @@ api_bp = Blueprint(
     static_url_path='/static'
 )
 
-
-# Initialize serializer object
-mm = Marshmallow()
 
 # Initialize API object
 api = Api(api_bp)

@@ -1,42 +1,40 @@
 from photoric import db
-from photoric.core.models import User, Role, Group, Navbar, NavbarItem
-from photoric.core.models import Menu, MenuItem, Album, Image, Config
-from photoric.modules.auth.helper import get_user_by_name
+from photoric.core.models import Navbar, NavbarItem, Menu, MenuItem
+from photoric.core.models import Album, Image, Config
+from photoric.modules.auth.models import User, Role, Group
 from photoric.modules.nav.helper import get_navbar_by_name, get_menu_by_name
 
 
 def initial_setup():
     """ create admin user if not exist """
-    if get_user_by_name('admin') is None:
+    if not User.get_by_name('admin'):
 
         # create user and map it to respective groups and role
         admin_user = User(name='admin', password='admin')
-        #admin_user.new_password('admin')
+        # admin_user.password = 'admin'
         admin_user.roles = [
-            Role(
-                name='admin',
-                restrictions={}
-            )
+                {'name':'admin',
+                'restrictions':{}}
         ]
         admin_user.groups = [
-            Group(
-                name='admins',
-                allowances='*'
-            ),
-            Group(
-                name='private',
-                allowances=dict(
-                    albums=['read'],
-                    images=['read']
-                )
-            ),
-            Group(
-                name='contributors',
-                allowances=dict(
-                    albums=['read', 'create', 'update', 'revoke'],
-                    images=['read', 'create', 'update', 'revoke']
-                )
-            )
+            # Group(
+                {'name':'admins',
+                'allowances':'*'},
+            # ),
+            # Group(
+                {'name':'private',
+                'allowances':{
+                    'albums':['read'],
+                    'images':['read']
+                }},
+            #),
+            #Group(
+                {'name':'contributors',
+                'allowances':{
+                    'albums':['read', 'create', 'update', 'revoke'],
+                    'images':['read', 'create', 'update', 'revoke']
+                }}
+            #)
         ]
 
         db.session.add(admin_user)

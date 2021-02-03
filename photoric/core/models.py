@@ -1,38 +1,94 @@
-# from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 from datetime import datetime
-from flask_login import UserMixin
 from flask_authorize import RestrictionsMixin, AllowancesMixin, PermissionsMixin
-from werkzeug.security import generate_password_hash, check_password_hash
-# from flask_migrate import Migrate
 
 from photoric import db
 
 
-# db = SQLAlchemy()
-# migrate = Migrate()
+# Photoric base model class provides common properties
+# and methods
+class PhotoricMixin():
+
+    @classmethod
+    def get_by_id(cls, id=None):
+        if id is None:
+            return False
+        try:
+            instance = cls.query.get(id)
+        except IntegrityError:
+            return False
+        return instance
+
+    @classmethod
+    def get_by_name(cls, name=None):
+        if name is None:
+            return False
+        instance = cls.query.filter_by(name=name).first()
+        if instance:
+            return instance
+        return False
+
+    @classmethod
+    def create_from_json(cls, data):
+
+        # check if object with such name already exists
+        if cls.get_by_name(name=data["name"]):
+            msg = "%s with such name already exists." % cls.__name__
+            return {"message": msg}, 400
+            
+        obj = cls()
+        for key, value in data.items():
+            setattr(obj, key, value)
+
+        db.session.add(obj)
+        db.session.commit()
+
+        return cls.get_by_name(obj.name)
+
+    @classmethod
+    def update_from_json(cls, data, id):
+		
+		# check if requested object exists
+        obj = cls.get_by_id(id=id)
+        if not object:
+            msg = "%s was not found" % cls.__name__
+            return {"message": msg}, 404
+            
+        if "name" in data and data["name"] != obj.name and cls.get_by_name(name=data["name"]):
+            return {"message": "This name is already in use. Please use a different name."}, 400
+        
+        for key, value in data.items():
+            setattr(obj, key, value)	
+        db.session.commit()
+		
+        return obj
+
+    @classmethod
+    def delete(cls, id=None):
+        if id is None:
+            return False
+        instance = cls.query.get(id)
+        if not instance:
+            return False
+        db.session.delete(instance)
+        db.session.commit()
+        return True
+        
+    def _build_relationship(self, rel, data, rel_cls, create=False):
+        missed = []
+        for item in data:
+            existing_item = rel_cls.get_by_name(name=item["name"])
+            if existing_item:
+                getattr(self, rel).append(existing_item)
+            elif create:
+                new_item = rel_cls.create_from_json(item)
+                getattr(self, rel).append(new_item)
+            else:
+                missed.append(item["name"])
+        return missed
+
 
 # map tables to classes
-UserGroup = db.Table('user_group',
-                     db.Column('user_id',
-                               db.Integer,
-                               db.ForeignKey('users.id')),
-                     db.Column('group_id',
-                               db.Integer,
-                               db.ForeignKey('groups.id'))
-)
-
-
-UserRole = db.Table('user_role',
-                    db.Column('user_id',
-                              db.Integer,
-                              db.ForeignKey('users.id')),
-                    db.Column('role_id',
-                              db.Integer,
-                              db.ForeignKey('roles.id'))
-)
-
-
 AlbumImage = db.Table('album_image',
                       db.Column('album_id',
                                 db.Integer,
@@ -42,40 +98,8 @@ AlbumImage = db.Table('album_image',
                                 db.ForeignKey('images.id'))
 )    
 
+
 # declare models
-
-""" polymorthic relations should be corrected
-# base class for gallery items
-class GalleryItem(db.Model, PermissionsMixin):
-    __tablename__ = 'gallery_items'
-
-    __permissions__ = dict(
-        owner=['create', 'read', 'update', 'delete', 'revoke'],
-        group=['read', 'update', 'revoke'],
-        other=['read']
-    )
-    id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(50))
-    name = db.Column(db.String(100), unique=True, nullable=True)
-    description = db.Column(db.String(500), nullable=True)
-    keywords = db.Column(db.String(255), nullable=True)
-    is_published = db.Column(db.Boolean(), nullable=False, default=False)
-    published_on = db.Column(db.DateTime, nullable=True, index=True)
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'gallery_item',
-        'polymorphic_on': type,
-        'with_polymorphic': '*'
-    }
-
-    def publish(self):
-        # mark gallery item as published, i.e. accessible for both registered and anonymous users
-        is_published = True
-
-    def unpublish(self):
-        # mark gallery item as not published, i.e. accessible for both registered and anonymous users
-        is_published = False
-"""
 
 # class Image(GalleryItem):
 class Image(db.Model, PermissionsMixin):
@@ -94,7 +118,7 @@ class Image(db.Model, PermissionsMixin):
     keywords = db.Column(db.String(255), nullable=True)
     filename = db.Column(db.String, unique=True, nullable=False)
     url = db.Column(db.String(255), nullable=False)
-    uploaded_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    uploaded_on = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     captured_on = db.Column(db.DateTime, nullable=True)
     location = db.Column(db.Text, nullable=True)
     is_published = db.Column(db.Boolean(), nullable=False, default=False)
@@ -114,13 +138,6 @@ class Image(db.Model, PermissionsMixin):
 
     def __repr__(self):
         return '<Image %r>' % self.filename
-
-"""
-    __mapper_args__ = {
-        'polymorphic_identity': 'image',
-        'polymorphic_load': 'inline'
-    }
-"""
 
 
 # class Album(GalleryItem):
@@ -162,89 +179,7 @@ class Album(db.Model, PermissionsMixin):
 
     def __repr__(self):
         return '<Album %r>' % self.name
-"""    
-    __mapper_args__ = {
-        'polymorphic_identity': 'album',
-        'polymorphic_load': 'inline'
-    }
-"""
 
-
-
-class User(UserMixin, db.Model):
-    __tablename__ = "users"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False, unique=True)
-    email = db.Column(db.String, )
-    password = db.Column(db.String, nullable=False)
-    created_on = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    active = db.Column(db.Boolean, nullable=False, default=True)
-    last_login = db.Column(db.DateTime, nullable=True)
-
-    roles = db.relationship('Role', secondary=UserRole)
-    groups = db.relationship('Group', secondary=UserGroup)
-
-    @property
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-    # return True if the user is active (was not banned)
-        return self.active
-
-    @property
-    def is_anonymous(self):
-        return False
-
-    def new_password(self, password):
-        self.password = self.hash_password(password)
-
-    def hash_password(self, password):
-        """create hashed password"""
-        return generate_password_hash(password, method='sha256')
-
-    def check_password(self, password):
-        """check hashed password"""
-        return check_password_hash(self.password, password)
-
-    def set_last_login(self):
-        self.last_login = datetime.utcnow()
-        db.session.commit()
-
-    def get_id(self):
-        return self.id
-
-    def __init__(self, password=None, password_hash=None, **kwargs):
-        if password_hash is None and password is not None:
-            password_hash = self.hash_password(password)
-        super().__init__(password=password_hash, **kwargs)
-
-    # Required for administrative interface
-    def __unicode__(self):
-        return self.name
-    
-    def __repr__(self):
-        return '<User %r>' % self.name
-        
-
-class Group(db.Model, AllowancesMixin):
-    __tablename__ = 'groups'
-
-    __allowances__ = {}
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False, unique=True)
-        
-
-class Role(db.Model, RestrictionsMixin):
-    __tablename__='roles'
-
-    __restrictions__ = {}
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False, unique=True)
-    
 
 class Navbar(db.Model):
     __tablename__='navbars'
@@ -321,34 +256,3 @@ class Config(db.Model, PermissionsMixin):
     id = db.Column(db.Integer, primary_key=True)
     theme = db.Column(db.String, nullable=False, default='light')
     view_mode = db.Column(db.String, nullable=False, default='grid')
-
-
-models = {
-    'album':Album,
-    'image':Image,
-    'user':User,
-    'role':Role,
-    'group':Group,
-    'navbar':Navbar,
-    'navbar_item':NavbarItem,
-    'menu':Menu,
-    'menu_item':MenuItem
-    }
-
-def check_object_name(object_type=None, name=None):
-    if object_type is None or name is None:
-        return False
-    requested_object = db.session.query(models[object_type]).filter_by(name=name).first()
-    if requested_object:
-        return requested_object
-    return False
-
-def check_object_exists(object_type=None, id=None):
-    if object_type is None or id is None:
-        return False
-    try:
-        requested_object = db.session.query(models[object_type]).get(id)
-    except IntegrityError:
-            return False
-
-    return requested_object
