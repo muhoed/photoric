@@ -6,7 +6,8 @@ from flask_authorize import RestrictionsMixin, AllowancesMixin, PermissionsMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from photoric import db
-from photoric.core.models import PhotoricMixin
+from photoric.core.mixins import PhotoricMixin
+from photoric.modules.auth import login_manager
 
 
 # map tables to classes
@@ -107,7 +108,13 @@ class User(PhotoricMixin, UserMixin, db.Model):
     
     def __repr__(self):
         return '<User %r>' % self.name
-        
+
+
+#callback for Flask-Login
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
 
 class Group(db.Model, AllowancesMixin, PhotoricMixin):
     __tablename__ = 'groups'

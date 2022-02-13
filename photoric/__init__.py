@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 
-from photoric.config import config
+from .config.config import Config, ProdConfig, DevConfig
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -31,9 +31,9 @@ def create_app(conf='dev'):
     app = Flask(__name__, instance_relative_config=True)
 
     if conf == 'dev':
-        app.config.from_object(config.DevConfig)
+        app.config.from_object(DevConfig)
     else:
-        app.config.from_object(config.ProdConfig)
+        app.config.from_object(ProdConfig)
 
     # ensure the instance and storage folders exist
     try:
@@ -118,11 +118,11 @@ def create_app(conf='dev'):
         app.register_blueprint(api_bp)
 
         # import all models
+        from photoric.modules.auth.models import UserRole, UserGroup, User, Role, Group, load_user
         from photoric.core.models import AlbumImage, Image, Album, Navbar, NavbarItem, Menu, MenuItem, Config
-        from photoric.modules.auth.models import UserRole, UserGroup, User, Role, Group
 
         # create database
-        # db.create_all()
+        db.create_all()
         
         # filters and variables for jinja2 templates
         @app.template_global()
