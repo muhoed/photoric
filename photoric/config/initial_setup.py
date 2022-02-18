@@ -1,43 +1,40 @@
-from photoric.config.models import db, User, Role, Group, Navbar, NavbarItem
-from photoric.config.models import Menu, MenuItem, Album, Image, Config
-from photoric.modules.core.auth.helper import get_user_by_name
-from photoric.modules.core.nav.helper import get_navbar_by_name, get_menu_by_name
-from photoric.modules.core.admin.settings import admin_manager, PhotoricView, UserView
+from photoric import db
+from photoric.core.models import Navbar, NavbarItem, Menu, MenuItem
+from photoric.core.models import Album, Image, Config
+from photoric.modules.auth.models import User, Role, Group
+from photoric.modules.nav.helper import get_navbar_by_name, get_menu_by_name
+
 
 def initial_setup():
     """ create admin user if not exist """
-    if get_user_by_name('admin') is None:
+    if not User.get_by_name('admin'):
 
         # create user and map it to respective groups and role
-        admin_user = User(name='admin')
-        admin_user.set_password('admin')
+        admin_user = User(name='admin', password='admin')
+        # admin_user.password = 'admin'
         admin_user.roles = [
-            Role(
-                name='admin',
-                restrictions={}
-            )
+                {'name':'admin',
+                'restrictions':{}}
         ]
         admin_user.groups = [
-            Group(
-                name='admins',
-                allowances='*'
-            ),
-            Group(
-                name='private',
-                allowances=dict(
-                    gallery_items=['read'],
-                    albums=['read'],
-                    images=['read']
-                )
-            ),
-            Group(
-                name='contributors',
-                allowances=dict(
-                    gallery_items=['read', 'create', 'update', 'revoke'],
-                    albums=['read', 'create', 'update', 'revoke'],
-                    images=['read', 'create', 'update', 'revoke']
-                )
-            )
+            # Group(
+                {'name':'admins',
+                'allowances':'*'},
+            # ),
+            # Group(
+                {'name':'private',
+                'allowances':{
+                    'albums':['read'],
+                    'images':['read']
+                }},
+            #),
+            #Group(
+                {'name':'contributors',
+                'allowances':{
+                    'albums':['read', 'create', 'update', 'revoke'],
+                    'images':['read', 'create', 'update', 'revoke']
+                }}
+            #)
         ]
 
         db.session.add(admin_user)
@@ -343,15 +340,3 @@ def initial_setup():
 
                 db.session.add(sidemenu)
                 db.session.commit()
-
-    # register models with admin_manager
-    admin_manager.add_view(UserView(User, db.session, category='Users and Access rights'))
-    admin_manager.add_view(PhotoricView(Role, db.session, category='Users and Access rights'))
-    admin_manager.add_view(PhotoricView(Group, db.session, category='Users and Access rights'))
-    admin_manager.add_view(PhotoricView(Album, db.session, category='Gallery Items'))
-    admin_manager.add_view(PhotoricView(Image, db.session, category='Gallery Items'))
-    admin_manager.add_view(PhotoricView(Navbar, db.session, category='Navigation and Menu system'))
-    admin_manager.add_view(PhotoricView(NavbarItem, db.session, category='Navigation and Menu system'))
-    admin_manager.add_view(PhotoricView(Menu, db.session, category='Navigation and Menu system'))
-    admin_manager.add_view(PhotoricView(MenuItem, db.session, category='Navigation and Menu system'))
-    admin_manager.add_view(PhotoricView(Config, db.session, category='Style and Behavior'))
