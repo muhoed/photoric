@@ -1,0 +1,15 @@
+<!-- Simple search form -->
+
+<div class="collapse mr-2 ml-1" id="collapsibleSearchForm">
+    <form class="form-inline" action="{{ url_for(navbar_item.item_target) }}" method="POST">
+        {{ search_form.csrf_token }}
+        <div class="input-group">
+            {{ search_form.text(class_="form-control") }}
+        </div>
+        {{ search_form.submit(class_="btn btn-success") }}     
+    </form>
+</div>
+<a href="#collapsibleSearchForm" data-toggle="collapse" title="Search">
+<img width="24" height="24" src="{{ url_for('search.static', filename='images/search.svg') }}">
+</a>
+ 

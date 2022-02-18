@@ -1,0 +1,33 @@
+
+
+<!-- Sign-In page -->
+
+{% extends 'base_layout.html' %}
+
+{% from "nav/_nav_macros.html" import render_navbar with context %}
+
+{% block topnavbars %}
+
+{{ super() }}
+
+{{ render_navbar('topbar') }}
+{{ render_navbar('mainbar') }}
+
+{% endblock %}
+
+    {% block header %}
+        <div class="text-success"><h4>{{ title }}</h4></div>          
+    {% endblock %}           
+        
+    {% block main %}  
+        <div class="container mt-auto">
+            {% include "/auth/signin_form.html" %}
+        
+
+       <div">
+         <span>Do not have an account?</span>
+         <a href="{{ url_for('auth.signup') }}">Sign up.</a>        
+       </div>
+       </div>
+
+    {% endblock %}
