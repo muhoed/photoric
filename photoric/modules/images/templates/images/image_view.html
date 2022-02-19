@@ -1,0 +1,78 @@
+<!-- Home page -->
+{% extends 'base_layout.html' %}
+{% from "nav/_nav_macros.html" import render_navbar with context %}
+
+        {% block head_css %}
+        {{ super() }}
+        <style>
+            body {
+                background-color: #343a40;
+            }
+            img.d-block {
+                display: block !important;
+                max-height: 90vh;
+                object-fit: cover;
+            }
+        </style>
+        {% endblock %}
+
+        {% block topnavbars %}
+        
+        {{ super() }}
+        
+        
+        {% endblock %}
+
+    {% block main %}
+    <div class="container-fluid img-centered bg-dark m-0 d-inline align-items-center">
+        <div class="row bg-dark justify-content-between">
+            <div class="col-1">
+                <a class="image-view-back text-white" href="{{ request.args.get('next') }}" role="button">
+                    <button class="btn btn-secondary mt-5 float-left">Back</button>
+                </a>
+            </div>
+            <div class="col-10 max-vh-100 m-auto">
+                <div class="d-flex flex-column">
+
+                    <!-- Image carousel with switched off sliding -->
+                    <div class="row justify-content-center">
+                        <div id="ImageViewCarousel" class="carousel slide carousel-fade" data-interval="false" data-ride="" data-wrap="false">
+                              <div class="carousel-inner bg-white">
+                                  {% for image in siblings %}
+                                    {# if (current_user.is_authenticated and authorize.read(image)) or image.is_published #}
+                                        <div class="carousel-item {% if image.id == current_image.id %}active{% endif %} p-2" data-interval="false">
+                                          <img src="{{ image.url }}" class="d-block w-100 carousel-content-img m-auto" alt="{{ image.name }}">
+                                        </div>
+                                    {# endif #}
+                                  {% endfor %}
+                              </div>
+                        </div>
+                          <a class="carousel-control-prev" href="#ImageViewCarousel" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                          </a>
+                          <a class="carousel-control-next" href="#ImageViewCarousel" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                          </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1">
+                <a class="image-view-back text-white" href="{{ request.args.get('next') }}" role="button">
+                    <button class="btn btn-secondary mt-5 float-right">Back</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}
+    
+    {% block modals %}
+
+    {% endblock %}
+
+    {% block tail_js %}
+        {{ super() }}
+        <script src="{{ url_for('views.static', filename='views.js') }}"></script>
+    {% endblock %}

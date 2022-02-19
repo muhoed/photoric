@@ -1,0 +1,150 @@
+.nav-link img {
+    width: 24px;
+    height: 24px;
+    }
+    
+#Mainmenu {
+    font-size:1.5em;
+}
+
+div.collapse-opener a:link, a:visited, a:hover, a:active {
+    text-decoration: none;
+    color: green;
+}
+
+div.gallery {  
+  border: 1px solid #ccc;
+  height: 400px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery a:link {
+  text-decoration: none;
+  color: black;
+}
+
+div.gallery a:visited {
+  text-decoration: none;
+  color: black;
+}
+
+div.gallery a:hover {
+  text-decoration: none;
+  color: black;
+}
+
+div.gallery a:active {
+  text-decoration: none;
+  color: black;
+}
+
+div.item, {  
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  height: 75%;
+}
+
+img.content-img {
+    pointer-events: none;
+    width: 100%;
+    height: 290px;
+    object-fit: cover;
+}
+
+img.carousel-content-img {
+    pointer-events: none;
+    object-fit: cover;
+}
+
+div.item_name {
+  padding: 15px 15px 5px 15px;
+  font-size: 1.25em;
+}
+
+div.item_footer {
+  padding: 15px;
+}
+
+div.empty_album {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  width: 90%;
+  height: 75%;
+  text-align: center;
+  color: white;
+  background-color: lightgreen;
+}
+
+@media only screen and (max-width: 768px) {
+  div.gallery {
+    height: 300px;
+  }
+
+  div.item_name {
+      padding: 10px 10px 3px 10px;
+      font-size: 1em;
+    }
+
+  img.content-img {
+    pointer-events: none;
+    height: 225px;
+    object-fit: fill;
+    }
+
+    div.item_footer {
+      padding: 10px;
+      font-size: 0.9em;
+    }
+}
+
+@media only screen and (max-width: 528px) {
+  div.gallery {
+    height: 250px;
+  }
+
+  div.item_name {
+      padding: 5px 5px 2px 5px;
+      font-size: 0.75em;
+    }
+
+  img.content-img {
+    pointer-events: none;
+    height: 190px;
+    object-fit: contain;
+    }
+
+    div.item_footer {
+      padding: 5px;
+      font-size: 0.7em;
+    }
+
+}
+
+.upload_images {
+    display:none;
+    height:0;
+    width:0;
+}
+
+.upload_button {
+    padding-right: 5;
+    padding-top: 5;
+    padding-bottom: 0;
+}
+
+.upload_button:hover, .check-icon {
+    cursor:pointer;
+}
+
+ul.list-group > li.active {
+    background: none;
+    color: green;
+}
+
