@@ -15,7 +15,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: ${{ github.event.client_payload.sha }}
+        ref: ${{ github.event.client_payload.ref }}
+        sha: ${{ github.event.client_payload.sha }}
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag photoric:$(date +%s)
     - name: Build the Docker stack
