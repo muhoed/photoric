@@ -4,24 +4,24 @@
 name: "Python package"
 
 on:
-  workflow_run:
-    workflows: [ CodeQL ]
-    types: [ completed ]
+  repository_dispatch:
+    types: [trigger-workflow-2]
+  #workflow_run:
+  #  workflows: [ CodeQL ]
+  #  types: [ completed ]
 
 jobs:
-    on-success:
-    # build:
+    build:
         runs-on: ubuntu-latest
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         strategy:
           fail-fast: false
           matrix:
             python-version: ["3.8", "3.9", "3.10"]
 
         steps:
-        #- name: Checkout repository
-        #  uses: actions/checkout@v2
-        # - uses: actions/checkout@v2
+        - uses: actions/checkout@v2
+          with:
+            ref: ${{ github.event.client_payload.sha }}
         - name: Set up Python ${{ matrix.python-version }}
           uses: actions/setup-python@v2
           with:
@@ -40,3 +40,12 @@ jobs:
         - name: Test with pytest
           run: |
             pytest
+
+        - name: Trigger next workflow
+          if: success()
+          uses: peter-evans/repository-dispatch@v1
+          with:
+            token: ${{ secrets.REPO_GHA_PAT }}
+            repository: ${{ github.repository }}
+            event-type: trigger-workflow-3
+            client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'

@@ -1,21 +1,21 @@
 name: "Docker Compose CI"
 
 on:
-  workflow_run:
-    workflows: [ Python package ]
-    types: [ completed ]
+  repository_dispatch:
+    types: [trigger-workflow-3]
+  #workflow_run:
+  #  workflows: [ Python package ]
+  #  types: [ completed ]
 
 jobs:
-
-  on-success:
-  # build:
+  build:
 
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-    #- name: Checkout repository
-    #  uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.client_payload.sha }}
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag photoric:$(date +%s)
     - name: Build the Docker stack
