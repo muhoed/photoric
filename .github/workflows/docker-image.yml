@@ -8,13 +8,15 @@ on:
 jobs:
 
   on-success:
-  #build:
+  # build:
 
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-    - uses: actions/checkout@v2
-    #- name: Build the Docker image
-    #  run: docker build . --file Dockerfile --tag photoric:$(date +%s)
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    # - name: Build the Docker image
+    #   run: docker build . --file Dockerfile --tag photoric:$(date +%s)
     - name: Build the Docker stack
       run: docker-compose build --no-deps photoric
