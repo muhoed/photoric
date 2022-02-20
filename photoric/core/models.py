@@ -20,6 +20,39 @@ AlbumImage = db.Table('album_image',
 
 # declare models
 
+""" polymorthic relations should be corrected
+# base class for gallery items
+class GalleryItem(db.Model, PermissionsMixin):
+    __tablename__ = 'gallery_items'
+
+    __permissions__ = dict(
+        owner=['create', 'read', 'update', 'delete', 'revoke'],
+        group=['read', 'update', 'revoke'],
+        other=['read']
+    )
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(50))
+    name = db.Column(db.String(100), unique=True, nullable=True)
+    description = db.Column(db.String(500), nullable=True)
+    keywords = db.Column(db.String(255), nullable=True)
+    is_published = db.Column(db.Boolean(), nullable=False, default=False)
+    published_on = db.Column(db.DateTime, nullable=True, index=True)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'gallery_item',
+        'polymorphic_on': type,
+        'with_polymorphic': '*'
+    }
+
+    def publish(self):
+        # mark gallery item as published, i.e. accessible for both registered and anonymous users
+        is_published = True
+
+    def unpublish(self):
+        # mark gallery item as not published, i.e. accessible for both registered and anonymous users
+        is_published = False
+"""
+
 # class Image(GalleryItem):
 class Image(db.Model, PermissionsMixin):
     __tablename__ = "images"
@@ -58,6 +91,13 @@ class Image(db.Model, PermissionsMixin):
 
     def __repr__(self):
         return '<Image %r>' % self.filename
+
+"""
+    __mapper_args__ = {
+        'polymorphic_identity': 'image',
+        'polymorphic_load': 'inline'
+    }
+"""
 
 
 # class Album(GalleryItem):
@@ -100,6 +140,12 @@ class Album(db.Model, PermissionsMixin):
 
     def __repr__(self):
         return '<Album %r>' % self.name
+"""    
+    __mapper_args__ = {
+        'polymorphic_identity': 'album',
+        'polymorphic_load': 'inline'
+    }
+"""
 
 
 class Navbar(db.Model):
