@@ -3,12 +3,12 @@ name: Docker Compose CI
 on:
   workflow_run:
     workflows: [ Python package ]
-    types:
-      - completed
+    types: [ completed ]
 
 jobs:
 
-  build:
+  on-success:
+  #build:
 
     runs-on: ubuntu-latest
 
