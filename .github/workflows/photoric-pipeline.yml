@@ -18,6 +18,7 @@ jobs:
       security-events: write
 
     strategy:
+      max-parallel: 1
       fail-fast: false
       matrix:
         language: [ 'javascript', 'python' ]
@@ -65,6 +66,7 @@ jobs:
       contents: read
       security-events: write
     strategy:
+      max-parallel: 1
       matrix:
         python-version: ["3.8", "3.9", "3.10"]
 
