@@ -363,6 +363,9 @@
   <ItemGroup>
     <Compile Include="migrations\env.py" />
     <Compile Include="migrations\versions\41a7d6c7cf60_initial.py" />
+    <Compile Include="conftest.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="photoric\config\config.py" />
     <Compile Include="photoric\config\initial_setup.py" />
     <Compile Include="photoric\core\form_validators.py" />
