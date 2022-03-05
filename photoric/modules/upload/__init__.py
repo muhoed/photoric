@@ -1,6 +1,6 @@
 """ Initialize upload module """
 from flask import Blueprint
-from flask_uploads import UploadSet, IMAGES
+from photoric.flask_uploads.flask_uploads import UploadSet, IMAGES
 from flask_dropzone import Dropzone
 
 

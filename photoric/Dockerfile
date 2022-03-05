@@ -9,7 +9,7 @@ RUN python -m venv venv
 RUN venv/bin/pip install -r requirements.txt
 
 # patch Flask-Uploads to bring it in line with current Werkzeug version
-RUN   sed -i "s/from werkzeug import secure_filename, FileStorage|from werkzeug.utils import secure_filename\r\nfrom werkzeug.datastructures import  FileStorage\r\n/g" /venv/Lib/site-packages/flask_uploads.py
+#RUN   sed -i "s/from werkzeug import secure_filename, FileStorage|from werkzeug.utils import secure_filename\r\nfrom werkzeug.datastructures import  FileStorage\r\n/g" /venv/Lib/site-packages/flask_uploads.py
 
 RUN venv/bin/pip install gunicorn
 

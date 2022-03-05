@@ -371,6 +371,7 @@
     <Compile Include="photoric\core\form_validators.py" />
     <Compile Include="photoric\core\mixins.py" />
     <Compile Include="photoric\core\models.py" />
+    <Compile Include="photoric\flask_uploads\flask_uploads.py" />
     <Compile Include="photoric\modules\admin\admin.py" />
     <Compile Include="photoric\modules\admin\__init__.py" />
     <Compile Include="photoric\modules\albums\albums.py" />
@@ -617,6 +618,7 @@
     <Folder Include="photoric\modules\views\templates\" />
     <Folder Include="photoric\modules\views\templates\views" />
     <Folder Include="photoric\modules\views\__pycache__" />
+    <Folder Include="photoric\flask_uploads\" />
     <Folder Include="photoric\static" />
     <Folder Include="photoric\static\images" />
     <Folder Include="photoric\static\images\favicon" />
