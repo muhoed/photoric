@@ -106,12 +106,18 @@ jobs:
     #   run: docker build . --file Dockerfile --tag photoric:$(date +%s)
     - name: Build the Docker stack
       run: docker-compose build --no-deps photoric
-
-    - name: Login to DockerHub
-      uses: docker/login-action@v1 
+    
+    # upload image as artifact
+    - name: Upload image
+      uses: ishworkh/docker-image-artifact-upload@v1
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        image: "photoric"
 
-    - name: push image to DockerHub
-      run: docker-compose push
+    #- name: Login to DockerHub
+    #  uses: docker/login-action@v1 
+    #  with:
+    #    username: ${{ secrets.DOCKERHUB_USERNAME }}
+    #    password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    #- name: push image to DockerHub
+    #  run: docker-compose push
