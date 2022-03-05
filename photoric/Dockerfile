@@ -2,7 +2,7 @@ FROM python:3
 
 RUN useradd photoric
 
-WORKDIR . #/home/photoric
+WORKDIR /home/runner/work/photoric
 
 COPY requirements.txt requirements.txt
 RUN python -m venv venv
@@ -15,7 +15,8 @@ RUN venv/bin/pip install gunicorn
 
 COPY photoric photoric
 COPY migrations migrations
-COPY .env .flaskenv boot.sh ./
+COPY .env ./
+COPY boot.sh ./
 RUN   sed -i "s/development|production/g" ./.flaskenv
 RUN   sed -i "s/verytopsecretkeycode|$(echo date+%s | sha1sum)/g" ./.flaskenv
 RUN   sed -i "s/verytopsecretkeycode|$(echo 'photoric'+date+%s | sha1sum)/g" ./.env
