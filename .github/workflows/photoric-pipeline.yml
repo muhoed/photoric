@@ -114,9 +114,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build the docker-compose stack
-      run: |
-        ls
-        docker-compose -f docker-compose.yml build
+      run: docker-compose -f docker-compose.yml build
     #- name: Check running containers
     #  run: docker ps -a
     #- name: Check logs
