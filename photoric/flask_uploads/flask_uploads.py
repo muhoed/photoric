@@ -10,13 +10,16 @@ an `UploadSet` object and upload your files to it.
 """
 
 import sys
+import itertools
 
 PY3 = sys.version_info[0] == 3
 
-if PY3:
-    string_types = str,
-else:
-    string_types = basestring,
+#if PY3:
+#    string_types = str,
+#else:
+#    string_types = basestring,
+
+string_types = str
 
 import os.path
 import posixpath
