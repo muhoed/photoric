@@ -260,7 +260,7 @@
     <Content Include="photoric\core\__pycache__\form_validators.cpython-38.pyc" />
     <Content Include="photoric\core\__pycache__\mixins.cpython-38.pyc" />
     <Content Include="photoric\core\__pycache__\models.cpython-38.pyc" />
-    <Content Include="photoric\Dockerfile" />
+    <Content Include="Dockerfile" />
     <Content Include="photoric\modules\admin\templates\settings_base.html" />
     <Content Include="photoric\modules\admin\__pycache__\admin.cpython-38.pyc" />
     <Content Include="photoric\modules\admin\__pycache__\__init__.cpython-38.pyc" />

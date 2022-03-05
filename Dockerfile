@@ -16,10 +16,11 @@ RUN venv/bin/pip install gunicorn
 COPY photoric photoric
 COPY migrations migrations
 COPY .env ./
+COPY .flaskenv ./
 COPY boot.sh ./
-RUN   sed -i "s/development|production/g" ./.env
-RUN   sed -i "s/verytopsecretkeycode|$(echo date+%s | sha1sum)/g" ./.flaskenv
-RUN   sed -i "s/verytopsecretkeycode|$(echo 'photoric'+date+%s | sha1sum)/g" ./.env
+RUN   sed -i "s/development/production/g" ./.env
+RUN   sed -i "s/verytopsecretkeycode/$(echo date+%s | sha1sum)/g" ./.flaskenv
+RUN   sed -i "s/verytopsecretkeycode/$(echo 'photoric'+date+%s | sha1sum)/g" ./.env
 RUN chmod +x boot.sh
 
 # ENV FLASK_APP wsgi.py
