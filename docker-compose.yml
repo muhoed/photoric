@@ -4,7 +4,7 @@ services:
     photoric:
         container_name: photoric
         build:
-          context: photoric 
+          context: . 
         #--file Dockerfile --tag photoric:$(date +%s)
         #volumes:
         #    - .:/photoric
