@@ -12,6 +12,7 @@
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <TestFramework>Pytest</TestFramework>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
@@ -406,13 +407,17 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include=".git" />
+    <Folder Include=".github\" />
     <Folder Include=".github\tmp" />
     <Folder Include=".github\workflows" />
     <Folder Include=".git\hooks" />
     <Folder Include=".git\info" />
     <Folder Include=".git\logs" />
+    <Folder Include=".git\logs\refs\" />
     <Folder Include=".git\logs\refs\heads" />
+    <Folder Include=".git\logs\refs\remotes\" />
     <Folder Include=".git\logs\refs\remotes\origin" />
+    <Folder Include=".git\objects\" />
     <Folder Include=".git\objects\00" />
     <Folder Include=".git\objects\02" />
     <Folder Include=".git\objects\03" />
@@ -540,9 +545,12 @@
     <Folder Include=".git\objects\fc" />
     <Folder Include=".git\objects\fe" />
     <Folder Include=".git\objects\pack" />
+    <Folder Include=".git\refs\" />
     <Folder Include=".git\refs\heads" />
+    <Folder Include=".git\refs\remotes\" />
     <Folder Include=".git\refs\remotes\origin" />
     <Folder Include=".vs" />
+    <Folder Include=".vs\photoric\" />
     <Folder Include=".vs\photoric\config" />
     <Folder Include=".vs\photoric\v16" />
     <Folder Include=".vs\photoric\v17" />
@@ -556,40 +564,54 @@
     <Folder Include="photoric\config\__pycache__" />
     <Folder Include="photoric\core" />
     <Folder Include="photoric\core\__pycache__" />
+    <Folder Include="photoric\modules\" />
     <Folder Include="photoric\modules\admin" />
     <Folder Include="photoric\modules\admin\templates" />
     <Folder Include="photoric\modules\admin\__pycache__" />
     <Folder Include="photoric\modules\albums" />
+    <Folder Include="photoric\modules\albums\static\" />
     <Folder Include="photoric\modules\albums\static\images" />
+    <Folder Include="photoric\modules\albums\templates\" />
     <Folder Include="photoric\modules\albums\templates\albums" />
     <Folder Include="photoric\modules\albums\__pycache__" />
     <Folder Include="photoric\modules\api" />
     <Folder Include="photoric\modules\api\__pycache__" />
     <Folder Include="photoric\modules\auth" />
+    <Folder Include="photoric\modules\auth\templates\" />
     <Folder Include="photoric\modules\auth\templates\auth" />
     <Folder Include="photoric\modules\auth\__pycache__" />
     <Folder Include="photoric\modules\images" />
+    <Folder Include="photoric\modules\images\templates\" />
     <Folder Include="photoric\modules\images\templates\images" />
     <Folder Include="photoric\modules\images\__pycache__" />
     <Folder Include="photoric\modules\nav" />
+    <Folder Include="photoric\modules\nav\static\" />
     <Folder Include="photoric\modules\nav\static\images" />
     <Folder Include="photoric\modules\nav\static\images\favicon" />
+    <Folder Include="photoric\modules\nav\templates\" />
     <Folder Include="photoric\modules\nav\templates\nav" />
+    <Folder Include="photoric\modules\nav\templates\nav\actionbar\" />
     <Folder Include="photoric\modules\nav\templates\nav\actionbar\menu" />
+    <Folder Include="photoric\modules\nav\templates\nav\mainbar\" />
     <Folder Include="photoric\modules\nav\templates\nav\mainbar\button" />
+    <Folder Include="photoric\modules\nav\templates\nav\topbar\" />
     <Folder Include="photoric\modules\nav\templates\nav\topbar\form" />
     <Folder Include="photoric\modules\nav\templates\nav\topbar\logo" />
     <Folder Include="photoric\modules\nav\__pycache__" />
     <Folder Include="photoric\modules\search" />
+    <Folder Include="photoric\modules\search\static\" />
     <Folder Include="photoric\modules\search\static\images" />
+    <Folder Include="photoric\modules\search\templates\" />
     <Folder Include="photoric\modules\search\templates\search" />
     <Folder Include="photoric\modules\search\__pycache__" />
     <Folder Include="photoric\modules\upload" />
+    <Folder Include="photoric\modules\upload\templates\" />
     <Folder Include="photoric\modules\upload\templates\upload" />
     <Folder Include="photoric\modules\upload\__pycache__" />
     <Folder Include="photoric\modules\views" />
     <Folder Include="photoric\modules\views\static" />
     <Folder Include="photoric\modules\views\static\images" />
+    <Folder Include="photoric\modules\views\templates\" />
     <Folder Include="photoric\modules\views\templates\views" />
     <Folder Include="photoric\modules\views\__pycache__" />
     <Folder Include="photoric\static" />
