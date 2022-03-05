@@ -3,7 +3,8 @@ version: '3.9'
 services:
     photoric:
         container_name: photoric
-        build: . 
+        build:
+          context: photoric 
         #--file Dockerfile --tag photoric:$(date +%s)
         #volumes:
         #    - .:/photoric
