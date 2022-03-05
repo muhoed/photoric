@@ -2,7 +2,7 @@ FROM python:3
 
 RUN useradd photoric
 
-WORKDIR /home/photoric
+WORKDIR . #/home/photoric
 
 COPY requirements.txt requirements.txt
 RUN python -m venv venv
