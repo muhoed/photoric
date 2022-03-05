@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 
-from .config.config import Config, ProdConfig, DevConfig
+from .config.config import Config, ProdConfig, DevConfig, TestConfig
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -32,6 +32,8 @@ def create_app(conf='dev'):
 
     if conf == 'dev':
         app.config.from_object(DevConfig)
+    elif conf == 'test':
+        app.config.from_object(TestConfig)
     else:
         app.config.from_object(ProdConfig)
 
