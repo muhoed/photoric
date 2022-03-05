@@ -1,4 +1,5 @@
 from sqlalchemy import or_
+from sqlalchemy.orm import selectinload
 
 from photoric import db
 from photoric.core.models import Image, Album
