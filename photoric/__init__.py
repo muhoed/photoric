@@ -3,13 +3,14 @@ import os
 from flask import Flask
 from flask_jsglue import JSGlue
 from flask_session import Session
-from flask_uploads import configure_uploads, patch_request_class
+# from flask_uploads import configure_uploads, patch_request_class
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 
-from .config.config import Config, ProdConfig, DevConfig
+from .config.config import Config, ProdConfig, DevConfig, TestConfig
+from .flask_uploads.flask_uploads import configure_uploads, patch_request_class
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -32,6 +33,8 @@ def create_app(conf='dev'):
 
     if conf == 'dev':
         app.config.from_object(DevConfig)
+    elif conf == 'test':
+        app.config.from_object(TestConfig)
     else:
         app.config.from_object(ProdConfig)
 

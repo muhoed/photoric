@@ -2,13 +2,18 @@ version: '3.9'
 
 services:
     photoric:
-        build: . 
+        container_name: photoric
+        build:
+          context: . 
         #--file Dockerfile --tag photoric:$(date +%s)
         #volumes:
         #    - .:/photoric
         ports:
             - "8000:5000"
+        depends_on: 
+            - db
     db:
+        container_name: photoric_db
         image: postgres
         restart: always
         environment:

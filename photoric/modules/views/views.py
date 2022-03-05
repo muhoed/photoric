@@ -55,8 +55,9 @@ def index():
     """Show main page"""
 
     # page was loaded after some actions performed
+    # TODO
     if request.method == "POST":
-        return TODO
+        return
 
     # page was loaded without action
     else:

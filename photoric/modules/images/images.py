@@ -6,6 +6,7 @@ from flask import send_from_directory, abort, session, redirect, url_for, render
 from flask_login import current_user
 from PIL import Image as Picture
 from PIL.ExifTags import TAGS
+from werkzeug.exceptions import NotFound, Unauthorized
 
 from photoric.config.config import Config
 from photoric import db
