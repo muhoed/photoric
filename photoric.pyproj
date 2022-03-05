@@ -405,9 +405,6 @@
     <Compile Include="photoric\modules\views\__init__.py" />
     <Compile Include="photoric\__init__.py" />
     <Compile Include="tests\conftest.py" />
-    <Compile Include="tests\__init__.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="tests\test_factory.py" />
     <Compile Include="wsgi.py" />
   </ItemGroup>
