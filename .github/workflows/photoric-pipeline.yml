@@ -105,7 +105,11 @@ jobs:
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag photoric:$(date +%s)
     - name: Build the Docker stack
-      run: docker-compose build --no-deps photoric
+      #run: docker-compose build --no-deps photoric
+      uses: isbang/compose-action@v1.0.0
+      with:
+        compose-file: 'docker-compose.yml'
+        down-flags: '--volumes'
     
     # upload image as artifact
     - name: Upload image
