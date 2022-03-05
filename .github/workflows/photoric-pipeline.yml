@@ -10,7 +10,7 @@ on:
 
 defaults:
   run:
-    working-directory: /home/runner/work
+    working-directory: /home/runner/work/photoric
 
 jobs:
   analyze:
@@ -70,6 +70,8 @@ jobs:
         python-version: ["3.8", "3.9", "3.10"]
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
     # Python package
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -96,6 +98,8 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
     # Compose Docker images
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag photoric:$(date +%s)
