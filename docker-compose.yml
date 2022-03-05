@@ -8,6 +8,8 @@ services:
         #    - .:/photoric
         ports:
             - "8000:5000"
+        depends_on: 
+            - db
     db:
         image: postgres
         restart: always

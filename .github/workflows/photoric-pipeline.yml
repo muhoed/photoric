@@ -98,20 +98,29 @@ jobs:
     name: Create and push docker image
     runs-on: ubuntu-latest
     
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    #steps:
+    #- name: Checkout repository
+    #  uses: actions/checkout@v2
     # Compose Docker images
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag photoric:$(date +%s)
-    - name: Build the Docker stack
+    #- name: Build the Docker stack
       #run: docker-compose build --no-deps photoric
-      run: |
-        ls
-      uses: isbang/compose-action@v1.0.0
-      with:
-        compose-file: 'docker-compose.yml'
-        down-flags: '--volumes'
+    #  uses: isbang/compose-action@v1.0.0
+    #  with:
+    #    compose-file: 'docker-compose.yml'
+    #    down-flags: '--volumes'
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the docker-compose stack
+      run: docker-compose -f docker-compose.yml up -d
+    - name: Check running containers
+      run: docker ps -a
+    - name: Check logs
+      run: docker logs backend
+    - name: Run test suite
+      run: docker exec backend pytest --skip-auth
     
     # upload image as artifact
     - name: Upload image
