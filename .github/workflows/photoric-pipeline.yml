@@ -5,8 +5,8 @@ on:
   pull_request:
     types: [opened, reopened]
     
-  schedule:
-    - cron: '19 3 * * 1'
+  #schedule:
+  #  - cron: '19 3 * * 1'
 
 #defaults:
 #  run:
@@ -93,23 +93,24 @@ jobs:
       run: |
         python -m pytest
 
-  docker:
+  packaging:
+    environment: Package
     needs: lint_and_test
+    name: Build package with setuptool and publish it to Github artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v1
+    -name: Build package with setuptool
+      uses:
+
+
+  docker:
+    environment: Container
+    needs: packaging
     name: Create and push docker image
     runs-on: ubuntu-latest
-    
-    #steps:
-    #- name: Checkout repository
-    #  uses: actions/checkout@v2
-    # Compose Docker images
-    # - name: Build the Docker image
-    #   run: docker build . --file Dockerfile --tag photoric:$(date +%s)
-    #- name: Build the Docker stack
-      #run: docker-compose build --no-deps photoric
-    #  uses: isbang/compose-action@v1.0.0
-    #  with:
-    #    compose-file: 'docker-compose.yml'
-    #    down-flags: '--volumes'
 
     steps:
     - uses: actions/checkout@v1

@@ -358,12 +358,28 @@
     <Content Include="photoric\__pycache__\__init__.cpython-38.pyc" />
     <Content Include="README.md" />
     <Content Include="requirements.txt" />
+    <Content Include="setup.cfg" />
     <Content Include="__pycache__\wsgi.cpython-38.pyc" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="migrations\env.py" />
     <Compile Include="migrations\versions\41a7d6c7cf60_initial.py" />
     <Compile Include="conftest.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="photoric\config\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="photoric\core\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="photoric\flask_uploads\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="pyproject.toml">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="setup.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="photoric\config\config.py" />
@@ -406,6 +422,9 @@
     <Compile Include="photoric\modules\views\__init__.py" />
     <Compile Include="photoric\__init__.py" />
     <Compile Include="tests\conftest.py" />
+    <Compile Include="tests\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tests\test_factory.py" />
     <Compile Include="wsgi.py" />
   </ItemGroup>

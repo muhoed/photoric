@@ -1,5 +1,6 @@
 env/
 venv/
+dist/
 
 *.pyc
 __pycache__/
