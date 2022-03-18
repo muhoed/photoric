@@ -104,7 +104,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v1
     - name: Build package with setuptool
-      run: python setup.py sdist bdist wheel
+      run: python setup.py sdist bdist_wheel
     - name: Upload dist to artifacts
       uses: actions/upload-artifact@v3
       with:
