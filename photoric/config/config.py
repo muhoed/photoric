@@ -66,16 +66,25 @@ class ProdConfig(Config):
     if not SECRET_KEY:
         raise ValueError("No SECRET_KEY set for Flask application")
 
-    FLASK_ENV = 'production'
-    FLASK_DEBUG = False
-    FLASK_TESTING = False
+    ENV = 'production'
+    DEBUG = False
+    TESTING = False
     SQLALCHEMY_DATABASE_URI = path.join('instance', environ.get('PROD_DATABASE'))
 
 
 class DevConfig(Config):
     """Development specific config."""
     SECRET_KEY = 'development'
-    FLASK_ENV = 'development'
-    FLASK_DEBUG = True
-    FLASK_TESTING = True
-    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:FhbzAndMegadeath7814@localhost/photoric" #"sqlite:///" + path.abspath(path.join('instance', environ.get('DEV_DATABASE'))) #path.abspath(path.join(current_dir.parents[2], 'instance', environ.get('DEV_DATABASE')))
+    ENV = 'development'
+    DEBUG = True
+    TESTING = False
+    SQLALCHEMY_DATABASE_URI = f"postgresql://photoric:{environ.get('DB_PASSWORD')}@localhost/photoric" #"sqlite:///" + path.abspath(path.join('instance', environ.get('DEV_DATABASE'))) #path.abspath(path.join(current_dir.parents[2], 'instance', environ.get('DEV_DATABASE')))
+
+
+class TestConfig(Config):
+    """Development specific config."""
+    SECRET_KEY = 'test'
+    ENV = 'development'
+    DEBUG = True
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + path.abspath(path.join('instance', environ.get('TEST_DATABASE'))) #path.abspath(path.join(current_dir.parents[2], 'instance', environ.get('DEV_DATABASE')))

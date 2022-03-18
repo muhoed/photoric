@@ -1,7 +1,6 @@
 env/
 venv/
-.env
-.flaskenv
+dist/
 
 *.pyc
 __pycache__/
