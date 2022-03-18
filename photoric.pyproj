@@ -249,6 +249,7 @@
     <Content Include="instance\photoric.db" />
     <Content Include="instance\photoric_old.db" />
     <Content Include="LICENSE" />
+    <Content Include="MANIFEST.in" />
     <Content Include="migrations\alembic.ini" />
     <Content Include="migrations\README" />
     <Content Include="migrations\script.py.mako" />

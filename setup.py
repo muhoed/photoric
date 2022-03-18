@@ -23,6 +23,9 @@ setup(
     #namespace_packages=['photoric'],
     packages=[
         'photoric',
+        'photoric/config',
+        'photoric/core',
+        'photoric/flask_uploads',
         'photoric/modules/admin',
         'photoric/modules/albums',
         'photoric/modules/api',
@@ -32,10 +35,13 @@ setup(
         'photoric/modules/search',
         'photoric/modules/upload',
         'photoric/modules/views',
+        'tests'
         ],
+    #packages=find_packages(exclude='env'),
     #package_data={'': ['*.png', '*.ico', '*.webmanifest', '*.svg', '*.css', '*.js','*.html'],},
-    include_requires=requirements('requirements.txt'),
+    install_requires=requirements('requirements.txt'),
     include_package_data=True,
+    #exclude_package_data={'env':[]},
     zip_safe=False,
     classifiers=[
         'Programming Language :: Python :: 3',

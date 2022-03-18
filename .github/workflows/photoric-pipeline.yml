@@ -82,6 +82,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest coverage
         python -m pip install -r requirements.txt
+        python -m pip install setuptools wheels
         #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
@@ -102,8 +103,13 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v1
-    -name: Build package with setuptool
-      uses:
+    - name: Build package with setuptool
+      run: python setup.py sdist bdist wheel
+    - name: Upload dist to artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: photoric
+        path: ./dist
 
 
   docker:
