@@ -6,6 +6,8 @@ dist/
 __pycache__/
 
 instance/
+.env
+.flaskenv
 
 .pytest_cache/
 .coverage

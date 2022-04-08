@@ -69,7 +69,7 @@ class ProdConfig(Config):
     ENV = 'production'
     DEBUG = False
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = path.join('instance', environ.get('PROD_DATABASE'))
+    SQLALCHEMY_DATABASE_URI = f"postgresql://photoric:{environ.get('DB_PASSWORD')}@{environ.get('DB_SERVER')}/photoric" #path.join('instance', environ.get('PROD_DATABASE'))
 
 
 class DevConfig(Config):
@@ -78,7 +78,7 @@ class DevConfig(Config):
     ENV = 'development'
     DEBUG = True
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = f"postgresql://photoric:{environ.get('DB_PASSWORD')}@localhost/photoric" #"sqlite:///" + path.abspath(path.join('instance', environ.get('DEV_DATABASE'))) #path.abspath(path.join(current_dir.parents[2], 'instance', environ.get('DEV_DATABASE')))
+    SQLALCHEMY_DATABASE_URI = f"postgresql://postgres:{environ.get('DB_PASSWORD')}@localhost/photoric" #"sqlite:///" + path.abspath(path.join('instance', environ.get('DEV_DATABASE'))) #path.abspath(path.join(current_dir.parents[2], 'instance', environ.get('DEV_DATABASE')))
 
 
 class TestConfig(Config):
@@ -87,4 +87,4 @@ class TestConfig(Config):
     ENV = 'development'
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + path.abspath(path.join('instance', environ.get('TEST_DATABASE'))) #path.abspath(path.join(current_dir.parents[2], 'instance', environ.get('DEV_DATABASE')))
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + path.abspath(path.join('instance', environ.get('TEST_DATABASE')))

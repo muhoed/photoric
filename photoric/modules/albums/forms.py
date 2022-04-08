@@ -7,15 +7,16 @@ from wtforms.validators import (
 )
 
 from photoric.core.form_validators import name_check
+from photoric.core.models import Album
 
 
 class CreateAlbumForm(FlaskForm):
-    """User Sign-Up Form."""
+    """Album Creation Form."""
     name = StringField(
         'Name:',
         validators=[InputRequired(message='Please enter album name'),
                     Length(min=3, message='Album name must be at least 3 symbols long'),
-                    name_check(message='Album with such name already exists')
+                    name_check(Album, message='Album with such name already exists')
                     ]
     )
     description = TextAreaField(

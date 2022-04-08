@@ -371,6 +371,13 @@
     <Compile Include="photoric\config\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="tests\unit\test_auth_models.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\unit\test_core_models.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\unit\__init__.py" />
     <Compile Include="photoric\core\__init__.py">
       <SubType>Code</SubType>
     </Compile>
@@ -587,6 +594,7 @@
     <Folder Include="photoric\config" />
     <Folder Include="photoric\config\__pycache__" />
     <Folder Include="photoric\core" />
+    <Folder Include="tests\unit\" />
     <Folder Include="photoric\core\__pycache__" />
     <Folder Include="photoric\modules\" />
     <Folder Include="photoric\modules\admin" />

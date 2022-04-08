@@ -10,6 +10,11 @@ services:
         #    - .:/photoric
         ports:
             - "8000:5000"
+        environment:
+            SECRET_KEY: ${PHOTORIC_KEY}
+            PHOTO_STORAGE: 'storage'
+            DB_SERVER: 'photoric_db:5432'
+            DB_PASSWORD: ${DB_PASSWORD}
         depends_on: 
             - db
     db:
@@ -17,5 +22,6 @@ services:
         image: postgres
         restart: always
         environment:
+          POSTGRES_DB: photoric
           POSTGRES_USER: photoric
           POSTGRES_PASSWORD: ${DB_PASSWORD}

@@ -121,6 +121,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build the docker-compose stack
+      env:
+        PHOTORIC_KEY: ${{ secrets.PHOTORIC_KEY }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       run: docker-compose -f docker-compose.yml build
     #- name: Check running containers
     #  run: docker ps -a

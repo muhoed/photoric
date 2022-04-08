@@ -83,11 +83,12 @@ class Image(db.Model, PermissionsMixin):
     
     def publish(self):
         # mark gallery item as published, i.e. accessible for both registered and anonymous users
-        is_published = True
+        self.is_published = True
+        self.published_on = datetime.utcnow
 
     def unpublish(self):
         # mark gallery item as not published, i.e. accessible for both registered and anonymous users
-        is_published = False
+        self.is_published = False
 
     def __repr__(self):
         return '<Image %r>' % self.filename
@@ -132,11 +133,12 @@ class Album(db.Model, PermissionsMixin):
 
     def publish(self):
         # mark gallery item as published, i.e. accessible for both registered and anonymous users
-        is_published = True
+        self.is_published = True
+        self.published_on = datetime.utcnow
 
     def unpublish(self):
         # mark gallery item as not published, i.e. accessible for both registered and anonymous users
-        is_published = False
+        self.is_published = False
 
     def __repr__(self):
         return '<Album %r>' % self.name
