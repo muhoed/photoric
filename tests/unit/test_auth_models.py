@@ -8,7 +8,7 @@ from photoric.modules.auth.models import User, Group, Role
 @pytest.fixture
 def user(app):
 
-    image = User(
+    user = User(
         name = "Test user",
         email = 'test@test.com',
         password = 'test_password'
@@ -22,68 +22,79 @@ def user(app):
     db.session.commit()
 
 @pytest.fixture
-def album(authenticated_request):
+def group(app):
 
-    album = Album(
-        name = "Test album"
+    group = Group(
+        name = "test_group",
+        allowances = "*"
         )
-    db.session.add(album)
+    db.session.add(group)
     db.session.commit()
     
-    yield album
+    yield group
 
-    db.session.delete(album)
+    db.session.delete(group)
     db.session.commit()
 
-def test_new_image(image):
-    """
-    GIVEN an Image model
-    WHEN a new Image is created
-    THEN check 'uploaded_on' is set, 'is_published' is set to False, '__str__' method returns image filename
-    """
-    assert image.uploaded_on is not None
-    assert image.is_published is False
-    assert str(image) == "<Image 'testimage.jpg'>"
+@pytest.fixture
+def rolw(app):
 
-def test_publish_image(image):
-    """
-    GIVEN an Image model
-    WHEN an Image is published
-    THEN check 'is_published' is set to True, 'published_on' is not None
-    """
-    image.publish()
-
-    assert image.is_published is True
-    assert image.published_on is not None
-
-def test_new_album(album):
-    """
-    GIVEN an Album model
-    WHEN a new Album is created
-    THEN check 'is_published' is set to False, '__str__' method returns Album name
-    """
-    assert album.is_published is False
-    assert str(album) == "<Album 'Test album'>"
-
-def test_publish_album(album):
-    """
-    GIVEN an Album model
-    WHEN an Album is published
-    THEN check 'is_published' is set to True, 'published_on' is not None
-    """
-    album.publish()
-
-    assert album.is_published is True
-    assert album.published_on is not None
+    role = Role(
+        name = "test_role",
+        restrictions = {}
+        )
+    db.session.add(role)
+    db.session.commit()
     
-def test_add_image_to_album(image, album):
-    """
-    GIVEN Album and Image model
-    WHEN an Image is added to Album
-    THEN check Image is in Album's 'children_images', Albun is in Image's 'parent_albums'
-    """
-    album.children_images.append(image)
+    yield group
 
-    assert image in album.children_images
-    assert album in image.parent_albums
+    db.session.delete(role)
+    db.session.commit()
+
+def test_new_user(user):
+    """
+    GIVEN an User model
+    WHEN a new User is created
+    THEN check 'created_on' is equal to current date, 'password' is hashed,
+    'check_password' works as expected, '__repr__' method returns user name
+    """
+    assert user.created_on.date() == datetime.datetime.utcnow().date()
+    assert user.password != 'test_password'
+    assert user.check_password('test_password') is True
+    assert user.is_active is True
+
+    assert str(user) == "<User 'Test user'>"
+
+def test_user_properties(user):
+    """
+    GIVEN an User model
+    WHEN a new User is created
+    THEN 'is_active' is True and respective setter works as expected, 
+    'last_login', 'roles', 'group' getter/setter work as expected
+    """
+
+    # is_active
+    assert user.is_active is True
+    user.is_active = False
+    assert user.is_active is False
+
+    # last_login
+    assert user.last_login is None
+    user.last_login = 'set'
+    assert user.last_login.date() == datetime.datetime.utcnow().date()
+
+    # roles
+    assert user.roles == []
+    # non-existing role
+    user.roles = [{'name':'new_role', 'restrictions':{}},]
+    db.session.commit()
+    assert Role.query.filter_by(name='new_role').first() in user.roles
+    
+    # groups
+    assert user.groups == []
+    # non-existing role
+    user.groups = [{'name':'new_group', 'allowances':'*'},]
+    db.session.commit()
+    assert Group.query.filter_by(name='new_group').first() in user.groups
+
 
