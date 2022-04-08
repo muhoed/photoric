@@ -1,0 +1,10 @@
+exclude env
+include .env
+include .flaskenv
+include README.md
+include conftest.py
+include LICENSE
+recursive-include photoric/static *
+recursive-include photoric/templates *
+recursive-include photoric/**/static *
+recursive-include photoric/**/templates *

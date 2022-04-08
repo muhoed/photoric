@@ -1,0 +1,42 @@
+<!-- Create album dialog -->
+<div class="modal" id="create_album">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title text-success">Create new album within the current album.</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form action="{{ url_for('albums.create_album') }}" method="POST">
+            {{ create_album_form.csrf_token }}
+            <div class="form-group">
+                {{ create_album_form.name.label }}
+                {{ create_album_form.name(class_="form-control", placeholder="Album name") }}
+            </div>
+            <div class="form-group">
+                {{ create_album_form.description.label }}
+                {{ create_album_form.description(class_="form-control", placeholder="Album description, max 250 symbols.") }}
+            </div>
+            <div class="form-group">
+                {{ create_album_form.keywords.label }}
+                {{ create_album_form.keywords(class_="form-control", placeholder="Keywords/tags divided by spaces, commas or semicolons, max 300 symbols") }}
+            </div>
+            <div class="modal-footer">
+            {{ create_album_form.submit(class_="btn btn-success") }}
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+      </div>
+
+      <!-- Modal footer 
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div> -->
+
+    </div>
+  </div>
+</div>

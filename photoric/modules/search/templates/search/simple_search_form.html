@@ -1,0 +1,12 @@
+<!-- Simple search form -->
+
+<form class="form-inline" action="url_for('search.simplesearch')" method="POST">
+ 
+    {{ search_form.csrf_token }}
+    {{ search_form.text(class_="form-control mr-sm-2", placeholder='Search') }}
+                
+    <div class="btn btn-success">
+        {{ search_form.submit }}
+    </div>
+</form>
+ 

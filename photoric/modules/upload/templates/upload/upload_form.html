@@ -1,0 +1,22 @@
+<!-- Upload form -->
+<div class="justify-content-center">
+    <h4>Drag'n'Drop images here or press "Add" to upload them</h4>
+
+    <form action="{{ url_for('upload.uploads') }}" method="POST" enctype="multipart/form-data">
+        {{ upload_form.csrf_token }}
+        {{ upload_form.photo }}
+
+        {% if upload_form.photo.errors %}
+            <ul class="errors">
+                {% for error in upload_form.photo.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {{ upload_form.submit(class_='btn btn-success') }}
+
+        {{ dropzone.config() }}
+
+    </form>
+</div>
